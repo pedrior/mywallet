@@ -1,0 +1,8 @@
+POST {{baseUrl}}/categories
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Games & PC Hardware",
+  "color": "#124E78"
+}

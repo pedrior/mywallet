@@ -1,0 +1,7 @@
+POST {{baseUrl}}/users/me/profile
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Pedro Doe"
+}

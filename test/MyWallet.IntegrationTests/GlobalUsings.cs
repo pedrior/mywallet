@@ -1,0 +1,9 @@
+global using System.Net;
+global using FluentAssertions;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.IdentityModel.JsonWebTokens;
+global using TestUtils.Constants;
+global using TestUtils.Factories;
+global using MyWallet.IntegrationTests.Shared;
+global using MyWallet.IntegrationTests.Shared.Requests;
+global using Xunit;

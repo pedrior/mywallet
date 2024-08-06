@@ -1,0 +1,8 @@
+POST {{baseUrl}}/categories/{categoryId}/edit
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Consoles & Games",
+  "color": "#D74E09"
+}

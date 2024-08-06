@@ -1,0 +1,2 @@
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}

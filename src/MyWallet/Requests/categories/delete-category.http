@@ -1,0 +1,2 @@
+DELETE {{baseUrl}}/categories/{categoryId}
+Authorization: Bearer {{accessToken}}

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.7"/>
+        <PackageReference Include="Respawn" Version="6.2.1"/>
+        <PackageReference Include="Testcontainers.PostgreSql" Version="3.9.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\MyWallet\MyWallet.csproj" />
+        <ProjectReference Include="..\TestUtils\TestUtils.csproj"/>
+    </ItemGroup>
+</Project>

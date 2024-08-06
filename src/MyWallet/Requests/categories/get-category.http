@@ -1,0 +1,2 @@
+GET {{baseUrl}}/categories/{categoryId}
+Authorization: Bearer {{accessToken}}
