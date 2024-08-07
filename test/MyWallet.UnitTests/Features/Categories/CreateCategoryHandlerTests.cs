@@ -18,6 +18,7 @@ public sealed class CreateCategoryHandlerTests
 
     private static readonly CreateCategoryCommand Command = new()
     {
+        Type = "expense",
         Name = "Shopping",
         Color = "#EF5350",
         UserId = Ulid.NewUlid()

@@ -8,11 +8,15 @@ internal static partial class Requests
     {
         public static HttpRequestMessage GetCategory(CategoryId categoryId) =>
             new(HttpMethod.Get, $"{BasePath}/categories/{categoryId}");
-        
+
         public static HttpRequestMessage ListCategories() => new(HttpMethod.Get, $"{BasePath}/categories");
-        
-        public static HttpRequestMessage CreateCategory(string? name = null, string? color = null)
+
+        public static HttpRequestMessage CreateCategory(
+            string? type = null,
+            string? name = null,
+            string? color = null)
         {
+            type ??= Constants.Category.Type.Name;
             name ??= Constants.Category.Name.Value;
             color ??= Constants.Category.Color.Value;
 
@@ -20,6 +24,7 @@ internal static partial class Requests
             {
                 Content = ToJsonStringContent(new
                 {
+                    type,
                     name,
                     color
                 })
@@ -43,7 +48,7 @@ internal static partial class Requests
                 })
             };
         }
-        
+
         public static HttpRequestMessage DeleteCategory(CategoryId categoryId) =>
             new(HttpMethod.Delete, $"{BasePath}/categories/{categoryId}");
     }

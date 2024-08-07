@@ -40,7 +40,8 @@ public sealed class CreateCategoryTests(TestApplicationFactory app) : Integratio
             .GetAsync(new(Ulid.Parse(categoryId)));
 
         category.Should().NotBeNull();
-        category!.Name.Should().Be(Constants.Category.Name);
+        category!.Type.Should().Be(Constants.Category.Type);
+        category.Name.Should().Be(Constants.Category.Name);
         category.Color.Should().Be(Constants.Category.Color);
     }
 

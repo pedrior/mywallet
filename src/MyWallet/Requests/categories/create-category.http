@@ -3,6 +3,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
+  "type": "expense",
   "name": "Games & PC Hardware",
   "color": "#124E78"
 }

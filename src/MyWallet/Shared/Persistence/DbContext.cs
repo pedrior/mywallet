@@ -10,8 +10,12 @@ public sealed class DbContext : IDbContext
 
     public DbContext(string connectionString)
     {
-        connection = new NpgsqlConnection(connectionString);
-        connection.Open();
+        var npgsqlConnection = new NpgsqlConnection(connectionString);
+        
+        npgsqlConnection.Open();
+        npgsqlConnection.ReloadTypes();
+
+        connection = npgsqlConnection;
     }
 
     public void BeginTransaction() => transaction = connection.BeginTransaction();

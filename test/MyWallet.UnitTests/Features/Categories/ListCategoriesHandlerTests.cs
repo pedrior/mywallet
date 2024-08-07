@@ -37,6 +37,7 @@ public sealed class ListCategoriesHandlerTests
             .Returns(categories.Select(c => new ListCategoriesResponse
             {
                 Id = c.Id.Value,
+                Type = c.Type.Name,
                 Name = c.Name.Value,
                 Color = c.Color.Value
             }));

@@ -48,6 +48,7 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
         categoryResponse.Should().NotBeNull();
 
         categoryResponse!.Id.Should().Be(categoryId.Value);
+        categoryResponse.Type.Should().Be(Constants.Category.Type.Name);
         categoryResponse.Name.Should().Be(Constants.Category.Name.Value);
         categoryResponse.Color.Should().Be(Constants.Category.Color.Value);
     }

@@ -42,6 +42,7 @@ public static partial class ServiceExtensions
         SqlMapper.AddTypeHandler(new PasswordTypeHandler());
 
         SqlMapper.AddTypeHandler(new CategoryIdTypeHandler());
+        SqlMapper.AddTypeHandler(new CategoryTypeTypeHandler());
         SqlMapper.AddTypeHandler(new CategoryNameTypeHandler());
     }
 }

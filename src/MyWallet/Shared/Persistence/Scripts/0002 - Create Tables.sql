@@ -8,10 +8,13 @@ CREATE TABLE users
     updated_at    TIMESTAMP WITH TIME ZONE
 );
 
+CREATE TYPE category_type AS ENUM ('income', 'expense');
+
 CREATE TABLE categories
 (
     id         CHAR(26)                 NOT NULL PRIMARY KEY,
     user_id    CHAR(26)                 NOT NULL REFERENCES users (id),
+    type       category_type            NOT NULL,
     name       VARCHAR(30)              NOT NULL,
     color      VARCHAR(7)               NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,

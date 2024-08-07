@@ -8,6 +8,8 @@ public sealed record ListCategoriesResponse
 {
     public required Ulid Id { get; init; }
 
+    public required string Type { get; init; }
+    
     public required string Name { get; init; }
 
     public required string Color { get; init; }
@@ -42,7 +44,7 @@ public sealed class ListCategoriesHandler(IDbContext dbContext)
     {
         var listCategoryResponses = await dbContext.QueryAsync<ListCategoriesResponse>(
             sql: """
-                 SELECT c.id, c.name, c.color
+                 SELECT c.id, c.type, c.name, c.color
                  FROM categories c
                  WHERE c.user_id = @UserId
                  ORDER BY c.created_at DESC, c.name

@@ -1,8 +1,10 @@
 using MyWallet.Domain;
 using MyWallet.Domain.Categories;
+using MyWallet.Domain.Categories.Enums;
 using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Domain.Users.Repository;
+using MyWallet.Features.Categories.Validations;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Errors;
 using MyWallet.Shared.Validations;
@@ -11,6 +13,8 @@ namespace MyWallet.Features.Categories;
 
 public sealed record CreateCategoryCommand : ICommand<CategoryId>, IHaveUser
 {
+    public required string Type { get; init; }
+
     public required string Name { get; init; }
 
     public required string Color { get; init; }
@@ -39,6 +43,9 @@ public sealed class CreateCategoryValidator : AbstractValidator<CreateCategoryCo
 {
     public CreateCategoryValidator()
     {
+        RuleFor(c => c.Type)
+            .CategoryType();
+
         RuleFor(c => c.Name)
             .MustSatisfyErrorValidation(CategoryName.Validate);
 
@@ -48,7 +55,7 @@ public sealed class CreateCategoryValidator : AbstractValidator<CreateCategoryCo
 }
 
 public sealed class CreateCategoryHandler(
-    IUserRepository userRepository, 
+    IUserRepository userRepository,
     ICategoryRepository categoryRepository)
     : ICommandHandler<CreateCategoryCommand, CategoryId>
 {
@@ -57,12 +64,14 @@ public sealed class CreateCategoryHandler(
     {
         var user = await userRepository.GetAsync(new(command.UserId), cancellationToken);
 
+        var type = CategoryType.FromName(command.Type);
         var name = CategoryName.Create(command.Name);
         var color = Color.Create(command.Color);
 
         var category = Category.Create(
             id: CategoryId.New(),
             userId: user!.Id,
+            type: type,
             name: name.Value,
             color: color.Value);
 

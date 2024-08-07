@@ -38,11 +38,13 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
             sql: """
                   INSERT INTO categories (id,
                                           user_id,
+                                          type,
                                           name,
                                           color,
                                           created_at)
                   VALUES (@Id,
                           @UserId,
+                          @Type::category_type,
                           @Name,
                           @Color,
                           @CreatedAt)

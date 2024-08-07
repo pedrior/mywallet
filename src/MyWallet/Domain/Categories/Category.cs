@@ -1,3 +1,4 @@
+using MyWallet.Domain.Categories.Enums;
 using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Domain.Users.ValueObjects;
 
@@ -13,6 +14,8 @@ public sealed class Category : Entity<CategoryId>, IAggregateRoot, IAuditable
 
     public required UserId UserId { get; init; }
 
+    public required CategoryType Type { get; init; }
+
     public CategoryName Name { get; private set; } = null!;
 
     public Color Color { get; private set; } = null!;
@@ -21,10 +24,16 @@ public sealed class Category : Entity<CategoryId>, IAggregateRoot, IAuditable
 
     public DateTimeOffset? UpdatedAt { get; set; }
 
-    public static Category Create(CategoryId id, UserId userId, CategoryName name, Color color) => new()
+    public static Category Create(
+        CategoryId id,
+        UserId userId,
+        CategoryType type,
+        CategoryName name,
+        Color color) => new()
     {
         Id = id,
         UserId = userId,
+        Type = type,
         Name = name,
         Color = color
     };

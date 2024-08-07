@@ -34,6 +34,7 @@ public sealed class GetCategoryHandlerTests
             .Returns(new CategoryResponse
             {
                 Id = category.Id.Value,
+                Type = category.Type.Name,
                 Name = category.Name.Value,
                 Color = category.Color.Value,
                 CreatedAt = category.CreatedAt,

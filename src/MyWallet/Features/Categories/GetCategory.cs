@@ -11,6 +11,8 @@ public sealed record CategoryResponse
 {
     public required Ulid Id { get; init; }
 
+    public required string Type { get; init; }
+    
     public required string Name { get; init; }
 
     public required string Color { get; init; }
@@ -56,7 +58,7 @@ public sealed class GetCategoryHandler(IDbContext dbContext)
     {
         var categoryResponse = await dbContext.QuerySingleOrDefaultAsync<CategoryResponse>(
             sql: """
-                 SELECT c.id, c.name, c.color, c.created_at, c.updated_at
+                 SELECT c.id, c.type, c.name, c.color, c.created_at, c.updated_at
                  FROM categories c
                  WHERE c.id = @Id
                  """,
