@@ -24,5 +24,8 @@ internal static partial class Requests
                 })
             };
         }
+        
+        public static HttpRequestMessage DeleteWallet(Ulid id) =>
+            new(HttpMethod.Delete, $"{BasePath}/wallets/{id}");
     }
 }
