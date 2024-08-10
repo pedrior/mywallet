@@ -20,7 +20,7 @@ public sealed class WalletOwnerRequirementHandler(IWalletRepository walletReposi
         }
 
         return await walletRepository.IsOwnedByUserAsync(walletId, userId, cancellationToken)
-            ? Result.Success
-            : requirement.Forbidden;
+            ? requirement.Allow()
+            : requirement.Forbid();
     }
 }

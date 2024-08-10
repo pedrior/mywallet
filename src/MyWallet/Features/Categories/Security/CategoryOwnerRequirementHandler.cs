@@ -20,7 +20,7 @@ public sealed class CategoryOwnerRequirementHandler(ICategoryRepository category
         }
 
         return await categoryRepository.IsOwnedByUserAsync(categoryId, userId, cancellationToken)
-            ? Result.Success
-            : requirement.Forbidden;
+            ? requirement.Allow()
+            : requirement.Forbid();
     }
 }

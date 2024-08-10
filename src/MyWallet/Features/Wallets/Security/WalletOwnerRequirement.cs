@@ -10,4 +10,6 @@ public sealed class WalletOwnerRequirement(Ulid userId, Ulid walletId) : Resourc
     public Ulid WalletId => walletId;
 
     public override Error ResourceNotFoundFallbackError => WalletErrors.NotFound;
+
+    protected override string ForbiddenDescription => "You are not the owner of this wallet.";
 }

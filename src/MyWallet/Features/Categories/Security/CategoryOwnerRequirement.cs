@@ -10,4 +10,6 @@ public sealed class CategoryOwnerRequirement(Ulid userId, Ulid categoryId) : Res
     public Ulid CategoryId => categoryId;
     
     public override Error ResourceNotFoundFallbackError => CategoryErrors.NotFound;
+    
+    protected override string ForbiddenDescription => "You are not the owner of this category.";
 }
