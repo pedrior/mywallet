@@ -15,7 +15,7 @@ public sealed class DeleteCategoryHandlerTests
 
     private static readonly DeleteCategoryCommand Command = new()
     {
-        Id = Constants.Category.Id.Value,
+        CategoryId = Constants.Category.Id.Value,
         UserId = Ulid.NewUlid()
     };
 
@@ -24,7 +24,7 @@ public sealed class DeleteCategoryHandlerTests
     public DeleteCategoryHandlerTests()
     {
         A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(c => c.Value == Command.Id),
+                A<CategoryId>.That.Matches(c => c.Value == Command.CategoryId),
                 A<CancellationToken>._))
             .Returns(Category);
 

@@ -17,13 +17,15 @@ public sealed record EditCategoryRequest
     public required string Color { get; init; }
 }
 
-public sealed record EditCategoryCommand : ICommand<Success>
+public sealed record EditCategoryCommand : ICommand<Success>, IHaveUser
 {
-    public required Ulid Id { get; init; }
+    public required Ulid CategoryId { get; init; }
 
     public required string Name { get; init; }
 
     public required string Color { get; init; }
+    
+    public Ulid UserId { get; set; }
 }
 
 public sealed class EditCategoryEndpoint : IEndpoint
@@ -41,7 +43,7 @@ public sealed class EditCategoryEndpoint : IEndpoint
     {
         var command = new EditCategoryCommand
         {
-            Id = id,
+            CategoryId = id,
             Name = request.Name,
             Color = request.Color
         };
@@ -67,7 +69,7 @@ public sealed class EditCategoryAuthorizer : IAuthorizer<EditCategoryCommand>
 {
     public IEnumerable<IRequirement> GetRequirements(EditCategoryCommand command)
     {
-        yield return new CategoryOwnerRequirement(command.Id);
+        yield return new CategoryOwnerRequirement(command.UserId, command.CategoryId);
     }
 }
 
@@ -78,7 +80,7 @@ public sealed class EditCategoryHandler(ICategoryRepository categoryRepository)
         CancellationToken cancellationToken)
     {
         var category = await categoryRepository.GetAsync(
-            new CategoryId(command.Id),
+            new CategoryId(command.CategoryId),
             cancellationToken);
 
         if (category is null)

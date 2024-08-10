@@ -16,7 +16,7 @@ public sealed class GetCategoryHandlerTests
     private static readonly GetCategoryQuery Query = new(Ulid.NewUlid());
 
     private readonly Category category = Factories.Category.CreateDefault(
-        id: new CategoryId(Query.Id));
+        id: new CategoryId(Query.CategoryId));
 
     public GetCategoryHandlerTests()
     {

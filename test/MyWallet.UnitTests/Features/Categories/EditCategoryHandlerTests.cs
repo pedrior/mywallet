@@ -15,13 +15,13 @@ public sealed class EditCategoryHandlerTests
 
     private static readonly EditCategoryCommand Command = new()
     {
-        Id = Ulid.NewUlid(),
+        CategoryId = Ulid.NewUlid(),
         Name = "Bills",
         Color = "#BCE0FD"
     };
 
     private readonly Category category = Factories.Category.CreateDefault(
-        id: new CategoryId(Command.Id));
+        id: new CategoryId(Command.CategoryId));
 
     public EditCategoryHandlerTests()
     {
@@ -33,7 +33,7 @@ public sealed class EditCategoryHandlerTests
     {
         // Arrange
         A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.Id),
+                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
                 A<CancellationToken>._))
             .Returns(category);
 
@@ -50,7 +50,7 @@ public sealed class EditCategoryHandlerTests
     {
         // Arrange
         A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.Id),
+                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
                 A<CancellationToken>._))
             .Returns(category);
 
@@ -67,7 +67,7 @@ public sealed class EditCategoryHandlerTests
     {
         // Arrange
         A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.Id),
+                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
                 A<CancellationToken>._))
             .Returns(category);
 
@@ -86,7 +86,7 @@ public sealed class EditCategoryHandlerTests
     {
         // Arrange
         A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.Id),
+                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
                 A<CancellationToken>._))
             .Returns(null as Category);
 

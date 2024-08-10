@@ -22,7 +22,10 @@ public sealed record CategoryResponse
     public DateTimeOffset? UpdatedAt { get; init; }
 }
 
-public sealed record GetCategoryQuery(Ulid Id) : IQuery<CategoryResponse>;
+public sealed record GetCategoryQuery(Ulid CategoryId) : IQuery<CategoryResponse>, IHaveUser
+{
+    public Ulid UserId { get; set; }
+}
 
 public sealed class GetCategoryEndpoint : IEndpoint
 {
@@ -46,7 +49,7 @@ public sealed class GetCategoryAuthorizer : IAuthorizer<GetCategoryQuery>
 {
     public IEnumerable<IRequirement> GetRequirements(GetCategoryQuery query)
     {
-        yield return new CategoryOwnerRequirement(query.Id);
+        yield return new CategoryOwnerRequirement(query.UserId, query.CategoryId);
     }
 }
 
@@ -62,7 +65,7 @@ public sealed class GetCategoryHandler(IDbContext dbContext)
                  FROM categories c
                  WHERE c.id = @Id
                  """,
-            param: new { query.Id },
+            param: new { Id = query.CategoryId },
             cancellationToken: cancellationToken);
 
         return categoryResponse is not null

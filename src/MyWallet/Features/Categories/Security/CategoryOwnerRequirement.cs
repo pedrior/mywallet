@@ -3,9 +3,11 @@ using MyWallet.Shared.Security;
 
 namespace MyWallet.Features.Categories.Security;
 
-public sealed class CategoryOwnerRequirement(Ulid categoryId) : ResourceRequirement
+public sealed class CategoryOwnerRequirement(Ulid userId, Ulid categoryId) : ResourceRequirement
 {
-    public Ulid CategoryId { get; } = categoryId;
+    public Ulid UserId => userId;
+    
+    public Ulid CategoryId => categoryId;
     
     public override Error ResourceNotFoundFallbackError => CategoryErrors.NotFound;
 }

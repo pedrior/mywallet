@@ -10,7 +10,7 @@ namespace MyWallet.Features.Categories;
 
 public sealed record DeleteCategoryCommand : ICommand<Deleted>, IHaveUser
 {
-    public required Ulid Id { get; init; }
+    public required Ulid CategoryId { get; init; }
 
     public Ulid UserId { get; set; }
 }
@@ -27,7 +27,7 @@ public sealed class DeleteCategoryEndpoint : IEndpoint
         ISender sender,
         CancellationToken cancellationToken)
     {
-        return sender.Send(new DeleteCategoryCommand { Id = id }, cancellationToken)
+        return sender.Send(new DeleteCategoryCommand { CategoryId = id }, cancellationToken)
             .ToResponseAsync(_ => Results.NoContent());
     }
 }
@@ -36,7 +36,7 @@ public sealed class DeleteCategoryAuthorizer : IAuthorizer<DeleteCategoryCommand
 {
     public IEnumerable<IRequirement> GetRequirements(DeleteCategoryCommand command)
     {
-        yield return new CategoryOwnerRequirement(command.Id);
+        yield return new CategoryOwnerRequirement(command.UserId, command.CategoryId);
     }
 }
 
@@ -46,7 +46,7 @@ public sealed class DeleteCategoryHandler(ICategoryRepository categoryRepository
     public async Task<ErrorOr<Deleted>> Handle(DeleteCategoryCommand command,
         CancellationToken cancellationToken)
     {
-        var categoryId = new CategoryId(command.Id);
+        var categoryId = new CategoryId(command.CategoryId);
         var category = await categoryRepository.GetAsync(categoryId, cancellationToken);
 
         if (category is null)
