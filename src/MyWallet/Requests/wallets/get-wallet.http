@@ -1,0 +1,2 @@
+GET {{baseUrl}}/wallets/{walletId}
+Authorization: Bearer {{accessToken}}

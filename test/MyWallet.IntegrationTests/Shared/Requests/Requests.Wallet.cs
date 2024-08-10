@@ -4,6 +4,9 @@ internal static partial class Requests
 {
     public static class Wallets
     {
+        public static HttpRequestMessage GetWallet(Ulid id) =>
+            new(HttpMethod.Get, $"{BasePath}/wallets/{id}");
+
         public static HttpRequestMessage CreateWallet(string? name = null, string? color = null)
         {
             name ??= Constants.Wallet.Name.Value;

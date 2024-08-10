@@ -1,3 +1,4 @@
+using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Domain.Wallets;
 using MyWallet.Domain.Wallets.Repository;
 using MyWallet.Domain.Wallets.ValueObjects;
@@ -82,6 +83,22 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                     WHERE w.id = @id
                  """,
             param: new { id },
+            cancellationToken);
+    }
+
+    public Task<bool> IsOwnedByUserAsync(
+        WalletId walletId,
+        UserId userId,
+        CancellationToken cancellationToken)
+    {
+        return Context.ExecuteScalarAsync<bool>(
+            sql: """
+                    SELECT 1
+                    FROM wallets w
+                    WHERE w.id = @walletId
+                      AND w.user_id = @userId
+                 """,
+            param: new { walletId, userId },
             cancellationToken);
     }
 }
