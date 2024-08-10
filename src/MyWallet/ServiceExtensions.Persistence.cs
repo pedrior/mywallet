@@ -1,10 +1,12 @@
 using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Users.Repository;
+using MyWallet.Domain.Wallets.Repository;
 using MyWallet.Shared.Persistence;
 using MyWallet.Shared.Persistence.Repositories;
 using MyWallet.Shared.Persistence.TypeHandlers;
 using MyWallet.Shared.Persistence.TypeHandlers.Categories;
 using MyWallet.Shared.Persistence.TypeHandlers.Users;
+using MyWallet.Shared.Persistence.TypeHandlers.Wallets;
 
 namespace MyWallet;
 
@@ -27,6 +29,7 @@ public static partial class ServiceExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IWalletRepository, WalletRepository>();
     }
 
     private static void ConfigureDapperTypeHandling()
@@ -44,5 +47,8 @@ public static partial class ServiceExtensions
         SqlMapper.AddTypeHandler(new CategoryIdTypeHandler());
         SqlMapper.AddTypeHandler(new CategoryTypeTypeHandler());
         SqlMapper.AddTypeHandler(new CategoryNameTypeHandler());
+
+        SqlMapper.AddTypeHandler(new WalletIdTypeHandler());
+        SqlMapper.AddTypeHandler(new WalletNameTypeHandler());
     }
 }
