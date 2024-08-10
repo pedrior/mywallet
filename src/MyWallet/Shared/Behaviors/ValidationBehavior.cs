@@ -5,7 +5,7 @@ namespace MyWallet.Shared.Behaviors;
 public sealed class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? validator = null)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : IErrorOr<TResponse>
+    where TResponse : IErrorOr
 {
     public async Task<TResponse> Handle(
         TRequest request,
