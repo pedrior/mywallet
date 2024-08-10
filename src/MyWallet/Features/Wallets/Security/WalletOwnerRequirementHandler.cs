@@ -3,7 +3,7 @@ using MyWallet.Domain.Wallets.Repository;
 using MyWallet.Domain.Wallets.ValueObjects;
 using MyWallet.Shared.Security;
 
-namespace MyWallet.Features.Wallets.Shared.Security;
+namespace MyWallet.Features.Wallets.Security;
 
 public sealed class WalletOwnerRequirementHandler(IWalletRepository walletRepository)
     : IRequirementHandler<WalletOwnerRequirement>

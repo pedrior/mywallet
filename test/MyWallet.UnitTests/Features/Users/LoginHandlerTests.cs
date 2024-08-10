@@ -4,7 +4,7 @@ using MyWallet.Domain.Users.Repository;
 using MyWallet.Domain.Users.Services;
 using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Users;
-using MyWallet.Features.Users.Shared;
+using MyWallet.Features.Users.Errors;
 using MyWallet.Shared.Security.Tokens;
 
 namespace MyWallet.UnitTests.Features.Users;

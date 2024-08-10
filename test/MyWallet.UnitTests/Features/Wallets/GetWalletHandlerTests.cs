@@ -1,5 +1,5 @@
 using MyWallet.Features.Wallets;
-using MyWallet.Features.Wallets.Shared.Errors;
+using MyWallet.Features.Wallets.Errors;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.UnitTests.Features.Wallets;

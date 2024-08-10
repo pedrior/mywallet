@@ -1,4 +1,4 @@
-namespace MyWallet.Features.Users.Shared;
+namespace MyWallet.Features.Users.Errors;
 
 public static class UserErrors
 {

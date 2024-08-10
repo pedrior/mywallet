@@ -3,7 +3,7 @@ using MyWallet.Domain.Users;
 using MyWallet.Domain.Users.Repository;
 using MyWallet.Domain.Users.Services;
 using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Features.Users.Shared;
+using MyWallet.Features.Users.Errors;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Security.Tokens;
 using MyWallet.Shared.Errors;

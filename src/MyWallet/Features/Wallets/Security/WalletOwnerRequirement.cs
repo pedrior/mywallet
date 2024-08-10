@@ -1,7 +1,7 @@
-using MyWallet.Features.Wallets.Shared.Errors;
+using MyWallet.Features.Wallets.Errors;
 using MyWallet.Shared.Security;
 
-namespace MyWallet.Features.Wallets.Shared.Security;
+namespace MyWallet.Features.Wallets.Security;
 
 public sealed class WalletOwnerRequirement(Ulid userId, Ulid walletId) : ResourceRequirement
 {

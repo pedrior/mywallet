@@ -1,5 +1,5 @@
-using MyWallet.Features.Wallets.Shared.Errors;
-using MyWallet.Features.Wallets.Shared.Security;
+using MyWallet.Features.Wallets.Errors;
+using MyWallet.Features.Wallets.Security;
 using MyWallet.Shared.Errors;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
