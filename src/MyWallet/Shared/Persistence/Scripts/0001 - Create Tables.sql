@@ -18,7 +18,7 @@ CREATE TABLE categories
     name       VARCHAR(30)              NOT NULL,
     color      VARCHAR(7)               NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
 CREATE TABLE user_categories

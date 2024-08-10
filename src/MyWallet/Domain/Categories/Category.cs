@@ -20,9 +20,9 @@ public sealed class Category : Entity<CategoryId>, IAggregateRoot, IAuditable
 
     public Color Color { get; private set; } = null!;
 
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; private init; }
 
-    public DateTimeOffset? UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
 
     public static Category Create(
         CategoryId id,
@@ -35,12 +35,14 @@ public sealed class Category : Entity<CategoryId>, IAggregateRoot, IAuditable
         UserId = userId,
         Type = type,
         Name = name,
-        Color = color
+        Color = color,
+        CreatedAt = DateTimeOffset.UtcNow
     };
 
     public void Edit(CategoryName name, Color color)
     {
         Name = name;
         Color = color;
+        UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

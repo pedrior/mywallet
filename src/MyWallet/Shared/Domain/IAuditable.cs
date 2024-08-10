@@ -2,7 +2,7 @@ namespace MyWallet.Shared.Domain;
 
 public interface IAuditable
 {
-    DateTimeOffset CreatedAt { get; set; }
+    DateTimeOffset CreatedAt { get; }
     
-    DateTimeOffset? UpdatedAt { get; set; }
+    DateTimeOffset? UpdatedAt { get; }
 }

@@ -22,9 +22,9 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 
     public string PasswordHash { get; private set; } = null!;
 
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; private init; }
 
-    public DateTimeOffset? UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
 
     public IReadOnlyCollection<CategoryId> CategoryIds => categoryIds.AsReadOnly();
 
@@ -47,13 +47,16 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
             Id = id,
             Name = name,
             Email = email,
-            PasswordHash = passwordHasher.Hash(password)
+            PasswordHash = passwordHasher.Hash(password),
+            CreatedAt = DateTimeOffset.UtcNow
         };
     }
 
     public void UpdateProfile(UserName name)
     {
         Name = name;
+        
+        SetUpdatedAt();
     }
 
     public bool VerifyPassword(Password password, IPasswordHasher passwordHasher) =>
@@ -75,6 +78,9 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
         }
 
         PasswordHash = passwordHasher.Hash(newPassword);
+        
+        SetUpdatedAt();
+        
         return Result.Success;
     }
 
@@ -101,4 +107,6 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 
         return Result.Deleted;
     }
+    
+    private void SetUpdatedAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }
