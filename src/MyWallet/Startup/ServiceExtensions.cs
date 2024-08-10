@@ -11,7 +11,7 @@ using MyWallet.Shared.Serialization;
 using MyWallet.Shared.Services;
 using Serilog;
 
-namespace MyWallet;
+namespace MyWallet.Startup;
 
 public static partial class ServiceExtensions
 {

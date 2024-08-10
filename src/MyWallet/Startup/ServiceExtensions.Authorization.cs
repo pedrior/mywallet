@@ -1,7 +1,7 @@
 using System.Reflection;
 using MyWallet.Shared.Security;
 
-namespace MyWallet;
+namespace MyWallet.Startup;
 
 public static partial class ServiceExtensions
 {

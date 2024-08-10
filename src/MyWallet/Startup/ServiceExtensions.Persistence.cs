@@ -8,7 +8,7 @@ using MyWallet.Shared.Persistence.TypeHandlers.Categories;
 using MyWallet.Shared.Persistence.TypeHandlers.Users;
 using MyWallet.Shared.Persistence.TypeHandlers.Wallets;
 
-namespace MyWallet;
+namespace MyWallet.Startup;
 
 public static partial class ServiceExtensions
 {

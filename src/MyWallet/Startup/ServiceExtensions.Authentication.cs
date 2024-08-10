@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using MyWallet.Shared.Security.Tokens;
 
-namespace MyWallet;
+namespace MyWallet.Startup;
 
 public static partial class ServiceExtensions
 {
