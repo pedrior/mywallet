@@ -17,7 +17,7 @@ public sealed class UpdateProfileEndpoint : IEndpoint
 {
     public void Build(IEndpointRouteBuilder builder)
     {
-        builder.MapPut("users/me/profile", UpdateProfileAsync)
+        builder.MapPost("users/me/profile", UpdateProfileAsync)
             .RequireAuthorization();
     }
 
