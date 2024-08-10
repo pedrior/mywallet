@@ -44,9 +44,9 @@ public sealed class CreateWalletEndpoint : IEndpoint
         };
 
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(id => Results.Created(
-                uri: $"https://localhost:8080/replace-this-with-a-real-one-later/{id}",
-                value: null));
+            .ToResponseAsync(id => Results.CreatedAtRoute(
+                routeName: "GetWallet",
+                routeValues: new { id }));
     }
 }
 

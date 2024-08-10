@@ -31,7 +31,8 @@ public sealed class GetWalletEndpoint : IEndpoint
 {
     public void Build(IEndpointRouteBuilder builder) =>
         builder.MapGet("wallets/{id:length(26)}", GetWalletAsync)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .WithName("GetWallet");
 
     private static Task<IResult> GetWalletAsync(
         Ulid id,
