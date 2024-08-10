@@ -21,13 +21,6 @@ CREATE TABLE categories
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
-CREATE TABLE user_categories
-(
-    user_id     CHAR(26) NOT NULL REFERENCES users (id),
-    category_id CHAR(26) NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, category_id)
-);
-
 CREATE TABLE wallets
 (
     id          CHAR(26)                 NOT NULL PRIMARY KEY,

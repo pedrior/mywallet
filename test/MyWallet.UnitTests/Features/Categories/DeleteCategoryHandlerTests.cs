@@ -1,7 +1,7 @@
+using MyWallet.Domain.Categories;
+using MyWallet.Domain.Categories.Events;
+using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Categories;
 
 namespace MyWallet.UnitTests.Features.Categories;
@@ -9,29 +9,26 @@ namespace MyWallet.UnitTests.Features.Categories;
 [TestSubject(typeof(DeleteCategoryHandler))]
 public sealed class DeleteCategoryHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
+    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
 
     private readonly DeleteCategoryHandler sut;
 
     private static readonly DeleteCategoryCommand Command = new()
     {
-        Id = Ulid.NewUlid(),
+        Id = Constants.Category.Id.Value,
         UserId = Ulid.NewUlid()
     };
 
-    private static readonly UserId UserId = new(Command.UserId);
-
-    private readonly User user = Factories.User.CreateDefault(id: UserId)
-        .Result.Value;
+    private static readonly Category Category = Factories.Category.CreateDefault();
 
     public DeleteCategoryHandlerTests()
     {
-        user.AddCategory(new CategoryId(Command.Id));
-        
-        A.CallTo(() => userRepository.GetAsync(UserId, A<CancellationToken>._))
-            .Returns(user);
+        A.CallTo(() => categoryRepository.GetAsync(
+                A<CategoryId>.That.Matches(c => c.Value == Command.Id),
+                A<CancellationToken>._))
+            .Returns(Category);
 
-        sut = new DeleteCategoryHandler(userRepository);
+        sut = new DeleteCategoryHandler(categoryRepository);
     }
 
     [Fact]
@@ -54,18 +51,9 @@ public sealed class DeleteCategoryHandlerTests
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        user.CategoryIds.Should().NotContain(new CategoryId(Command.Id));
-    }
+        Category.Events.Should().ContainSingle(e => e is CategoryDeletedEvent);
 
-    [Fact]
-    public async Task Handle_WhenCalled_ShouldUpdateUser()
-    {
-        // Arrange
-        // Act
-        await sut.Handle(Command, CancellationToken.None);
-
-        // Assert
-        A.CallTo(() => userRepository.UpdateAsync(user, A<CancellationToken>._))
+        A.CallTo(() => categoryRepository.UpdateAsync(Category, A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
     }
 }

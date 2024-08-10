@@ -20,7 +20,6 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
         await userRepository.AddAsync(user.Value);
         
-        List<CategoryId> addedCategories = [];
         for (var i = 0; i < DefaultCategoriesCount; i++)
         {
             var category = Factories.Category.CreateDefault(
@@ -28,17 +27,8 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
                 userId: user.Value.Id);
 
             await categoryRepository.AddAsync(category);
-
-            addedCategories.Add(category.Id);
         }
         
-        foreach (var categoryId in addedCategories)
-        {
-            user.Value.AddCategory(categoryId);
-        }
-
-        await userRepository.UpdateAsync(user.Value);
-
         accessToken = CreateAccessToken(user.Value);
     }
 

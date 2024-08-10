@@ -1,6 +1,4 @@
-using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Domain.Users.Errors;
-using MyWallet.Domain.Users.Events;
 using MyWallet.Domain.Users.Services;
 using MyWallet.Domain.Users.ValueObjects;
 
@@ -8,8 +6,6 @@ namespace MyWallet.Domain.Users;
 
 public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 {
-    private readonly List<CategoryId> categoryIds = [];
-
     private User()
     {
     }
@@ -25,8 +21,6 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
     public DateTimeOffset CreatedAt { get; private init; }
 
     public DateTimeOffset? UpdatedAt { get; private set; }
-
-    public IReadOnlyCollection<CategoryId> CategoryIds => categoryIds.AsReadOnly();
 
     public static async Task<ErrorOr<User>> CreateAsync(
         UserId id,
@@ -82,30 +76,6 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
         SetUpdatedAt();
         
         return Result.Success;
-    }
-
-    public ErrorOr<Success> AddCategory(CategoryId categoryId)
-    {
-        if (categoryIds.Contains(categoryId))
-        {
-            return UserErrors.CategoryAlreadyExists;
-        }
-
-        categoryIds.Add(categoryId);
-
-        return Result.Success;
-    }
-
-    public ErrorOr<Deleted> DeleteCategory(CategoryId categoryId)
-    {
-        if (!categoryIds.Remove(categoryId))
-        {
-            return UserErrors.CategoryNotFound;
-        }
-
-        AddEvent(new CategoryDeletedEvent(categoryId));
-
-        return Result.Deleted;
     }
     
     private void SetUpdatedAt() => UpdatedAt = DateTimeOffset.UtcNow;

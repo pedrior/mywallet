@@ -1,4 +1,5 @@
 using MyWallet.Domain.Categories.Enums;
+using MyWallet.Domain.Categories.Events;
 using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Domain.Users.ValueObjects;
 
@@ -45,4 +46,6 @@ public sealed class Category : Entity<CategoryId>, IAggregateRoot, IAuditable
         Color = color;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
+
+    public void Delete() => AddEvent(new CategoryDeletedEvent(Id));
 }

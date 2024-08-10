@@ -1,9 +1,6 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Categories;
 
 namespace MyWallet.UnitTests.Features.Categories;
@@ -11,7 +8,6 @@ namespace MyWallet.UnitTests.Features.Categories;
 [TestSubject(typeof(CreateCategoryHandler))]
 public sealed class CreateCategoryHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
     private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
 
     private readonly CreateCategoryHandler sut;
@@ -24,17 +20,9 @@ public sealed class CreateCategoryHandlerTests
         UserId = Ulid.NewUlid()
     };
 
-    private static readonly UserId UserId = new(Command.UserId);
-
-    private readonly User user = Factories.User.CreateDefault(id: UserId)
-        .Result.Value;
-
     public CreateCategoryHandlerTests()
     {
-        A.CallTo(() => userRepository.GetAsync(UserId, A<CancellationToken>._))
-            .Returns(user);
-
-        sut = new CreateCategoryHandler(userRepository, categoryRepository);
+        sut = new CreateCategoryHandler(categoryRepository);
     }
 
     [Fact]
@@ -59,30 +47,6 @@ public sealed class CreateCategoryHandlerTests
         A.CallTo(() => categoryRepository.AddAsync(
                 A<Category>.That.Matches(v => v.Id == result.Value),
                 A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
-    }
-
-    [Fact]
-    public async Task Handle_WhenCommandIsValid_ShouldAddCategoryToUser()
-    {
-        // Act
-        var result = await sut.Handle(Command, CancellationToken.None);
-
-        // Assert
-        user.CategoryIds.Should().Contain(result.Value);
-
-        A.CallTo(() => userRepository.UpdateAsync(user, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
-    }
-
-    [Fact]
-    public async Task Handle_WhenCommandIsValid_ShouldUpdateUser()
-    {
-        // Act
-        await sut.Handle(Command, CancellationToken.None);
-
-        // Assert
-        A.CallTo(() => userRepository.UpdateAsync(user, A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
     }
 }

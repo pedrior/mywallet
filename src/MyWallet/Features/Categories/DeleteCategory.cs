@@ -1,5 +1,6 @@
+using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.Repository;
+using MyWallet.Features.Categories.Errors;
 using MyWallet.Features.Categories.Security;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Security;
@@ -39,14 +40,24 @@ public sealed class DeleteCategoryAuthorizer : IAuthorizer<DeleteCategoryCommand
     }
 }
 
-public sealed class DeleteCategoryHandler(IUserRepository userRepository)
+public sealed class DeleteCategoryHandler(ICategoryRepository categoryRepository)
     : ICommandHandler<DeleteCategoryCommand, Deleted>
 {
     public async Task<ErrorOr<Deleted>> Handle(DeleteCategoryCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(new(command.UserId), cancellationToken);
-        return await user!.DeleteCategory(new CategoryId(command.Id))
-            .ThenDoAsync(_ => userRepository.UpdateAsync(user, cancellationToken));
+        var categoryId = new CategoryId(command.Id);
+        var category = await categoryRepository.GetAsync(categoryId, cancellationToken);
+
+        if (category is null)
+        {
+            return CategoryErrors.NotFound;
+        }
+
+        category.Delete();
+
+        await categoryRepository.UpdateAsync(category, cancellationToken);
+
+        return Result.Deleted;
     }
 }

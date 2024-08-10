@@ -22,9 +22,6 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
 
         var category = Factories.Category.CreateDefault(userId: user.Value.Id);
         await categoryRepository.AddAsync(category);
-        
-        user.Value.AddCategory(category.Id);
-        await userRepository.UpdateAsync(user.Value);
 
         accessToken = CreateAccessToken(user.Value);
         categoryId = category.Id;

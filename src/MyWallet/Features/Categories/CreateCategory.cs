@@ -3,7 +3,7 @@ using MyWallet.Domain.Categories;
 using MyWallet.Domain.Categories.Enums;
 using MyWallet.Domain.Categories.Repository;
 using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.Repository;
+using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Categories.Validations;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Errors;
@@ -54,31 +54,24 @@ public sealed class CreateCategoryValidator : AbstractValidator<CreateCategoryCo
     }
 }
 
-public sealed class CreateCategoryHandler(
-    IUserRepository userRepository,
-    ICategoryRepository categoryRepository)
+public sealed class CreateCategoryHandler(ICategoryRepository categoryRepository)
     : ICommandHandler<CreateCategoryCommand, CategoryId>
 {
     public async Task<ErrorOr<CategoryId>> Handle(CreateCategoryCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(new(command.UserId), cancellationToken);
-
         var type = CategoryType.FromName(command.Type);
         var name = CategoryName.Create(command.Name);
         var color = Color.Create(command.Color);
 
         var category = Category.Create(
             id: CategoryId.New(),
-            userId: user!.Id,
+            userId: new UserId(command.UserId),
             type: type,
             name: name.Value,
             color: color.Value);
 
-        return await user
-            .AddCategory(category.Id)
-            .ThenDoAsync(_ => categoryRepository.AddAsync(category, cancellationToken))
-            .ThenDoAsync(_ => userRepository.UpdateAsync(user, cancellationToken))
-            .Then(_ => category.Id);
+        await categoryRepository.AddAsync(category, cancellationToken);
+        return category.Id;
     }
 }

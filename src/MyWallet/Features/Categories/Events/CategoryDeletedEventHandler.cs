@@ -1,8 +1,8 @@
+using MyWallet.Domain.Categories.Events;
 using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Users.Events;
 using MyWallet.Shared.Features;
 
-namespace MyWallet.Features.Users.Events;
+namespace MyWallet.Features.Categories.Events;
 
 public sealed class CategoryDeletedEventHandler(
     ICategoryRepository categoryRepository,
