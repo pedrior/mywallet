@@ -1,0 +1,8 @@
+POST {{baseUrl}}/wallets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "NU Wallet",
+  "color": "#BA3F1D"
+}

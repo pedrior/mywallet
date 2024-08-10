@@ -1,0 +1,22 @@
+namespace MyWallet.IntegrationTests.Shared.Requests;
+
+internal static partial class Requests
+{
+    public static class Wallets
+    {
+        public static HttpRequestMessage CreateWallet(string? name = null, string? color = null)
+        {
+            name ??= Constants.Wallet.Name.Value;
+            color ??= Constants.Wallet.Color.Value;
+
+            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets")
+            {
+                Content = ToJsonStringContent(new
+                {
+                    name,
+                    color
+                })
+            };
+        }
+    }
+}
