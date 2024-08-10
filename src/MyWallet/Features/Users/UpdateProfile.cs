@@ -6,6 +6,11 @@ using MyWallet.Shared.Validations;
 
 namespace MyWallet.Features.Users;
 
+public sealed record UpdateProfileRequest
+{
+    public required string Name { get; init; }
+}
+
 public sealed record UpdateProfileCommand : ICommand<Success>, IHaveUser
 {
     public required string Name { get; init; }
@@ -22,11 +27,16 @@ public sealed class UpdateProfileEndpoint : IEndpoint
     }
 
     private static Task<IResult> UpdateProfileAsync(
-        UpdateProfileCommand command,
+        UpdateProfileRequest request,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
+        var command = new UpdateProfileCommand
+        {
+            Name = request.Name
+        };
+        
         return sender.Send(command, cancellationToken)
             .ToResponseAsync(_ => Results.NoContent());
     }

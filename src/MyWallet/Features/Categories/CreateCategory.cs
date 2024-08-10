@@ -11,6 +11,15 @@ using MyWallet.Shared.Validations;
 
 namespace MyWallet.Features.Categories;
 
+public sealed record CreateCategoryRequest
+{
+    public required string Type { get; init; }
+
+    public required string Name { get; init; }
+
+    public required string Color { get; init; }
+}
+
 public sealed record CreateCategoryCommand : ICommand<CategoryId>, IHaveUser
 {
     public required string Type { get; init; }
@@ -29,11 +38,18 @@ public sealed class CreateCategoryEndpoint : IEndpoint
             .RequireAuthorization();
 
     private static Task<IResult> CreateCategoryAsync(
-        CreateCategoryCommand command,
+        CreateCategoryRequest request,
         HttpContext context,
         ISender sender,
         CancellationToken cancellationToken)
     {
+        var command = new CreateCategoryCommand
+        {
+            Type = request.Type,
+            Name = request.Name,
+            Color = request.Color
+        };
+
         return sender.Send(command, cancellationToken)
             .ToResponseAsync(id => Results.CreatedAtRoute("GetCategory", new { id }));
     }
