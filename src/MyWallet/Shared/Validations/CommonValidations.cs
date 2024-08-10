@@ -17,4 +17,18 @@ public static class CommonValidations
             }
         });
     }
+    
+    public static IRuleBuilderOptions<T, int> PageNumber<T>(this IRuleBuilder<T, int> builder)
+    {
+        return builder
+            .GreaterThan(0)
+            .WithMessage("Must be greater than 0.");
+    }
+    
+    public static IRuleBuilderOptions<T, int> PageLimit<T>(this IRuleBuilder<T, int> builder)
+    {
+        return builder
+            .GreaterThan(0)
+            .WithMessage("Must be greater than 0.");
+    }
 }
