@@ -45,7 +45,7 @@ internal static partial class Requests
         {
             name ??= Constants.User.Name2.Value;
 
-            return new HttpRequestMessage(HttpMethod.Put, $"{BasePath}/users/me/profile")
+            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/users/me/profile")
             {
                 Content = ToJsonStringContent(new
                 {
