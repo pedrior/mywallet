@@ -1,4 +1,4 @@
-namespace MyWallet.Domain;
+namespace MyWallet.Shared.Domain;
 
 public abstract class EntityId(Ulid id) : ValueObject
 {

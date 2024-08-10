@@ -1,6 +1,6 @@
 using Ardalis.SmartEnum;
 
-namespace MyWallet.Domain;
+namespace MyWallet.Shared.Domain;
 
 public abstract class Enum<T>(string name, int value) : SmartEnum<T>(name, value) where T : SmartEnum<T, int>
 {

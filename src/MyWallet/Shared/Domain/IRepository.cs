@@ -1,4 +1,4 @@
-namespace MyWallet.Domain;
+namespace MyWallet.Shared.Domain;
 
 public interface IRepository<TEntity, in TId> where TEntity : IEntity<TId>, IAggregateRoot where TId : notnull
 {
