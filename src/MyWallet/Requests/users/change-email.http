@@ -1,0 +1,8 @@
+POST {{baseUrl}}/users/me/change-email
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "newEmail": "pedro@doe.com",
+  "password": "JohnDoe123"
+}

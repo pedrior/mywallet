@@ -10,7 +10,7 @@ O **MyWallet** é um sistema simples e personalizável para gerenciar rendimento
 
 - ✅ efetuar registro no sistema;
 - ✅ autenticar-se no sistema;
-- ⬜ alterar o seu e-mail;
+- ✅ alterar o seu e-mail;
 - ✅ alterar a sua senha;
 - ✅ editar informações do seu perfil;
 - ✅ vizualizar seus dados quando logado no sistema;

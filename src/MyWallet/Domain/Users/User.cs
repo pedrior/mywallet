@@ -12,7 +12,7 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 
     public override required UserId Id { get; init; }
 
-    public required Email Email { get; init; }
+    public Email Email { get; private set; } = null!;
 
     public UserName Name { get; private set; } = null!;
 
@@ -49,12 +49,41 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
     public void UpdateProfile(UserName name)
     {
         Name = name;
-        
+
         SetUpdatedAt();
     }
 
     public bool VerifyPassword(Password password, IPasswordHasher passwordHasher) =>
         passwordHasher.Verify(password, PasswordHash);
+
+    public async Task<ErrorOr<Success>> ChangeEmailAsync(
+        Password password,
+        Email newEmail,
+        IPasswordHasher passwordHasher,
+        IEmailUniquenessChecker emailUniquenessChecker,
+        CancellationToken cancellationToken = default)
+    {
+        if (!VerifyPassword(password, passwordHasher))
+        {
+            return UserErrors.InvalidPassword;
+        }
+        
+        if (Email == newEmail)
+        {
+            return UserErrors.CannotChangeToSameEmail;
+        }
+
+        if (!await emailUniquenessChecker.IsUniqueAsync(newEmail, cancellationToken))
+        {
+            return UserErrors.EmailNotUnique;
+        }
+
+        Email = newEmail;
+
+        SetUpdatedAt();
+
+        return Result.Success;
+    }
 
     public ErrorOr<Success> ChangePassword(
         Password oldPassword,
@@ -65,18 +94,18 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
         {
             return UserErrors.CannotChangeToSamePassword;
         }
-        
+
         if (!VerifyPassword(oldPassword, passwordHasher))
         {
             return UserErrors.InvalidPassword;
         }
 
         PasswordHash = passwordHasher.Hash(newPassword);
-        
+
         SetUpdatedAt();
-        
+
         return Result.Success;
     }
-    
+
     private void SetUpdatedAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }

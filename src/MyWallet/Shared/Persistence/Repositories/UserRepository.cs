@@ -70,6 +70,7 @@ public sealed class UserRepository(IDbContext context, IPublisher publisher)
             sql: """
                  UPDATE users
                  SET name = @Name,
+                     email = @Email,
                      password_hash = @PasswordHash,
                      updated_at = @UpdatedAt
                  WHERE id = @Id

@@ -89,6 +89,127 @@ public sealed class UserTest
     }
 
     [Fact]
+    public async Task ChangeEmailAsync_WhenPasswordIsIncorrect_ShouldReturnInvalidPassword()
+    {
+        // Arrange
+        var password = Constants.User.Password;
+        var oldEmail = Constants.User.Email;
+        var newEmail = Constants.User.Email2;
+
+        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+            .Returns(false);
+
+        var user = await Factories.User.CreateDefault(
+            email: oldEmail,
+            password: password);
+
+        // Act
+        var result = await user.Value.ChangeEmailAsync(
+            password: Constants.User.Password,
+            newEmail: newEmail,
+            passwordHasher: passwordHasher,
+            emailUniquenessChecker: emailUniquenessChecker);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(UserErrors.InvalidPassword);
+
+        A.CallTo(emailUniquenessChecker)
+            .MustNotHaveHappened();
+    }
+
+    [Fact]
+    public async Task ChangeEmailAsync_WhenNewEmailIsEqualToOldEmail_ShouldReturnCannotChangeToSameEmail()
+    {
+        // Arrange
+        var password = Constants.User.Password;
+        var oldEmail = Constants.User.Email;
+        var newEmail = Constants.User.Email;
+
+        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+            .Returns(true);
+
+        var user = await Factories.User.CreateDefault(
+            email: oldEmail,
+            password: password);
+
+        // Act
+        var result = await user.Value.ChangeEmailAsync(
+            password: Constants.User.Password,
+            newEmail: newEmail,
+            passwordHasher: passwordHasher,
+            emailUniquenessChecker: emailUniquenessChecker);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(UserErrors.CannotChangeToSameEmail);
+
+        A.CallTo(emailUniquenessChecker)
+            .MustNotHaveHappened();
+    }
+
+    [Fact]
+    public async Task ChangeEmailAsync_WhenNewEmailIsNotUnique_ShouldReturnEmailNotUnique()
+    {
+        // Arrange
+        var password = Constants.User.Password;
+        var oldEmail = Constants.User.Email;
+        var newEmail = Constants.User.Email2;
+
+        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(newEmail, A<CancellationToken>._))
+            .Returns(false);
+
+        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+            .Returns(true);
+
+        var user = await Factories.User.CreateDefault(
+            password: password,
+            email: oldEmail);
+
+        // Act
+        var result = await user.Value.ChangeEmailAsync(
+            password: Constants.User.Password,
+            newEmail: newEmail,
+            passwordHasher: passwordHasher,
+            emailUniquenessChecker: emailUniquenessChecker);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(UserErrors.EmailNotUnique);
+    }
+
+    [Fact]
+    public async Task ChangeEmailAsync_WhenCalled_ShouldChangeEmail()
+    {
+        // Arrange
+        var password = Constants.User.Password;
+        var oldEmail = Constants.User.Email;
+        var newEmail = Constants.User.Email2;
+
+        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(newEmail, A<CancellationToken>._))
+            .Returns(true);
+
+        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+            .Returns(true);
+
+        var user = await Factories.User.CreateDefault(
+            password: password,
+            email: oldEmail);
+
+        // Act
+        var result = await user.Value.ChangeEmailAsync(
+            password: Constants.User.Password,
+            newEmail: newEmail,
+            passwordHasher: passwordHasher,
+            emailUniquenessChecker: emailUniquenessChecker);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Success);
+        user.Value.Email.Should().Be(newEmail);
+    }
+
+    [Fact]
     public async Task ChangePassword_WhenNewPasswordIsEqualToOldPassword_ShouldReturnCannotChangeToSamePassword()
     {
         // Arrange

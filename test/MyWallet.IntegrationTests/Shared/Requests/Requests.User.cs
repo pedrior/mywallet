@@ -53,6 +53,21 @@ internal static partial class Requests
                 })
             };
         }
+        
+        public static HttpRequestMessage ChangeEmail(string? newEmail = null, string? password = null)
+        {
+            newEmail ??= Constants.User.Email2.Value;
+            password ??= Constants.User.Password.Value;
+
+            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/users/me/change-email")
+            {
+                Content = ToJsonStringContent(new
+                {
+                    newEmail,
+                    password
+                })
+            };
+        }
 
         public static HttpRequestMessage ChangePassword(string? oldPassword = null, string? newPassword = null)
         {

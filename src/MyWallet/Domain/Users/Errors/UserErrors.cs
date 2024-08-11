@@ -10,6 +10,10 @@ public static class UserErrors
         code: "user.invalid_password",
         description: "The password is invalid.");
     
+    public static readonly Error CannotChangeToSameEmail = Error.Failure(
+        code: "user.cannot_change_to_same_email",
+        description: "The new email cannot be the same as the old email.");
+    
     public static readonly Error CannotChangeToSamePassword = Error.Failure(
         code: "user.cannot_change_to_same_password",
         description: "The new password cannot be the same as the old password.");
