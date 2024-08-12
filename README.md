@@ -33,7 +33,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ listar carteiras;
 - ✅ visualizar carteira;
 - ✅ excluir carteita;
-- ⬜ renomear carteira;
+- ✅ renomear carteira;
 - ⬜ alterar visual carteira;
 - ⬜ alterar a moeda da carteira;
 - ⬜ adicionar transação;

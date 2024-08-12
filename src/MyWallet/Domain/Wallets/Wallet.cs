@@ -1,4 +1,5 @@
 using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Wallets.Errors;
 using MyWallet.Domain.Wallets.ValueObjects;
 
 namespace MyWallet.Domain.Wallets;
@@ -39,4 +40,19 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         Color = color,
         CreatedAt = DateTimeOffset.UtcNow
     };
+
+    public ErrorOr<Success> Rename(WalletName name)
+    {
+        if (IsArchived)
+        {
+            return WalletErrors.WalletIsArchived;
+        }
+
+        Name = name;
+        SetUpdateAt();
+
+        return Result.Success;
+    }
+    
+    private void SetUpdateAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }

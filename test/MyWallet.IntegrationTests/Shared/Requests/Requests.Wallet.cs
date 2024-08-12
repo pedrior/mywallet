@@ -27,5 +27,16 @@ internal static partial class Requests
         
         public static HttpRequestMessage DeleteWallet(Ulid id) =>
             new(HttpMethod.Delete, $"{BasePath}/wallets/{id}");
+
+        public static HttpRequestMessage RenameWallet(Ulid id, string name)
+        {
+            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets/{id}/rename")
+            {
+                Content = ToJsonStringContent(new
+                {
+                    name
+                })
+            };
+        }
     }
 }

@@ -12,13 +12,23 @@ public static partial class Factories
             WalletId? id = null,
             UserId? userId = null,
             WalletName? name = null,
-            Color? color = null)
+            Color? color = null,
+            bool isArchived = false)
         {
-            return MyWallet.Domain.Wallets.Wallet.Create(
+            var wallet = MyWallet.Domain.Wallets.Wallet.Create(
                 id ?? Constants.Constants.Wallet.Id,
                 userId ?? Constants.Constants.User.Id,
                 name ?? Constants.Constants.Wallet.Name,
                 color ?? Constants.Constants.Wallet.Color);
+
+            if (isArchived)
+            {
+                wallet.GetType()
+                    .GetProperty(nameof(MyWallet.Domain.Wallets.Wallet.IsArchived))!
+                    .SetValue(wallet, true);
+            }
+
+            return wallet;
         }
     }
 }
