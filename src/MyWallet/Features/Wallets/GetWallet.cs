@@ -15,8 +15,6 @@ public sealed record WalletResponse
 
     public required string Color { get; init; }
 
-    public required bool IsDefault { get; init; }
-
     public required DateTimeOffset CreatedAt { get; init; }
 
     public required DateTimeOffset? UpdatedAt { get; init; }
@@ -63,7 +61,6 @@ public sealed class GetWalletHandler(IDbContext db) : IQueryHandler<GetWalletQue
                     SELECT w.id,
                            w.name,
                            w.color,
-                           w.is_default,
                            w.created_at,
                            w.updated_at
                     FROM wallets w

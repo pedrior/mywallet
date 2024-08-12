@@ -33,7 +33,6 @@ public sealed class GetWalletHandlerTests
                 Id = wallet.Id.Value,
                 Name = wallet.Name.Value,
                 Color = wallet.Color.Value,
-                IsDefault = wallet.IsDefault,
                 CreatedAt = wallet.CreatedAt,
                 UpdatedAt = wallet.UpdatedAt
             });
@@ -48,7 +47,6 @@ public sealed class GetWalletHandlerTests
             Id = wallet.Id.Value,
             Name = wallet.Name.Value,
             Color = wallet.Color.Value,
-            wallet.IsDefault,
             wallet.CreatedAt,
             wallet.UpdatedAt
         });

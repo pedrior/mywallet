@@ -18,8 +18,6 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
     public Color Color { get; private set; } = null!;
 
-    public bool IsDefault { get; private set; }
-
     public bool IsArchived { get; private set; }
 
     public DateTimeOffset? ArchivedAt { get; private set; }

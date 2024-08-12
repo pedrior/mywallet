@@ -40,13 +40,11 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                                          user_id,
                                          name,
                                          color,
-                                         is_default,
                                          created_at)
                     VALUES (@Id,
                             @UserId,
                             @Name,
                             @Color,
-                            @IsDefault,
                             @CreatedAt)
                  """,
             param: wallet,
@@ -62,7 +60,6 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                     UPDATE wallets w
                     SET name = @Name,
                         color = @Color,
-                        is_default = @IsDefault,
                         is_archived = @IsArchived,
                         archived_at = @ArchivedAt,
                         updated_at = @UpdatedAt

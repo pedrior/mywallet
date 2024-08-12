@@ -43,8 +43,7 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
         {
             Id = wallet.Id.Value,
             Name = wallet.Name.Value,
-            Color = wallet.Color.Value,
-            wallet.IsDefault
+            Color = wallet.Color.Value
         });
     }
 
