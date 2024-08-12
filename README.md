@@ -1,7 +1,8 @@
 # MyWallet
 
-O **MyWallet** é um sistema simples e personalizável para gerenciar rendimentos e despesas. O sistema permite criar carteiras,
-organizar transações, estipular orçamentos para carteiras ou categorias, e criar categorias personalizadas para um gerenciamento mais eficaz.
+O **MyWallet** é um sistema personalizável para monitorar rendimentos e despesas. Ele permite criar e personalizar carteiras, gerenciar
+transações, estabelecer orçamentos para carteiras e categorias, e criar e personalizar categorias. O sistema também permite visualizar 
+relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem como exportar relatórios em formato PDF.
 
 ## :sparkles: Casos de Uso (_wip_)
 
@@ -57,3 +58,4 @@ organizar transações, estipular orçamentos para carteiras ou categorias, e cr
 ### 	:memo: Relatórios
 
 - ⬜ visualizar relatórios de rendimentos e despesas;
+- ⬜ exportar relatórios em formato PDF.
