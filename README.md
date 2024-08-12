@@ -15,7 +15,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ alterar o seu e-mail;
 - ✅ alterar a sua senha;
 - ✅ editar o seu perfil;
-- ✅ vizualizar o seu perfil;
+- ✅ visualizar o seu perfil;
 - ⬜ excluir a sua conta;
 
 ### :label: Categorias
@@ -32,7 +32,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ criar carteira;
 - ✅ listar carteiras;
 - ✅ visualizar carteira;
-- ✅ excluir carteita;
+- ✅ excluir carteira;
 - ✅ renomear carteira;
 - ⬜ alterar visual carteira;
 - ⬜ alterar a moeda da carteira;
@@ -41,7 +41,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ⬜ excluir transação;
 - ⬜ arquivar carteira;
 - ⬜ desarquivar carteira;
-- ⬜ compartilhar uma carteita com outros usuários;
+- ⬜ compartilhar uma carteira com outros usuários;
 
 ### :moneybag: Orçamentos
 
@@ -55,7 +55,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ⬜ remover carteira do orçamento;
 - ⬜ remover categoria do orçamento;
 
-### 	:memo: Relatórios
+### :memo: Relatórios
 
 - ⬜ visualizar relatórios de rendimentos e despesas;
 - ⬜ exportar relatórios em formato PDF.
