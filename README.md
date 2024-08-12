@@ -2,54 +2,57 @@
 
 O **MyWallet** é um sistema simples e personalizável para gerenciar rendimentos e despesas. O sistema permite criar carteiras, organizar transações, estipular orçamentos para carteiras ou categorias, e criar categorias personalizadas para um gerenciamento mais eficaz.
 
-## :triangular_flag_on_post: Casos de Uso (_wip_)
+## :sparkles: Casos de Uso (_wip_)
 
 **O usuário deve ser capaz de...**
  
-### :man_beard: Usuários
+### :person_curly_hair: Usuários
 
 - ✅ efetuar registro no sistema;
-- ✅ autenticar-se no sistema;
+- ✅ efetuar login no sistema;
 - ✅ alterar o seu e-mail;
 - ✅ alterar a sua senha;
-- ✅ editar informações do seu perfil;
-- ✅ vizualizar seus dados quando logado no sistema;
-- ⬜ excluir a sua conta e todos os dados associados;
-
-### :purse: Carteiras
-
-- ✅ criar carteira;
-- ✅ listar carteiras;
-- ✅ visualizar uma carteira em detalhes;
-- ⬜ renomear carteira;
-- ⬜ alterar a moeda da carteira;
-- ⬜ alterar visual carteira;
-- ✅ excluir carteita;
-- ⬜ adicionar transação à carteira;
-- ⬜ editar transação da carteira;
-- ⬜ excluir transação da carteura;
-- ⬜ arquivar carteira;
-- ⬜ desarquivar carteira;
-- ⬜ tornar uma carteira padrão;
-- ⬜ compartilhar uma carteita com outros usuários;
+- ✅ editar o seu perfil;
+- ✅ vizualizar o seu perfil;
+- ⬜ excluir a sua conta;
 
 ### :label: Categorias
 
 - ✅ criar categoria;
 - ✅ listar categorias;
-- ✅ visualizar uma categoria em detalhes;
+- ✅ visualizar categoria;
 - ✅ excluir categoria;
-- ⚪ renomear categoria;
-- ⚪ alterar visual da categoria;
+- ✅ renomear categoria;
+- ✅ alterar visual da categoria;
+
+### :purse: Carteiras
+
+- ✅ criar carteira;
+- ✅ listar carteiras;
+- ✅ visualizar carteira;
+- ✅ excluir carteita;
+- ⬜ renomear carteira;
+- ⬜ alterar visual carteira;
+- ⬜ alterar a moeda da carteira;
+- ⬜ adicionar transação;
+- ⬜ editar transação;
+- ⬜ excluir transação;
+- ⬜ arquivar carteira;
+- ⬜ desarquivar carteira;
+- ⬜ compartilhar uma carteita com outros usuários;
 
 ### :moneybag: Orçamentos
 
 - ⬜ criar orçamento;
 - ⬜ listar orçamentos;
-- ⬜ visualizar um orçamento em detalhes;
+- ⬜ visualizar orçamento;
 - ⬜ renomear orçamento;
 - ⬜ excluir orçamento;
-- ⬜ aplicar orçamento à carteira;
-- ⬜ aplicar orçamento à categoria;
-- ⬜ remover orçamento de uma carteira;
-- ⬜ remover orçamento de uma categoria;
+- ⬜ adicionar carteira ao orçamento;
+- ⬜ adicionar categoria ao orçamento;
+- ⬜ remover carteira do orçamento;
+- ⬜ remover categoria do orçamento;
+
+### 	:memo: Relatórios
+
+- ⬜ visualizar relatórios de rendimentos e despesas;
