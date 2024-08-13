@@ -36,12 +36,18 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ renomear carteira;
 - ⬜ alterar visual carteira;
 - ⬜ alterar a moeda da carteira;
-- ⬜ adicionar transação;
-- ⬜ editar transação;
-- ⬜ excluir transação;
 - ⬜ arquivar carteira;
 - ⬜ desarquivar carteira;
 - ⬜ compartilhar uma carteira com outros usuários;
+
+### :money_with_wings: Transações
+
+- ⬜ criar transação de rendimento;
+- ⬜ criar transação de despesa;
+- ⬜ visualizar transação;
+- ⬜ listar transações;
+- ⬜ editar transação
+- ⬜ excluir transação
 
 ### :moneybag: Orçamentos
 
