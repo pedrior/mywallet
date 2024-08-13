@@ -21,6 +21,9 @@ internal static partial class Requests
                 })
             };
         }
+        
+        public static HttpRequestMessage ArchiveWallet(Ulid id) => 
+            new(HttpMethod.Post, $"{BasePath}/wallets/{id}/archive");
 
         public static HttpRequestMessage RenameWallet(Ulid id, string name)
         {

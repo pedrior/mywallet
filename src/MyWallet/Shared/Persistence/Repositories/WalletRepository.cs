@@ -38,11 +38,15 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                                          user_id,
                                          name,
                                          color,
+                                         is_archived,
+                                         archived_at,
                                          created_at)
                     VALUES (@Id,
                             @UserId,
                             @Name,
                             @Color,
+                            @IsArchived,
+                            @ArchivedAt,
                             @CreatedAt)
                  """,
             param: wallet,

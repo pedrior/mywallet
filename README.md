@@ -36,7 +36,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ renomear carteira;
 - ⬜ alterar visual carteira;
 - ⬜ alterar a moeda da carteira;
-- ⬜ arquivar carteira;
+- ✅ arquivar carteira;
 - ⬜ desarquivar carteira;
 - ⬜ compartilhar uma carteira com outros usuários;
 

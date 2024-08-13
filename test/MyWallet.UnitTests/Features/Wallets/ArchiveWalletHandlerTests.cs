@@ -3,21 +3,21 @@ using MyWallet.Features.Wallets;
 
 namespace MyWallet.UnitTests.Features.Wallets;
 
-public sealed class RenameWalletHandlerTests
+public sealed class ArchiveWalletHandlerTests
 {
     private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
 
-    private readonly RenameWalletHandler sut;
+    private readonly ArchiveWalletHandler sut;
 
-    private static readonly RenameWalletCommand Command = new()
+    private static readonly ArchiveWalletCommand Command = new()
     {
         WalletId = Constants.Wallet.Id.Value,
-        Name = Constants.Wallet.Name2.Value
+        UserId = Constants.User.Id.Value
     };
 
-    public RenameWalletHandlerTests()
+    public ArchiveWalletHandlerTests()
     {
-        sut = new RenameWalletHandler(walletRepository);
+        sut = new ArchiveWalletHandler(walletRepository);
     }
 
     [Fact]
@@ -38,6 +38,22 @@ public sealed class RenameWalletHandlerTests
     }
 
     [Fact]
+    public async Task Handle_WhenCalled_ShouldArchiveWallet()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+
+        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+            .Returns(wallet);
+
+        // Act
+        await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        wallet.IsArchived.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task Handle_WhenCalled_ShouldUpdateWallet()
     {
         // Arrange
@@ -50,21 +66,21 @@ public sealed class RenameWalletHandlerTests
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-
         A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+            .MustHaveHappened();
     }
 
     [Fact]
-    public async Task Handle_WhenRenameFails_ShouldReturnError()
+    public async Task Handle_WhenArchiveFails_ShouldReturnError()
     {
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        wallet.Archive(); // This will make the rename fail
-
         A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
             .Returns(wallet);
+
+        // Simulate an error by archiving a wallet twice
+        wallet.Archive();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -74,15 +90,16 @@ public sealed class RenameWalletHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenRenameFails_ShouldNotUpdateWallet()
+    public async Task Handle_WhenArchiveFails_ShouldNotUpdateWallet()
     {
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
-        
-        wallet.Archive(); // This will make the rename fail
 
         A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
             .Returns(wallet);
+
+        // Simulate an error by archiving a wallet twice
+        wallet.Archive();
 
         // Act
         await sut.Handle(Command, CancellationToken.None);

@@ -36,6 +36,21 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         Color = color,
         CreatedAt = DateTimeOffset.UtcNow
     };
+    
+    public ErrorOr<Success> Archive()
+    {
+        if (IsArchived)
+        {
+            return WalletErrors.AlreadyArchived;
+        }
+
+        IsArchived = true;
+        ArchivedAt = DateTimeOffset.UtcNow;
+
+        SetUpdateAt();
+
+        return Result.Success;
+    }
 
     public ErrorOr<Success> Rename(WalletName name)
     {
