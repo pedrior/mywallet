@@ -51,6 +51,21 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         return Result.Success;
     }
+    
+    public ErrorOr<Success> Unarchive()
+    {
+        if (!IsArchived)
+        {
+            return WalletErrors.NotArchived;
+        }
+
+        IsArchived = false;
+        ArchivedAt = null;
+
+        SetUpdateAt();
+
+        return Result.Success;
+    }
 
     public ErrorOr<Success> Rename(WalletName name)
     {

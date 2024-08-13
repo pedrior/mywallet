@@ -6,37 +6,6 @@ namespace MyWallet.UnitTests.Domain.Wallets;
 public sealed class WalletTests
 {
     [Fact]
-    public void Rename_WhenCalled_ShouldReturnSuccess()
-    {
-        // Arrange
-        var wallet = Factories.Wallet.CreateDefault();
-        var newName = Constants.Wallet.Name2;
-
-        // Act
-        var result = wallet.Rename(newName);
-
-        // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().Be(Result.Success);
-    }
-
-    [Fact]
-    public void Rename_WhenCalled_ShouldChangeName()
-    {
-        // Arrange
-        var wallet = Factories.Wallet.CreateDefault();
-        var newName = Constants.Wallet.Name2;
-
-        // Act
-        wallet.Rename(newName);
-
-        // Assert
-        wallet.Name.Should().Be(newName);
-        wallet.UpdatedAt.Should().BeCloseTo(
-            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
-    }
-    
-    [Fact]
     public void Archive_WhenCalled_ShouldReturnSuccess()
     {
         // Arrange
@@ -82,7 +51,85 @@ public sealed class WalletTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(WalletErrors.AlreadyArchived);
     }
+    
+    [Fact]
+    public void Unarchive_WhenCalled_ShouldReturnSuccess()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+        wallet.Archive();
 
+        // Act
+        var result = wallet.Unarchive();
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Success);
+    }
+    
+    [Fact]
+    public void Unarchive_WhenCalled_ShouldUnarchiveWallet()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+        wallet.Archive();
+
+        // Act
+        wallet.Unarchive();
+
+        // Assert
+        wallet.IsArchived.Should().BeFalse();
+        wallet.ArchivedAt.Should().BeNull();
+        
+        wallet.UpdatedAt.Should().BeCloseTo(
+            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
+    }
+    
+    [Fact]
+    public void Unarchive_WhenWalletIsNotArchived_ShouldReturnNotArchivedError()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+
+        // Act
+        var result = wallet.Unarchive();
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WalletErrors.NotArchived);
+    }
+    
+    [Fact]
+    public void Rename_WhenCalled_ShouldReturnSuccess()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+        var newName = Constants.Wallet.Name2;
+
+        // Act
+        var result = wallet.Rename(newName);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Success);
+    }
+
+    [Fact]
+    public void Rename_WhenCalled_ShouldChangeName()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+        var newName = Constants.Wallet.Name2;
+
+        // Act
+        wallet.Rename(newName);
+
+        // Assert
+        wallet.Name.Should().Be(newName);
+        wallet.UpdatedAt.Should().BeCloseTo(
+            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
+    }
+    
     [Fact]
     public void Rename_WhenWalletIsArchived_ShouldReturnWalletIsArchivedError()
     {

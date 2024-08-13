@@ -37,7 +37,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ⬜ alterar visual carteira;
 - ⬜ alterar a moeda da carteira;
 - ✅ arquivar carteira;
-- ⬜ desarquivar carteira;
+- ✅ desarquivar carteira;
 - ⬜ compartilhar uma carteira com outros usuários;
 
 ### :money_with_wings: Transações
