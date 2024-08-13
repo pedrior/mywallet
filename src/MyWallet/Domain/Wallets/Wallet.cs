@@ -1,6 +1,4 @@
-using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Domain.Wallets.Errors;
-using MyWallet.Domain.Wallets.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.Domain.Wallets;
 

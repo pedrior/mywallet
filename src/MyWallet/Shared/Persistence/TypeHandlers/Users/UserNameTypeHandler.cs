@@ -1,6 +1,5 @@
 using System.Data;
-using UserName = MyWallet.Domain.Users.ValueObjects.UserName;
-using ValueObjects_UserName = MyWallet.Domain.Users.ValueObjects.UserName;
+using ValueObjects_UserName = MyWallet.Domain.Users.UserName;
 
 namespace MyWallet.Shared.Persistence.TypeHandlers.Users;
 

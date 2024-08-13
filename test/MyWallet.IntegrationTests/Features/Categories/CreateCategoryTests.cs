@@ -1,5 +1,5 @@
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Users.Repository;
+using MyWallet.Domain.Categories;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 

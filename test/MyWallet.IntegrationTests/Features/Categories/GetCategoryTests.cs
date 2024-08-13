@@ -1,8 +1,6 @@
 using System.Net.Http.Json;
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Categories;
+using MyWallet.Domain.Users;
 using MyWallet.Features.Categories;
 
 namespace MyWallet.IntegrationTests.Features.Categories;

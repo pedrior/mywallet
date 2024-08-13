@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using MyWallet.Shared.Errors;
 
-namespace MyWallet.Domain.Wallets.ValueObjects;
+namespace MyWallet.Domain.Wallets;
 
 public sealed partial class WalletName : ValueObject
 {

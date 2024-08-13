@@ -1,7 +1,4 @@
 using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.Services;
-using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Users;
 
 namespace MyWallet.UnitTests.Features.Users;

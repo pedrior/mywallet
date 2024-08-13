@@ -1,5 +1,3 @@
-using MyWallet.Domain;
-
 namespace MyWallet.Shared.Persistence.Repositories;
 
 public abstract class Repository<TEntity, TId>(IDbContext context, IPublisher publisher)

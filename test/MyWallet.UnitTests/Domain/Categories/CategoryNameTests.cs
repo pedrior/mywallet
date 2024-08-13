@@ -1,6 +1,6 @@
-using MyWallet.Domain.Categories.ValueObjects;
+using MyWallet.Domain.Categories;
 
-namespace MyWallet.UnitTests.Domain.Categories.ValueObjects;
+namespace MyWallet.UnitTests.Domain.Categories;
 
 [TestSubject(typeof(CategoryName))]
 public sealed class CategoryNameTests

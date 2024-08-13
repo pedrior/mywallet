@@ -1,5 +1,4 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Features.Categories;
 using MyWallet.Features.Categories.Errors;
 using MyWallet.Shared.Persistence;

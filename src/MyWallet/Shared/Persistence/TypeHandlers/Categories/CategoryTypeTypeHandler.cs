@@ -1,5 +1,5 @@
 using System.Data;
-using MyWallet.Domain.Categories.Enums;
+using MyWallet.Domain.Categories;
 
 namespace MyWallet.Shared.Persistence.TypeHandlers.Categories;
 

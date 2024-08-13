@@ -1,4 +1,4 @@
-namespace MyWallet.Domain.Users.ValueObjects;
+namespace MyWallet.Domain.Users;
 
 public sealed class UserId(Ulid id) : EntityId(id)
 {

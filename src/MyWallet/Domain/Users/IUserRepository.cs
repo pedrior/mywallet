@@ -1,6 +1,4 @@
-using MyWallet.Domain.Users.ValueObjects;
-
-namespace MyWallet.Domain.Users.Repository;
+namespace MyWallet.Domain.Users;
 
 public interface IUserRepository : IRepository<User, UserId>
 {

@@ -1,6 +1,5 @@
 using System.Data;
-using Password = MyWallet.Domain.Users.ValueObjects.Password;
-using ValueObjects_Password = MyWallet.Domain.Users.ValueObjects.Password;
+using ValueObjects_Password = MyWallet.Domain.Users.Password;
 
 namespace MyWallet.Shared.Persistence.TypeHandlers.Users;
 

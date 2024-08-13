@@ -1,5 +1,5 @@
 using System.Data;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.Shared.Persistence.TypeHandlers.Users;
 

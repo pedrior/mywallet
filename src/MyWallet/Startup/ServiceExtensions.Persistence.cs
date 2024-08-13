@@ -1,6 +1,6 @@
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Wallets.Repository;
+using MyWallet.Domain.Categories;
+using MyWallet.Domain.Users;
+using MyWallet.Domain.Wallets;
 using MyWallet.Shared.Persistence;
 using MyWallet.Shared.Persistence.Repositories;
 using MyWallet.Shared.Persistence.TypeHandlers;

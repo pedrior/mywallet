@@ -1,4 +1,4 @@
-namespace MyWallet.Domain.Categories.ValueObjects;
+namespace MyWallet.Domain.Categories;
 
 public sealed class CategoryId(Ulid id) : EntityId(id)
 {

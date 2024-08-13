@@ -1,5 +1,4 @@
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 using MyWallet.Shared.Identity.Extensions;
 
 namespace MyWallet.Shared.Identity;

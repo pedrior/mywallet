@@ -1,7 +1,6 @@
-using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
-namespace MyWallet.Domain.Categories.Repository;
+namespace MyWallet.Domain.Categories;
 
 public interface ICategoryRepository : IRepository<Category, CategoryId>
 {

@@ -1,6 +1,5 @@
 using MyWallet.Domain;
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Categories.ValueObjects;
+using MyWallet.Domain.Categories;
 using MyWallet.Features.Categories.Errors;
 using MyWallet.Features.Categories.Security;
 using MyWallet.Shared.Features;

@@ -1,4 +1,4 @@
-namespace MyWallet.Domain.Users.Errors;
+namespace MyWallet.Domain.Users;
 
 public static class UserErrors
 {

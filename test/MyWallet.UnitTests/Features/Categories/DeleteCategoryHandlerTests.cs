@@ -1,7 +1,5 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Categories.Events;
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Categories.ValueObjects;
 using MyWallet.Features.Categories;
 
 namespace MyWallet.UnitTests.Features.Categories;

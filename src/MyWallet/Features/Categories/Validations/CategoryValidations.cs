@@ -7,7 +7,7 @@ public static class CategoryValidations
         return rule
             .NotEmpty()
             .WithMessage("Must not be empty")
-            .Must(name => Domain.Categories.Enums.CategoryType.IsDefined(name))
-            .WithMessage($"Must be one of {string.Join(", ", Domain.Categories.Enums.CategoryType.List)}");
+            .Must(name => Domain.Categories.CategoryType.IsDefined(name))
+            .WithMessage($"Must be one of {string.Join(", ", Domain.Categories.CategoryType.List)}");
     }
 }

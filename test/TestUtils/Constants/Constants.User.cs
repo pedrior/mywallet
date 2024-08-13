@@ -1,4 +1,4 @@
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace TestUtils.Constants;
 

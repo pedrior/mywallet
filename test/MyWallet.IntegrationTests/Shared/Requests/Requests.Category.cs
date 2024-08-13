@@ -1,5 +1,3 @@
-using MyWallet.Domain.Categories.ValueObjects;
-
 namespace MyWallet.IntegrationTests.Shared.Requests;
 
 internal static partial class Requests

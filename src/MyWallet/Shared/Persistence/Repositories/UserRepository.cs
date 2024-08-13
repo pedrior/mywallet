@@ -1,6 +1,4 @@
 using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
 
 namespace MyWallet.Shared.Persistence.Repositories;
 

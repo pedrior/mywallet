@@ -1,33 +1,32 @@
 using System.Text.RegularExpressions;
 using MyWallet.Shared.Errors;
 
-namespace MyWallet.Domain.Categories.ValueObjects;
+namespace MyWallet.Domain.Users;
 
-public sealed partial class CategoryName : ValueObject
+public sealed partial class Email : ValueObject
 {
-    private const int MaxLength = 30;
+    private const int MaxLength = 254;
 
     public static readonly Error IsEmpty = Error.Validation(description: "Must not be empty.");
-    
+
     public static readonly Error TooLong = Error.Validation(
         description: $"Must be at most {MaxLength} characters long.");
 
-    public static readonly Error Invalid = Error.Validation(
-        description: "Must contain only letters, digits, spaces, punctuation and symbols");
+    public static readonly Error Invalid = Error.Validation(description: "Must be a valid email address.");
 
-    private CategoryName()
+    private Email()
     {
     }
 
     public string Value { get; private init; } = null!;
 
-    public static ErrorOr<CategoryName> Create(string value) => Validate(value)
-        .Then(_ => new CategoryName { Value = value });
+    public static ErrorOr<Email> Create(string value) => Validate(value)
+        .Then(_ => new Email { Value = value.ToLowerInvariant() });
 
     public static ErrorOr<Success> Validate(string? value) => ErrorCollection.Empty
         .For(string.IsNullOrWhiteSpace(value), IsEmpty)
         .For(value?.Length > MaxLength, TooLong)
-        .For(!string.IsNullOrWhiteSpace(value) && !CategoryNameRegex().IsMatch(value), Invalid);
+        .For(!string.IsNullOrWhiteSpace(value) && !EmailRegex().IsMatch(value), Invalid);
 
     public override string ToString() => Value;
 
@@ -36,6 +35,6 @@ public sealed partial class CategoryName : ValueObject
         yield return Value;
     }
 
-    [GeneratedRegex(@"^[\p{L}\p{N}\p{P}\p{S} ]+$")]
-    private static partial Regex CategoryNameRegex();
+    [GeneratedRegex(@"^(?!.*(?:\.-|-\.))[^@]+@[^\W_](?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)+$")]
+    private static partial Regex EmailRegex();
 }

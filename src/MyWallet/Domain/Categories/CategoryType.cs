@@ -1,4 +1,4 @@
-namespace MyWallet.Domain.Categories.Enums;
+namespace MyWallet.Domain.Categories;
 
 public sealed class CategoryType : Enum<CategoryType>
 {

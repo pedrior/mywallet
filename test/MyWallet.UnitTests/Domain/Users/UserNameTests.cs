@@ -1,6 +1,6 @@
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
-namespace MyWallet.UnitTests.Domain.Users.ValueObjects;
+namespace MyWallet.UnitTests.Domain.Users;
 
 [TestSubject(typeof(UserName))]
 public sealed class UserNameTests

@@ -1,6 +1,6 @@
 using MyWallet.Domain;
-using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Domain.Wallets.ValueObjects;
+using MyWallet.Domain.Users;
+using MyWallet.Domain.Wallets;
 
 namespace TestUtils.Factories;
 

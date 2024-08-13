@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace MyWallet.Domain.Users.Services;
+namespace MyWallet.Domain.Users;
 
 public sealed class PasswordHasher : IPasswordHasher
 {
@@ -11,7 +11,7 @@ public sealed class PasswordHasher : IPasswordHasher
 
     private const char SegmentDelimiter = ':';
     
-    public string Hash(ValueObjects.Password password)
+    public string Hash(Password password)
     {
         var salt = RandomNumberGenerator.GetBytes(SaltSize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
@@ -29,7 +29,7 @@ public sealed class PasswordHasher : IPasswordHasher
             Algorithm);
     }
 
-    public bool Verify(ValueObjects.Password password, string passwordHash)
+    public bool Verify(Password password, string passwordHash)
     {
         var segments = passwordHash.Split(SegmentDelimiter);
         var hash = Convert.FromBase64String(segments[0]);

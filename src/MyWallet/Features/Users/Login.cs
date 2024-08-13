@@ -1,9 +1,5 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.Services;
-using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Features.Users.Errors;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Security.Tokens;
 using MyWallet.Shared.Errors;
@@ -68,7 +64,7 @@ public sealed class LoginHandler(
         var user = await userRepository.GetByEmailAsync(email.Value, cancellationToken);
         if (user is null || !user.VerifyPassword(password.Value, passwordHasher))
         {
-            return UserErrors.InvalidCredentials;
+            return Errors.UserErrors.InvalidCredentials;
         }
 
         var claims = CreateUserClaims(user);

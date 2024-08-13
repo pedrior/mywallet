@@ -1,7 +1,5 @@
-using MyWallet.Domain.Categories.Enums;
 using MyWallet.Domain.Categories.Events;
-using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.Domain.Categories;
 

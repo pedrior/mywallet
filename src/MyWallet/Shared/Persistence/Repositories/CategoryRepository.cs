@@ -1,7 +1,5 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.Shared.Persistence.Repositories;
 

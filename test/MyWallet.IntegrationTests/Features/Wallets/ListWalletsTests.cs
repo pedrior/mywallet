@@ -1,8 +1,6 @@
 using System.Net.Http.Json;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Domain.Wallets.Repository;
-using MyWallet.Domain.Wallets.ValueObjects;
+using MyWallet.Domain.Users;
+using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets;
 using MyWallet.Shared.Contracts;
 

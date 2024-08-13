@@ -1,10 +1,6 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using MyWallet.Domain.Users;
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.Services;
-using MyWallet.Domain.Users.ValueObjects;
 using MyWallet.Features.Users;
-using MyWallet.Features.Users.Errors;
 using MyWallet.Shared.Security.Tokens;
 
 namespace MyWallet.UnitTests.Features.Users;
@@ -86,7 +82,7 @@ public sealed class LoginHandlerTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(UserErrors.InvalidCredentials);
+        result.FirstError.Should().Be(MyWallet.Features.Users.Errors.UserErrors.InvalidCredentials);
 
         A.CallTo(securityTokenProvider)
             .MustNotHaveHappened();
@@ -113,7 +109,7 @@ public sealed class LoginHandlerTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(UserErrors.InvalidCredentials);
+        result.FirstError.Should().Be(MyWallet.Features.Users.Errors.UserErrors.InvalidCredentials);
 
         A.CallTo(securityTokenProvider)
             .MustNotHaveHappened();

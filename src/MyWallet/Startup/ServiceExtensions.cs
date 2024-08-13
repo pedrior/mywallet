@@ -3,7 +3,7 @@ using Asp.Versioning;
 using Cysharp.Serialization.Json;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MyWallet.Domain.Users.Services;
+using MyWallet.Domain.Users;
 using MyWallet.Shared.Behaviors;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Identity;

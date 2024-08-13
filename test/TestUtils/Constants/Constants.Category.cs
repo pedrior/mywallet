@@ -1,6 +1,5 @@
 using MyWallet.Domain;
-using MyWallet.Domain.Categories.Enums;
-using MyWallet.Domain.Categories.ValueObjects;
+using MyWallet.Domain.Categories;
 
 namespace TestUtils.Constants;
 

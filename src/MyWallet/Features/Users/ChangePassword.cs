@@ -1,9 +1,8 @@
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.Services;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Errors;
 using MyWallet.Shared.Validations;
+using Password = MyWallet.Domain.Users.Password;
 
 namespace MyWallet.Features.Users;
 

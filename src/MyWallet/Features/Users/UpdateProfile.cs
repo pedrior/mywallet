@@ -1,5 +1,4 @@
-using MyWallet.Domain.Users.Repository;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Errors;
 using MyWallet.Shared.Validations;

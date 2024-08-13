@@ -1,5 +1,4 @@
 using MyWallet.Domain.Wallets;
-using MyWallet.Domain.Wallets.Errors;
 
 namespace MyWallet.UnitTests.Domain.Wallets;
 

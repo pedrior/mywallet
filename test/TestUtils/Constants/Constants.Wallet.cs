@@ -1,5 +1,5 @@
 using MyWallet.Domain;
-using MyWallet.Domain.Wallets.ValueObjects;
+using MyWallet.Domain.Wallets;
 
 namespace TestUtils.Constants;
 

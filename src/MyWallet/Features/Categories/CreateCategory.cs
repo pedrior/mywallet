@@ -1,9 +1,6 @@
 using MyWallet.Domain;
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Categories.Enums;
-using MyWallet.Domain.Categories.Repository;
-using MyWallet.Domain.Categories.ValueObjects;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 using MyWallet.Features.Categories.Validations;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Errors;

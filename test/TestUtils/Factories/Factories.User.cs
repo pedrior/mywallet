@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyWallet.Domain.Users.Services;
-using MyWallet.Domain.Users.ValueObjects;
+using MyWallet.Domain.Users;
 
 namespace TestUtils.Factories;
 
