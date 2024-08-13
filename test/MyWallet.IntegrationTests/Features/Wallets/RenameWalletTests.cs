@@ -24,36 +24,23 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
 
         walletId = wallet.Id.Value;
     }
-
+    
     [Fact]
-    public async Task RenameWallet_WhenRequestIsValid_ShouldReturnNoContent()
+    public async Task RenameWallet_WhenRequestIsValid_ShouldChangeWalletName()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Wallets.RenameWallet(
             walletId,
             Constants.Wallet.Name2.Value);
+
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-    }
-
-    [Fact]
-    public async Task RenameWallet_WhenRequestIsValid_ShouldChangeWalletName()
-    {
-        // Arrange
-        var client = CreateClient(accessToken);
-        var request = Requests.Wallets.RenameWallet(
-            walletId,
-            Constants.Wallet.Name2.Value);
-
-        // Act
-        await client.SendAsync(request);
-
-        // Assert
+        
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new(walletId));
 
@@ -64,10 +51,8 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
     public async Task RenameWallet_WhenWalletDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        var nonExistingWalletId = Ulid.NewUlid();
-
+        var request = Requests.Wallets.GetWallet(Ulid.NewUlid());
         var client = CreateClient(accessToken);
-        var request = Requests.Wallets.GetWallet(nonExistingWalletId);
 
         // Act
         var response = await client.SendAsync(request);
@@ -80,8 +65,8 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
     public async Task RenameWallet_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var client = CreateClient();
         var request = Requests.Wallets.GetWallet(walletId);
+        var client = CreateClient();
 
         // Act
         var response = await client.SendAsync(request);
@@ -104,8 +89,8 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
 
         var otherUserAccessToken = CreateAccessToken(otherUser.Value);
 
-        var client = CreateClient(otherUserAccessToken);
         var request = Requests.Wallets.GetWallet(walletId);
+        var client = CreateClient(otherUserAccessToken);
 
         // Act
         var response = await client.SendAsync(request);

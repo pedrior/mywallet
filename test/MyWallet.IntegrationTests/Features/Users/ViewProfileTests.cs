@@ -20,13 +20,14 @@ public sealed class ViewProfileTests(TestApplicationFactory app) : IntegrationTe
     }
 
     [Fact]
-    public async Task ViewProfile_WhenUserIsAuthenticated_ShouldReturnOk()
+    public async Task ViewProfile_WhenRequestIsValid_ShouldReturnUserProfileResponse()
     {
         // Arrange
+        var request = Requests.Users.ViewProfile();
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ViewProfile());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -35,18 +36,17 @@ public sealed class ViewProfileTests(TestApplicationFactory app) : IntegrationTe
 
         userProfileResponse!.Name.Should().Be(user.Name.Value);
         userProfileResponse.Email.Should().Be(user.Email.Value);
-        // userProfileResponse.CreatedAt.Should().Be(user.CreatedAt);
-        // userProfileResponse.UpdatedAt.Should().Be(user.UpdatedAt);
     }
 
     [Fact]
     public async Task ViewProfile_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Users.ViewProfile();
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ViewProfile());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

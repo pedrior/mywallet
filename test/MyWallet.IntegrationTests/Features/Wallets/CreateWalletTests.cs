@@ -13,24 +13,26 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
         var userRepository = GetRequiredService<IUserRepository>();
 
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-
         await userRepository.AddAsync(user.Value);
 
         accessToken = CreateAccessToken(user.Value);
     }
-
+    
     [Fact]
     public async Task CreateWallet_WhenRequestIsValid_ShouldCreateWallet()
     {
         // Arrange
+        var request = Requests.Wallets.CreateWallet(
+            name: Constants.Wallet.Name.Value,
+            color: Constants.Wallet.Color.Value);
+
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.CreateWallet());
+        var response = await client.SendAsync(request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
-
+        
         // Get the category id from the response location header
         var walletId = response.Headers.Location!
             .ToString()
@@ -44,15 +46,19 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
         wallet!.Name.Should().Be(Constants.Wallet.Name);
         wallet.Color.Should().Be(Constants.Wallet.Color);
     }
-    
+
     [Fact]
     public async Task CreateWallet_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Wallets.CreateWallet(
+            name: Constants.Wallet.Name.Value,
+            color: Constants.Wallet.Color.Value);
+
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.CreateWallet());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

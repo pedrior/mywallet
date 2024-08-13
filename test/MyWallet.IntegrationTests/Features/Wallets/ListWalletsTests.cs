@@ -10,7 +10,7 @@ namespace MyWallet.IntegrationTests.Features.Wallets;
 
 public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTest(app)
 {
-    private const int DefaultWalletsCount = 10;
+    private const int WalletsCount = 10;
 
     private string accessToken = null!;
 
@@ -24,7 +24,8 @@ public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTe
 
         accessToken = CreateAccessToken(user.Value);
 
-        for (var i = 0; i < DefaultWalletsCount; i++)
+        // Create wallets
+        for (var i = 0; i < WalletsCount; i++)
         {
             var wallet = Factories.Wallet.CreateDefault(
                 id: WalletId.New(),
@@ -35,11 +36,11 @@ public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTe
     }
 
     [Fact]
-    public async Task ListWallets_WhenUserOwnsWallets_ShouldReturnPaginatedWallets()
+    public async Task ListWallets_WhenRequestIsValid_ShouldReturnPaginatedWallets()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Wallets.ListWallets(page: 1, limit: 5);
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -53,7 +54,7 @@ public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTe
         pageResponse.Should().NotBeNull();
         pageResponse!.Page.Should().Be(1);
         pageResponse.Limit.Should().Be(5);
-        pageResponse.Total.Should().Be(DefaultWalletsCount);
+        pageResponse.Total.Should().Be(WalletsCount);
     }
 
     [Fact]
@@ -71,8 +72,8 @@ public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTe
 
         var otherAccessToken = CreateAccessToken(otherUser.Value);
 
-        var client = CreateClient(otherAccessToken);
         var request = Requests.Wallets.ListWallets(page: 1, limit: 5);
+        var client = CreateClient(otherAccessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -93,9 +94,8 @@ public sealed class ListWalletsTests(TestApplicationFactory app) : IntegrationTe
     public async Task ListWallets_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var client = CreateClient();
-
         var request = Requests.Wallets.ListWallets(page: 1, limit: 5);
+        var client = CreateClient();
 
         // Act
         var response = await client.SendAsync(request);

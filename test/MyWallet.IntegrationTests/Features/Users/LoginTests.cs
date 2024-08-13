@@ -22,15 +22,20 @@ public sealed class LoginTests(TestApplicationFactory app) : IntegrationTest(app
     public async Task Login_WhenRequestIsValid_ShouldReturnAccessToken()
     {
         // Arrange
+        var request = Requests.Users.Login(
+            email: Constants.User.Email.Value,
+            password: Constants.User.Password.Value);
+        
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Users.Login());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        
         var token = new JsonWebToken(loginResponse!.AccessToken);
 
         var sub = token.GetClaim(JwtRegisteredClaimNames.Sub).Value;
@@ -46,11 +51,14 @@ public sealed class LoginTests(TestApplicationFactory app) : IntegrationTest(app
     public async Task Login_WhenUserDoesNotExist_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Users.Login(
+            email: Constants.User.Email2.Value,
+            password: Constants.User.Password.Value);
+        
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Users.Login(
-            email: Constants.User.Email2.Value));
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -60,11 +68,14 @@ public sealed class LoginTests(TestApplicationFactory app) : IntegrationTest(app
     public async Task Login_WhenPasswordIsIncorrect_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Users.Login(
+            email: Constants.User.Email.Value,
+            password: Constants.User.Password2.Value);
+        
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Users.Login(
-            password: Constants.User.Password2.Value));
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

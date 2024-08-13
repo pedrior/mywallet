@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Users.Repository;
 using MyWallet.Domain.Users.ValueObjects;
-using MyWallet.Domain.Wallets;
 using MyWallet.Domain.Wallets.Repository;
 using MyWallet.Features.Wallets;
 
@@ -10,7 +9,7 @@ namespace MyWallet.IntegrationTests.Features.Wallets;
 public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest(app)
 {
     private string accessToken = null!;
-    private Wallet wallet = null!;
+    private Ulid walletId;
 
     public override async Task InitializeAsync()
     {
@@ -18,30 +17,35 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
         var walletRepository = GetRequiredService<IWalletRepository>();
 
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-
         await userRepository.AddAsync(user.Value);
 
-        wallet = Factories.Wallet.CreateDefault(userId: user.Value.Id);
+        accessToken = CreateAccessToken(user.Value);
+
+        var wallet = Factories.Wallet.CreateDefault(userId: user.Value.Id);
         await walletRepository.AddAsync(wallet);
 
-        accessToken = CreateAccessToken(user.Value);
+        walletId = wallet.Id.Value;
     }
 
     [Fact]
-    public async Task GetWallet_WhenUserOwnsWallet_ShouldReturnWalletResponse()
+    public async Task GetWallet_WhenRequestIsValid_ShouldReturnWalletResponse()
     {
         // Arrange
+        var request = Requests.Wallets.GetWallet(walletId);
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.GetWallet(wallet.Id.Value));
+        var response = await client.SendAsync(request);
 
         // Assert
 
         var walletResponse = await response.Content.ReadFromJsonAsync<WalletResponse>();
+        var walletRepository = GetRequiredService<IWalletRepository>();
+        var wallet = await walletRepository.GetAsync(new(walletId));
+
         walletResponse.Should().BeEquivalentTo(new
         {
-            Id = wallet.Id.Value,
+            Id = wallet!.Id.Value,
             Name = wallet.Name.Value,
             Color = wallet.Color.Value
         });
@@ -51,11 +55,11 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
     public async Task GetWallet_WhenWalletDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
+        var request = Requests.Wallets.GetWallet(Ulid.NewUlid());
         var client = CreateClient(accessToken);
-        var nonExistingWalletId = Ulid.NewUlid();
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.GetWallet(nonExistingWalletId));
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -65,10 +69,11 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
     public async Task GetWallet_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Wallets.GetWallet(walletId);
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.GetWallet(wallet.Id.Value));
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -86,13 +91,15 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
         var userRepository = GetRequiredService<IUserRepository>();
 
         await userRepository.AddAsync(otherUser.Value);
-        
+
         var otherUserAccessToken = CreateAccessToken(otherUser.Value);
+
+        var request = Requests.Wallets.GetWallet(walletId);
 
         var client = CreateClient(otherUserAccessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Wallets.GetWallet(wallet.Id.Value));
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

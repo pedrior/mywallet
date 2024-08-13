@@ -20,19 +20,20 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
         await userRepository.AddAsync(user.Value);
 
+        accessToken = CreateAccessToken(user.Value);
+
         var category = Factories.Category.CreateDefault(userId: user.Value.Id);
         await categoryRepository.AddAsync(category);
 
-        accessToken = CreateAccessToken(user.Value);
         categoryId = category.Id;
     }
 
     [Fact]
-    public async Task GetCategory_WhenUserOwnsCategory_ShouldReturnCategory()
+    public async Task GetCategory_WhenRequestIsValid_ShouldReturnCategory()
     {
         // Arrange
         var client = CreateClient(accessToken);
-        var request = Requests.Categories.GetCategory(categoryId);
+        var request = Requests.Categories.GetCategory(categoryId.Value);
 
         // Act
         var response = await client.SendAsync(request);
@@ -54,18 +55,19 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     public async Task GetCategory_WhenUserDoesNotOwnCategory_ShouldReturnForbidden()
     {
         // Arrange
-        var user = await Factories.User.CreateDefaultWithServiceProvider(
+        var userRepository = GetRequiredService<IUserRepository>();
+        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
             Services,
             id: UserId.New(),
             email: Constants.User.Email2);
 
-        await GetRequiredService<IUserRepository>()
-            .AddAsync(user.Value);
+        await userRepository.AddAsync(otherUser.Value);
 
-        var token = CreateAccessToken(user.Value);
-        var client = CreateClient(token);
+        var otherAccessToken = CreateAccessToken(otherUser.Value);
 
-        var request = Requests.Categories.GetCategory(categoryId);
+        var request = Requests.Categories.GetCategory(categoryId.Value);
+
+        var client = CreateClient(otherAccessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -78,8 +80,9 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     public async Task GetCategory_WhenCategoryDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
+        var request = Requests.Categories.GetCategory(Ulid.NewUlid());
+
         var client = CreateClient(accessToken);
-        var request = Requests.Categories.GetCategory(CategoryId.New());
 
         // Act
         var response = await client.SendAsync(request);
@@ -92,8 +95,9 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     public async Task GetCategory_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Categories.GetCategory(categoryId.Value);
+
         var client = CreateClient();
-        var request = Requests.Categories.GetCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);

@@ -27,8 +27,11 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
     public async Task ChangeEmail_WhenRequestIsValid_ShouldChangeUserEmail()
     {
         // Arrange
+        var request = Requests.Users.ChangeEmail(
+            newEmail: Constants.User.Email2.Value,
+            password: Constants.User.Password.Value);
+
         var client = CreateClient(accessToken);
-        var request = Requests.Users.ChangeEmail();
 
         // Act
         var response = await client.SendAsync(request);
@@ -46,9 +49,11 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
     public async Task ChangeEmail_WhenPasswordIsIncorrect_ShouldReturnUnprocessableEntity()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Users.ChangeEmail(
+            newEmail: Constants.User.Email2.Value,
             password: Constants.User.Password2.Value);
+
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -61,9 +66,11 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
     public async Task ChangeEmail_WhenNewEmailIsEqualOldEmail_ShouldReturnUnprocessableEntity()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Users.ChangeEmail(
-            newEmail: Constants.User.Email.Value);
+            newEmail: Constants.User.Email.Value,
+            password: Constants.User.Password.Value);
+
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -76,9 +83,13 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
     public async Task ChangeEmail_WhenNewEmailIsNotUnique_ShouldReturnConflict()
     {
         // Arrange
-        var client = CreateClient(accessToken);
-        var request = Requests.Users.ChangeEmail();
+        var request = Requests.Users.ChangeEmail(
+            newEmail: Constants.User.Email2.Value,
+            password: Constants.User.Password.Value);
 
+        var client = CreateClient(accessToken);
+
+        // Create another user with the email that we want to change to
         var userRepository = GetRequiredService<IUserRepository>();
         var user = await Factories.User.CreateDefaultWithServiceProvider(
             Services,
@@ -98,8 +109,11 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
     public async Task ChangeEmail_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Users.ChangeEmail(
+            newEmail: Constants.User.Email2.Value,
+            password: Constants.User.Password.Value);
+
         var client = CreateClient();
-        var request = Requests.Users.ChangeEmail();
 
         // Act
         var response = await client.SendAsync(request);

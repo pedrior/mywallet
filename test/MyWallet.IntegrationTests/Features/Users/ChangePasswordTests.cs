@@ -21,13 +21,17 @@ public sealed class ChangePasswordTests(TestApplicationFactory app) : Integratio
     }
 
     [Fact]
-    public async Task ChangePassword_WhenOldPasswordIsCorrect_ShouldChangePassword()
+    public async Task ChangePassword_WhenRequestIsValid_ShouldChangePassword()
     {
         // Arrange
+        var request = Requests.Users.ChangePassword(
+            oldPassword: Constants.User.Password.Value,
+            newPassword: Constants.User.Password2.Value);
+
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ChangePassword());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -46,10 +50,14 @@ public sealed class ChangePasswordTests(TestApplicationFactory app) : Integratio
     public async Task ChangePassword_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Users.ChangePassword(
+            oldPassword: Constants.User.Password.Value,
+            newPassword: Constants.User.Password2.Value);
+
         var client = CreateClient();
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ChangePassword());
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -59,11 +67,14 @@ public sealed class ChangePasswordTests(TestApplicationFactory app) : Integratio
     public async Task ChangePassword_WhenOldPasswordIsIncorrect_ShouldReturnUnprocessableEntity()
     {
         // Arrange
+        var request = Requests.Users.ChangePassword(
+            oldPassword: Constants.User.Password2.Value,
+            newPassword: Constants.User.Password.Value);
+
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ChangePassword(
-            oldPassword: Constants.User.Password2.Value)); // Incorrect password
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
@@ -73,11 +84,14 @@ public sealed class ChangePasswordTests(TestApplicationFactory app) : Integratio
     public async Task ChangePassword_WhenPasswordsAreEqual_ShouldReturnUnprocessableEntity()
     {
         // Arrange
+        var request = Requests.Users.ChangePassword(
+            oldPassword: Constants.User.Password.Value,
+            newPassword: Constants.User.Password.Value);
+
         var client = CreateClient(accessToken);
 
         // Act
-        var response = await client.SendAsync(Requests.Users.ChangePassword(
-            newPassword: Constants.User.Password.Value)); // Equal passwords
+        var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);

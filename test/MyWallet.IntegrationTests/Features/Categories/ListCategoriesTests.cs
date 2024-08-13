@@ -9,18 +9,22 @@ namespace MyWallet.IntegrationTests.Features.Categories;
 
 public sealed class ListCategoriesTests(TestApplicationFactory app) : IntegrationTest(app)
 {
-    private const int DefaultCategoriesCount = 5;
+    private const int CategoriesCount = 5;
+
     private string accessToken = null!;
 
     public override async Task InitializeAsync()
     {
         var userRepository = GetRequiredService<IUserRepository>();
         var categoryRepository = GetRequiredService<ICategoryRepository>();
-        
+
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
         await userRepository.AddAsync(user.Value);
-        
-        for (var i = 0; i < DefaultCategoriesCount; i++)
+
+        accessToken = CreateAccessToken(user.Value);
+
+        // Create categories
+        for (var i = 0; i < CategoriesCount; i++)
         {
             var category = Factories.Category.CreateDefault(
                 id: CategoryId.New(),
@@ -28,16 +32,15 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
 
             await categoryRepository.AddAsync(category);
         }
-        
-        accessToken = CreateAccessToken(user.Value);
     }
 
     [Fact]
-    public async Task ListCategories_WhenUserOwnsCategory_ShouldReturnCategory()
+    public async Task ListCategories_WhenRequestIsValid_ShouldReturnCategories()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Categories.ListCategories();
+
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -45,11 +48,11 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var categoriesResponses = await response.Content
+        var categoriesResponse = await response.Content
             .ReadFromJsonAsync<List<ListCategoriesResponse>>();
 
-        categoriesResponses.Should().NotBeNull();
-        categoriesResponses.Should().HaveCount(DefaultCategoriesCount);
+        categoriesResponse.Should().NotBeNull();
+        categoriesResponse.Should().HaveCount(CategoriesCount);
     }
 
     [Fact]
@@ -57,15 +60,18 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
     {
         // Arrange
         var userRepository = GetRequiredService<IUserRepository>();
-        var user = await Factories.User.CreateDefaultWithServiceProvider(
+        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
             Services,
             id: UserId.New(),
             email: Constants.User.Email2);
 
-        await userRepository.AddAsync(user.Value);
+        await userRepository.AddAsync(otherUser.Value);
 
-        var client = CreateClient(CreateAccessToken(user.Value));
+        var otherAccessToken = CreateAccessToken(otherUser.Value);
+
         var request = Requests.Categories.ListCategories();
+
+        var client = CreateClient(otherAccessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -84,8 +90,9 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
     public async Task ListCategories_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var client = CreateClient();
         var request = Requests.Categories.ListCategories();
+
+        var client = CreateClient();
 
         // Act
         var response = await client.SendAsync(request);

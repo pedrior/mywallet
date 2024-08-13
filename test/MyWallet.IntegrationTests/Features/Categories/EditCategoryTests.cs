@@ -24,23 +24,24 @@ public sealed class EditCategoryTests(TestApplicationFactory app) : IntegrationT
         accessToken = CreateAccessToken(user.Value);
         categoryId = category.Id;
     }
-
+    
     [Fact]
-    public async Task EditCategory_WhenUserOwnsCategory_ShouldReturnEditCategory()
+    public async Task EditCategory_WhenRequestIsValid_ShouldEditCategory()
     {
         // Arrange
-        var client = CreateClient(accessToken);
         var request = Requests.Categories.EditCategory(
-            categoryId,
+            categoryId.Value,
             name: Constants.Category.Name2.Value,
             color: Constants.Category.Color2.Value);
+
+        var client = CreateClient(accessToken);
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-
+        
         var categoryRepository = GetRequiredService<ICategoryRepository>();
         var category = await categoryRepository.GetAsync(categoryId);
 
@@ -52,18 +53,22 @@ public sealed class EditCategoryTests(TestApplicationFactory app) : IntegrationT
     public async Task EditCategory_WhenUserDoesNotOwnCategory_ShouldReturnForbidden()
     {
         // Arrange
-        var user = await Factories.User.CreateDefaultWithServiceProvider(
+        var userRepository = GetRequiredService<IUserRepository>();
+        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
             Services,
             id: UserId.New(),
             email: Constants.User.Email2);
 
-        await GetRequiredService<IUserRepository>()
-            .AddAsync(user.Value);
+        await userRepository.AddAsync(otherUser.Value);
 
-        var token = CreateAccessToken(user.Value);
-        var client = CreateClient(token);
+        var otherAccessToken = CreateAccessToken(otherUser.Value);
 
-        var request = Requests.Categories.EditCategory(categoryId);
+        var request = Requests.Categories.EditCategory(
+            categoryId.Value,
+            name: Constants.Category.Name2.Value,
+            color: Constants.Category.Color2.Value);
+
+        var client = CreateClient(otherAccessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -76,8 +81,12 @@ public sealed class EditCategoryTests(TestApplicationFactory app) : IntegrationT
     public async Task EditCategory_WhenCategoryDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
+        var request = Requests.Categories.EditCategory(
+            Ulid.NewUlid(),
+            name: Constants.Category.Name2.Value,
+            color: Constants.Category.Color2.Value);
+
         var client = CreateClient(accessToken);
-        var request = Requests.Categories.EditCategory(CategoryId.New());
 
         // Act
         var response = await client.SendAsync(request);
@@ -90,8 +99,12 @@ public sealed class EditCategoryTests(TestApplicationFactory app) : IntegrationT
     public async Task EditCategory_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
+        var request = Requests.Categories.EditCategory(
+            categoryId.Value,
+            name: Constants.Category.Name2.Value,
+            color: Constants.Category.Color2.Value);
+
         var client = CreateClient();
-        var request = Requests.Categories.EditCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
