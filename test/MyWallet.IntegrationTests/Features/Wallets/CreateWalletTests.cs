@@ -16,14 +16,15 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
 
         accessToken = CreateAccessToken(user.Value);
     }
-    
+
     [Fact]
     public async Task CreateWallet_WhenRequestIsValid_ShouldCreateWallet()
     {
         // Arrange
         var request = Requests.Wallets.CreateWallet(
             name: Constants.Wallet.Name.Value,
-            color: Constants.Wallet.Color.Value);
+            color: Constants.Wallet.Color.Value,
+            currency: Constants.Wallet.Currency.Name);
 
         var client = CreateClient(accessToken);
 
@@ -31,7 +32,7 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
         var response = await client.SendAsync(request);
 
         // Assert
-        
+
         // Get the category id from the response location header
         var walletId = response.Headers.Location!
             .ToString()
@@ -52,7 +53,8 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
         // Arrange
         var request = Requests.Wallets.CreateWallet(
             name: Constants.Wallet.Name.Value,
-            color: Constants.Wallet.Color.Value);
+            color: Constants.Wallet.Color.Value,
+            currency: Constants.Wallet.Currency.Name);
 
         var client = CreateClient();
 

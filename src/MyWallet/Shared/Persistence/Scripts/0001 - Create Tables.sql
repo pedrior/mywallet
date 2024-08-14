@@ -27,6 +27,7 @@ CREATE TABLE wallets
     user_id     CHAR(26)                 NOT NULL REFERENCES users (id),
     name        VARCHAR(30)              NOT NULL,
     color       VARCHAR(7)               NOT NULL,
+    currency    VARCHAR(3)               NOT NULL,
     is_archived BOOLEAN                  NOT NULL DEFAULT FALSE,
     archived_at TIMESTAMP WITH TIME ZONE          DEFAULT NULL,
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL,

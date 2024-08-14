@@ -17,6 +17,15 @@ public static class CommonValidations
             }
         });
     }
+
+    public static IRuleBuilderOptions<T, string> Currency<T>(this IRuleBuilder<T, string> builder)
+    {
+        return builder
+            .NotEmpty()
+            .WithMessage("Must not be empty.")
+            .Must(name => MyWallet.Domain.Currency.IsDefined(name, ignoreCase: true))
+            .WithMessage("Must be a supported ISO 4217 currency code.");
+    }
     
     public static IRuleBuilderOptions<T, int> PageNumber<T>(this IRuleBuilder<T, int> builder)
     {

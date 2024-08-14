@@ -13,6 +13,7 @@ public sealed class CreateWalletHandlerTests
     {
         Name = Constants.Wallet.Name.Value,
         Color = Constants.Wallet.Color.Value,
+        Currency = Constants.Wallet.Currency.Name,
         UserId = Ulid.NewUlid()
     };
 

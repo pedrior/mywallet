@@ -16,6 +16,8 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
     public Color Color { get; private set; } = null!;
 
+    public Currency Currency { get; private set; } = null!;
+
     public bool IsArchived { get; private set; }
 
     public DateTimeOffset? ArchivedAt { get; private set; }
@@ -28,15 +30,17 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         WalletId id,
         UserId userId,
         WalletName name,
-        Color color) => new()
+        Color color,
+        Currency currency) => new()
     {
         Id = id,
         UserId = userId,
         Name = name,
         Color = color,
+        Currency = currency,
         CreatedAt = DateTimeOffset.UtcNow
     };
-    
+
     public ErrorOr<Success> Archive()
     {
         if (IsArchived)
@@ -51,7 +55,7 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         return Result.Success;
     }
-    
+
     public ErrorOr<Success> Unarchive()
     {
         if (!IsArchived)
@@ -79,6 +83,6 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         return Result.Success;
     }
-    
+
     private void SetUpdateAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }

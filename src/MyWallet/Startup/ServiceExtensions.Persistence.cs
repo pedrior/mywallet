@@ -38,6 +38,7 @@ public static partial class ServiceExtensions
 
         SqlMapper.AddTypeHandler(new UlidTypeHandler());
         SqlMapper.AddTypeHandler(new ColorTypeHandler());
+        SqlMapper.AddTypeHandler(new CurrencyHandler());
 
         SqlMapper.AddTypeHandler(new UserIdTypeHandler());
         SqlMapper.AddTypeHandler(new UserNameTypeHandler());

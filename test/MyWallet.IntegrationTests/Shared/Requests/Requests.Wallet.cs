@@ -10,14 +10,15 @@ internal static partial class Requests
         public static HttpRequestMessage GetWallet(Ulid id) =>
             new(HttpMethod.Get, $"{BasePath}/wallets/{id}");
 
-        public static HttpRequestMessage CreateWallet(string name, string color)
+        public static HttpRequestMessage CreateWallet(string name, string color, string currency)
         {
             return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets")
             {
                 Content = ToJsonStringContent(new
                 {
                     name,
-                    color
+                    color,
+                    currency
                 })
             };
         }

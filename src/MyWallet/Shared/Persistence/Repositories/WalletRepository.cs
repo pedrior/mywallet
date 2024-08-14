@@ -38,6 +38,7 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                                          user_id,
                                          name,
                                          color,
+                                         currency,
                                          is_archived,
                                          archived_at,
                                          created_at)
@@ -45,6 +46,7 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                             @UserId,
                             @Name,
                             @Color,
+                            @Currency,
                             @IsArchived,
                             @ArchivedAt,
                             @CreatedAt)
@@ -62,6 +64,7 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                     UPDATE wallets w
                     SET name = @Name,
                         color = @Color,
+                        currency = @Currency,
                         is_archived = @IsArchived,
                         archived_at = @ArchivedAt,
                         updated_at = @UpdatedAt

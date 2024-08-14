@@ -12,13 +12,15 @@ public static partial class Factories
             WalletId? id = null,
             UserId? userId = null,
             WalletName? name = null,
-            Color? color = null)
+            Color? color = null,
+            Currency? currency = null)
         {
             return MyWallet.Domain.Wallets.Wallet.Create(
                 id ?? Constants.Constants.Wallet.Id,
                 userId ?? Constants.Constants.User.Id,
                 name ?? Constants.Constants.Wallet.Name,
-                color ?? Constants.Constants.Wallet.Color);
+                color ?? Constants.Constants.Wallet.Color,
+                currency ?? Constants.Constants.Wallet.Currency);
         }
     }
 }
