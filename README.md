@@ -4,19 +4,19 @@ O **MyWallet** é um sistema personalizável para monitorar rendimentos e despes
 transações, estabelecer orçamentos para carteiras e categorias, e criar e personalizar categorias. O sistema também permite visualizar 
 relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem como exportar relatórios em formato PDF.
 
-## :sparkles: Casos de Uso (_wip_)
+## :sparkles: Casos de Uso (_WIP_)
 
 **O usuário deve ser capaz de...**
  
 ### :person_curly_hair: Usuários
 
-- ✅ efetuar registro no sistema;
-- ✅ efetuar login no sistema;
-- ✅ alterar o seu e-mail;
-- ✅ alterar a sua senha;
-- ✅ editar o seu perfil;
-- ✅ visualizar o seu perfil;
-- ⬜ excluir a sua conta;
+- ✅ efetuar registro;
+- ✅ efetuar login;
+- ✅ alterar e-mail;
+- ✅ alterar senha;
+- ✅ editar perfil;
+- ✅ visualizar perfil;
+- ⬜ excluir conta;
 
 ### :label: Categorias
 
@@ -24,8 +24,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ listar categorias;
 - ✅ visualizar categoria;
 - ✅ excluir categoria;
-- ✅ renomear categoria;
-- ✅ alterar visual da categoria;
+- ✅ editar categoria;
 
 ### :purse: Carteiras
 
@@ -33,12 +32,11 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ listar carteiras;
 - ✅ visualizar carteira;
 - ✅ excluir carteira;
-- ✅ renomear carteira;
-- ⬜ alterar visual carteira;
-- ⬜ alterar a moeda da carteira;
+- ⬜ editar carteira (_WIP_);
 - ✅ arquivar carteira;
 - ✅ desarquivar carteira;
-- ⬜ compartilhar uma carteira com outros usuários;
+- ⬜ compartilhar carteira;
+- ⬜ revogar compartilhamento de carteira;
 
 ### :money_with_wings: Transações
 
@@ -56,6 +54,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ⬜ visualizar orçamento;
 - ⬜ renomear orçamento;
 - ⬜ excluir orçamento;
+- ⬜ editar orçamento;
 - ⬜ adicionar carteira ao orçamento;
 - ⬜ adicionar categoria ao orçamento;
 - ⬜ remover carteira do orçamento;
