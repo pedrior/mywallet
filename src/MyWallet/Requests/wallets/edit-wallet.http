@@ -1,0 +1,9 @@
+POST {{baseUrl}}/wallets/{walletId}/edit
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "BB Wallet",
+  "color": "#BA3F1D",
+  "currency": "USD"
+}

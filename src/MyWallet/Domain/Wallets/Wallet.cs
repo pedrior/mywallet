@@ -71,7 +71,7 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         return Result.Success;
     }
 
-    public ErrorOr<Success> Rename(WalletName name)
+    public ErrorOr<Success> Edit(WalletName name, Color color, Currency currency)
     {
         if (IsArchived)
         {
@@ -79,6 +79,9 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         }
 
         Name = name;
+        Color = color;
+        Currency = currency;
+        
         SetUpdateAt();
 
         return Result.Success;

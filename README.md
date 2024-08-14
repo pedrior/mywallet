@@ -32,7 +32,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ listar carteiras;
 - ✅ visualizar carteira;
 - ✅ excluir carteira;
-- ⬜ editar carteira (_WIP_);
+- ✅ editar carteira;
 - ✅ arquivar carteira;
 - ✅ desarquivar carteira;
 - ⬜ compartilhar carteira;

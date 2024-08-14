@@ -3,21 +3,23 @@ using MyWallet.Features.Wallets;
 
 namespace MyWallet.UnitTests.Features.Wallets;
 
-public sealed class RenameWalletHandlerTests
+public sealed class EditWalletHandlerTests
 {
     private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
 
-    private readonly RenameWalletHandler sut;
+    private readonly EditWalletHandler sut;
 
-    private static readonly RenameWalletCommand Command = new()
+    private static readonly EditWalletCommand Command = new()
     {
         WalletId = Constants.Wallet.Id.Value,
-        Name = Constants.Wallet.Name2.Value
+        Name = Constants.Wallet.Name2.Value,
+        Color = Constants.Wallet.Color2.Value,
+        Currency = Constants.Wallet.Currency2.Name
     };
 
-    public RenameWalletHandlerTests()
+    public EditWalletHandlerTests()
     {
-        sut = new RenameWalletHandler(walletRepository);
+        sut = new EditWalletHandler(walletRepository);
     }
 
     [Fact]
@@ -56,12 +58,12 @@ public sealed class RenameWalletHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenRenameFails_ShouldReturnError()
+    public async Task Handle_WhenEditFails_ShouldReturnError()
     {
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        wallet.Archive(); // This will make the rename fail
+        wallet.Archive(); // This will make the Edit fail
 
         A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
             .Returns(wallet);
@@ -74,12 +76,12 @@ public sealed class RenameWalletHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenRenameFails_ShouldNotUpdateWallet()
+    public async Task Handle_WhenEditFails_ShouldNotUpdateWallet()
     {
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
-        
-        wallet.Archive(); // This will make the rename fail
+
+        wallet.Archive(); // This will make the Edit fail
 
         A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
             .Returns(wallet);

@@ -13,5 +13,7 @@ public static partial class Constants
         public static readonly Currency Currency = Currency.BRL;
         
         public static readonly WalletName Name2 = WalletName.Create("BB Wallet").Value;
+        public static readonly Color Color2 = Color.Create("#3F1DBA").Value;
+        public static readonly Currency Currency2 = Currency.USD;
     }
 }

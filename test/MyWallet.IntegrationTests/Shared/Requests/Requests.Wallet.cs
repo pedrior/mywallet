@@ -29,13 +29,15 @@ internal static partial class Requests
         public static HttpRequestMessage UnarchiveWallet(Ulid id) => 
             new(HttpMethod.Post, $"{BasePath}/wallets/{id}/unarchive");
 
-        public static HttpRequestMessage RenameWallet(Ulid id, string name)
+        public static HttpRequestMessage EditWallet(Ulid id, string name, string color, string currency)
         {
-            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets/{id}/rename")
+            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets/{id}/edit")
             {
                 Content = ToJsonStringContent(new
                 {
-                    name
+                    name,
+                    color,
+                    currency
                 })
             };
         }

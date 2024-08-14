@@ -3,7 +3,7 @@ using MyWallet.Domain.Wallets;
 
 namespace MyWallet.IntegrationTests.Features.Wallets;
 
-public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationTest(app)
+public sealed class EditWalletTests(TestApplicationFactory app) : IntegrationTest(app)
 {
     private string accessToken = null!;
     private Ulid walletId;
@@ -23,14 +23,16 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
 
         walletId = wallet.Id.Value;
     }
-    
+
     [Fact]
-    public async Task RenameWallet_WhenRequestIsValid_ShouldChangeWalletName()
+    public async Task EditWallet_WhenRequestIsValid_ShouldChangeEditWallet()
     {
         // Arrange
-        var request = Requests.Wallets.RenameWallet(
-            walletId,
-            Constants.Wallet.Name2.Value);
+        var request = Requests.Wallets.EditWallet(
+            id: walletId,
+            name: Constants.Wallet.Name2.Value,
+            color: Constants.Wallet.Color2.Value,
+            currency: Constants.Wallet.Currency2.Name);
 
         var client = CreateClient(accessToken);
 
@@ -39,15 +41,17 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-        
+
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new(walletId));
 
         wallet!.Name.Should().Be(Constants.Wallet.Name2);
+        wallet.Color.Should().Be(Constants.Wallet.Color2);
+        wallet.Currency.Should().Be(Constants.Wallet.Currency2);
     }
 
     [Fact]
-    public async Task RenameWallet_WhenWalletDoesNotExist_ShouldReturnNotFound()
+    public async Task EditWallet_WhenWalletDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
         var request = Requests.Wallets.GetWallet(Ulid.NewUlid());
@@ -61,7 +65,7 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
     }
 
     [Fact]
-    public async Task RenameWallet_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
+    public async Task EditWallet_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
         var request = Requests.Wallets.GetWallet(walletId);
@@ -75,7 +79,7 @@ public sealed class RenameWalletTests(TestApplicationFactory app) : IntegrationT
     }
 
     [Fact]
-    public async Task RenameWallet_WhenUserDoesNotOwnWallet_ShouldReturnForbidden()
+    public async Task EditWallet_WhenUserDoesNotOwnWallet_ShouldReturnForbidden()
     {
         // Arrange
         var otherUser = await Factories.User.CreateDefaultWithServiceProvider(

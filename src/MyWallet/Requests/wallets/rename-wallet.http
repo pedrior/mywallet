@@ -1,7 +1,0 @@
-POST {{baseUrl}}/wallets/{walletId}/rename
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-    "name": "BB Wallet"
-}
