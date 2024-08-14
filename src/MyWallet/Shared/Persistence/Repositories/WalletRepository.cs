@@ -49,7 +49,7 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                             @Currency,
                             @IsArchived,
                             @ArchivedAt,
-                            @CreatedAt)
+                            NOW() AT TIME ZONE 'UTC')
                  """,
             param: wallet,
             cancellationToken);
@@ -67,7 +67,7 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                         currency = @Currency,
                         is_archived = @IsArchived,
                         archived_at = @ArchivedAt,
-                        updated_at = @UpdatedAt
+                        updated_at = NOW() AT TIME ZONE 'UTC'
                     WHERE w.id = @Id
                  """,
             param: wallet,

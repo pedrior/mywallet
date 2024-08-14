@@ -14,9 +14,11 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 
     public string PasswordHash { get; private set; } = null!;
 
-    public DateTimeOffset CreatedAt { get; private init; }
+    // ReSharper disable UnassignedGetOnlyAutoProperty
+    public DateTimeOffset CreatedAt { get; }
 
-    public DateTimeOffset? UpdatedAt { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; }
+    // ReSharper restore UnassignedGetOnlyAutoProperty
 
     public static async Task<ErrorOr<User>> CreateAsync(
         UserId id,
@@ -37,16 +39,13 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
             Id = id,
             Name = name,
             Email = email,
-            PasswordHash = passwordHasher.Hash(password),
-            CreatedAt = DateTimeOffset.UtcNow
+            PasswordHash = passwordHasher.Hash(password)
         };
     }
 
     public void UpdateProfile(UserName name)
     {
         Name = name;
-
-        SetUpdatedAt();
     }
 
     public bool VerifyPassword(Password password, IPasswordHasher passwordHasher) =>
@@ -75,9 +74,7 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
         }
 
         Email = newEmail;
-
-        SetUpdatedAt();
-
+        
         return Result.Success;
     }
 
@@ -98,10 +95,6 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
 
         PasswordHash = passwordHasher.Hash(newPassword);
 
-        SetUpdatedAt();
-
         return Result.Success;
     }
-
-    private void SetUpdatedAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }

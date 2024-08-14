@@ -32,9 +32,6 @@ public sealed class WalletTests
         wallet.IsArchived.Should().BeTrue();
         wallet.ArchivedAt.Should().BeCloseTo(
             DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
-
-        wallet.UpdatedAt.Should().BeCloseTo(
-            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
     }
 
     [Fact]
@@ -80,9 +77,6 @@ public sealed class WalletTests
         // Assert
         wallet.IsArchived.Should().BeFalse();
         wallet.ArchivedAt.Should().BeNull();
-
-        wallet.UpdatedAt.Should().BeCloseTo(
-            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
     }
 
     [Fact]
@@ -132,8 +126,6 @@ public sealed class WalletTests
         wallet.Name.Should().Be(newName);
         wallet.Color.Should().Be(newColor);
         wallet.Currency.Should().Be(newCurrency);
-        wallet.UpdatedAt.Should().BeCloseTo(
-            DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
     }
 
     [Fact]

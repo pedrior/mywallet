@@ -22,9 +22,11 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
     public DateTimeOffset? ArchivedAt { get; private set; }
 
-    public DateTimeOffset CreatedAt { get; private init; }
+    // ReSharper disable UnassignedGetOnlyAutoProperty
+    public DateTimeOffset CreatedAt { get; }
 
-    public DateTimeOffset? UpdatedAt { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; }
+    // ReSharper restore UnassignedGetOnlyAutoProperty
 
     public static Wallet Create(
         WalletId id,
@@ -37,8 +39,7 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         UserId = userId,
         Name = name,
         Color = color,
-        Currency = currency,
-        CreatedAt = DateTimeOffset.UtcNow
+        Currency = currency
     };
 
     public ErrorOr<Success> Archive()
@@ -50,8 +51,6 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         IsArchived = true;
         ArchivedAt = DateTimeOffset.UtcNow;
-
-        SetUpdateAt();
 
         return Result.Success;
     }
@@ -65,9 +64,7 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         IsArchived = false;
         ArchivedAt = null;
-
-        SetUpdateAt();
-
+        
         return Result.Success;
     }
 
@@ -81,11 +78,7 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
         Name = name;
         Color = color;
         Currency = currency;
-        
-        SetUpdateAt();
 
         return Result.Success;
     }
-
-    private void SetUpdateAt() => UpdatedAt = DateTimeOffset.UtcNow;
 }

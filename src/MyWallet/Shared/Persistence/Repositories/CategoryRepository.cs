@@ -45,7 +45,7 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
                           @Type::category_type,
                           @Name,
                           @Color,
-                          @CreatedAt)
+                          NOW() AT TIME ZONE 'UTC')
                   """,
             param: category,
             cancellationToken: cancellationToken);
@@ -60,7 +60,7 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
                  UPDATE categories
                  SET name = @Name,
                      color = @Color,
-                     updated_at = @UpdatedAt
+                     updated_at = NOW() AT TIME ZONE 'UTC'
                  WHERE id = @Id
                  """,
             param: category,

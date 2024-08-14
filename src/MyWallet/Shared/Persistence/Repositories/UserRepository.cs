@@ -54,7 +54,7 @@ public sealed class UserRepository(IDbContext context, IPublisher publisher)
                          @Name,
                          @Email,
                          @PasswordHash,
-                         @CreatedAt)
+                         NOW() AT TIME ZONE 'UTC')
                  """,
             param: user,
             cancellationToken: cancellationToken);
@@ -70,7 +70,7 @@ public sealed class UserRepository(IDbContext context, IPublisher publisher)
                  SET name = @Name,
                      email = @Email,
                      password_hash = @PasswordHash,
-                     updated_at = @UpdatedAt
+                     updated_at = NOW() AT TIME ZONE 'UTC'
                  WHERE id = @Id
                  """,
             param: user,
