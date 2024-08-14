@@ -40,12 +40,11 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 
 ### :money_with_wings: Transações
 
-- ⬜ criar transação de rendimento;
-- ⬜ criar transação de despesa;
-- ⬜ visualizar transação;
+- ⬜ criar transação;
 - ⬜ listar transações;
-- ⬜ editar transação
-- ⬜ excluir transação
+- ⬜ visualizar transação;
+- ⬜ editar transação;
+- ⬜ excluir transação;
 
 ### :moneybag: Orçamentos
 
