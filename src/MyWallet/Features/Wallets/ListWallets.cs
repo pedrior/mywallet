@@ -52,7 +52,7 @@ public sealed class ListWalletsEndpoint : IEndpoint
         };
 
         return sender.Send(query, cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 

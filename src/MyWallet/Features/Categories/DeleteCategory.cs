@@ -27,7 +27,7 @@ public sealed class DeleteCategoryEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new DeleteCategoryCommand { CategoryId = id }, cancellationToken)
-            .ToResponseAsync(_ => Results.NoContent());
+            .ToResponseAsync(_ => Results.NoContent(), context);
     }
 }
 

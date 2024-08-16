@@ -39,7 +39,7 @@ public sealed class GetWalletEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new GetWalletQuery(id), cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 

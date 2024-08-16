@@ -32,7 +32,7 @@ public sealed class ViewProfileEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new ViewProfileQuery(), cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 

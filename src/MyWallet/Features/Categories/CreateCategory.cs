@@ -48,7 +48,9 @@ public sealed class CreateCategoryEndpoint : IEndpoint
         };
 
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(id => Results.CreatedAtRoute("GetCategory", new { id }));
+            .ToResponseAsync(
+                id => Results.CreatedAtRoute("GetCategory", new { id }),
+                context);
     }
 }
 

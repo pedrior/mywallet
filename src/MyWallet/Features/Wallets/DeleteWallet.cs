@@ -24,7 +24,7 @@ public sealed class DeleteWalletEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new DeleteWalletCommand(id), cancellationToken)
-            .ToResponseAsync(_ => Results.NoContent());
+            .ToResponseAsync(_ => Results.NoContent(), context);
     }
 }
 

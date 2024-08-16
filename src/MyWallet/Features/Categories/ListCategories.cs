@@ -32,7 +32,7 @@ public sealed class ListCategoriesEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new ListCategoriesQuery(), cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 

@@ -28,7 +28,7 @@ public sealed class ChangePasswordEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(_ => Results.NoContent());
+            .ToResponseAsync(_ => Results.NoContent(), context);
     }
 }
 

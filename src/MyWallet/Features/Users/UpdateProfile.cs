@@ -37,7 +37,7 @@ public sealed class UpdateProfileEndpoint : IEndpoint
         };
         
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(_ => Results.NoContent());
+            .ToResponseAsync(_ => Results.NoContent(), context);
     }
 }
 

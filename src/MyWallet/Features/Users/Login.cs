@@ -33,7 +33,7 @@ public sealed class LoginEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 

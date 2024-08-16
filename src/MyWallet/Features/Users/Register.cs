@@ -26,7 +26,7 @@ public sealed class RegisterEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(command, cancellationToken)
-            .ToResponseAsync(_ => Results.Created());
+            .ToResponseAsync(_ => Results.Created(), context);
     }
 }
 

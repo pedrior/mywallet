@@ -41,7 +41,7 @@ public sealed class GetCategoryEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(new GetCategoryQuery(id), cancellationToken)
-            .ToResponseAsync(Results.Ok);
+            .ToResponseAsync(Results.Ok, context);
     }
 }
 
