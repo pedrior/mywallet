@@ -31,7 +31,7 @@ internal static partial class Requests
 
         public static HttpRequestMessage EditWallet(Ulid id, string name, string color, string currency)
         {
-            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/wallets/{id}/edit")
+            return new HttpRequestMessage(HttpMethod.Patch, $"{BasePath}/wallets/{id}")
             {
                 Content = ToJsonStringContent(new
                 {

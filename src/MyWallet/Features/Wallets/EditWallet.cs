@@ -33,7 +33,7 @@ public sealed record EditWalletCommand : ICommand<Success>, IHaveUser
 public sealed class EditWalletEndpoint : IEndpoint
 {
     public void Build(IEndpointRouteBuilder builder) =>
-        builder.MapPost("wallets/{id:length(26)}/edit", EditWalletAsync)
+        builder.MapPatch("wallets/{id:length(26)}", EditWalletAsync)
             .RequireAuthorization();
 
     private static Task<IResult> EditWalletAsync(

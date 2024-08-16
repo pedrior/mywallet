@@ -1,4 +1,4 @@
-POST {{baseUrl}}/wallets/{walletId}/edit
+PATCH {{baseUrl}}/wallets/{walletId}
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
