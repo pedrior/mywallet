@@ -30,7 +30,7 @@ public sealed record EditCategoryCommand : ICommand<Success>, IHaveUser
 public sealed class EditCategoryEndpoint : IEndpoint
 {
     public void Build(IEndpointRouteBuilder builder) =>
-        builder.MapPost("categories/{id:length(26)}/edit", EditCategoryAsync)
+        builder.MapPatch("categories/{id:length(26)}", EditCategoryAsync)
             .RequireAuthorization();
 
     private static Task<IResult> EditCategoryAsync(

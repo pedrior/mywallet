@@ -1,4 +1,4 @@
-POST {{baseUrl}}/categories/{categoryId}/edit
+PATCH {{baseUrl}}/categories/{categoryId}
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 

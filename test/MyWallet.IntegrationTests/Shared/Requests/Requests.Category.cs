@@ -24,7 +24,7 @@ internal static partial class Requests
 
         public static HttpRequestMessage EditCategory(Ulid id, string? name, string? color)
         {
-            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/categories/{id}/edit")
+            return new HttpRequestMessage(HttpMethod.Patch, $"{BasePath}/categories/{id}")
             {
                 Content = ToJsonStringContent(new
                 {
