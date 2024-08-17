@@ -35,6 +35,8 @@ public sealed class Currency : Enum<Currency>
     public static readonly Currency ARS = new("ARS", 28);
     public static readonly Currency VND = new("VND", 29);
     public static readonly Currency NGN = new("NGN", 30);
+    public static readonly Currency RON = new("RON", 31);
+    public static readonly Currency ILS = new("ILS", 32);
 
     private Currency(string name, int value) : base(name, value)
     {
