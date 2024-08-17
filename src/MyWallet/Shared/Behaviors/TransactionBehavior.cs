@@ -25,10 +25,9 @@ public sealed class TransactionBehavior<TRequest, TResponse>(IDbContext context,
 
             return response;
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "Rolling back transaction for {RequestName}",
-                typeof(TRequest).Name);
+            logger.LogInformation("Rolling back transaction for {RequestName}", requestName);
 
             context.RollbackTransaction();
             
