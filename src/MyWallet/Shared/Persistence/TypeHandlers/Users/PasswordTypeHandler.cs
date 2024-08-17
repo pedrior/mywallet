@@ -1,17 +1,17 @@
 using System.Data;
-using ValueObjects_Password = MyWallet.Domain.Users.Password;
+using MyWallet.Domain.Users;
 
 namespace MyWallet.Shared.Persistence.TypeHandlers.Users;
 
-public sealed class PasswordTypeHandler : SqlMapper.TypeHandler<ValueObjects_Password>
+public sealed class PasswordTypeHandler : SqlMapper.TypeHandler<Password>
 {
-    public override void SetValue(IDbDataParameter parameter, ValueObjects_Password? value) =>
+    public override void SetValue(IDbDataParameter parameter, Password? value) =>
         parameter.Value = value?.ToString();
 
-    public override ValueObjects_Password? Parse(object? value)
+    public override Password? Parse(object? value)
     {
         return value is null
             ? null
-            : ValueObjects_Password.Create(value.ToString()!).Value;
+            : Password.Create(value.ToString()!).Value;
     }
 }

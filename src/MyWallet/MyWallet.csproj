@@ -30,4 +30,9 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Categories\Shared\" />
+      <Folder Include="Features\Users\Shared\" />
+    </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Users;
 using MyWallet.Features.Users;
+using MyWallet.Features.Users.ViewProfile;
 
 namespace MyWallet.IntegrationTests.Features.Users;
 
