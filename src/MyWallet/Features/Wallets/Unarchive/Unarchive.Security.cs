@@ -1,4 +1,3 @@
-using MyWallet.Features.Wallets.Shared.Security;
 using MyWallet.Shared.Security;
 
 namespace MyWallet.Features.Wallets.Unarchive;

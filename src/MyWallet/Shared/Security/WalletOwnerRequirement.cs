@@ -1,8 +1,18 @@
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Security;
 
-namespace MyWallet.Features.Wallets.Shared.Security;
+namespace MyWallet.Shared.Security;
+
+public sealed class WalletOwnerRequirement(Ulid userId, Ulid walletId) : ResourceRequirement
+{
+    public Ulid UserId => userId;
+
+    public Ulid WalletId => walletId;
+
+    protected override string ResourceName => "Wallet";
+
+    protected override string ForbiddenDescription => "You are not the owner of this wallet.";
+}
 
 public sealed class WalletOwnerRequirementHandler(IWalletRepository walletRepository)
     : IRequirementHandler<WalletOwnerRequirement>
@@ -15,7 +25,7 @@ public sealed class WalletOwnerRequirementHandler(IWalletRepository walletReposi
 
         if (!await walletRepository.ExistsAsync(walletId, cancellationToken))
         {
-            return requirement.ResourceNotFoundFallbackError;
+            return requirement.ResourceNotFound();
         }
 
         return await walletRepository.IsOwnedByUserAsync(walletId, userId, cancellationToken)

@@ -1,8 +1,18 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Users;
-using MyWallet.Shared.Security;
 
-namespace MyWallet.Features.Categories.Shared.Security;
+namespace MyWallet.Shared.Security;
+
+public sealed class CategoryOwnerRequirement(Ulid userId, Ulid categoryId) : ResourceRequirement
+{
+    public Ulid UserId => userId;
+    
+    public Ulid CategoryId => categoryId;
+
+    protected override string ResourceName => "Category";
+    
+    protected override string ForbiddenDescription => "You are not the owner of this category.";
+}
 
 public sealed class CategoryOwnerRequirementHandler(ICategoryRepository categoryRepository) 
     : IRequirementHandler<CategoryOwnerRequirement>
@@ -15,7 +25,7 @@ public sealed class CategoryOwnerRequirementHandler(ICategoryRepository category
 
         if (!await categoryRepository.ExistsAsync(categoryId, cancellationToken))
         {
-            return requirement.ResourceNotFoundFallbackError;
+            return requirement.ResourceNotFound();
         }
 
         return await categoryRepository.IsOwnedByUserAsync(categoryId, userId, cancellationToken)

@@ -1,4 +1,3 @@
-using MyWallet.Features.Categories.Shared.Security;
 using MyWallet.Shared.Security;
 
 namespace MyWallet.Features.Categories.Get;
