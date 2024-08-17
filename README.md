@@ -40,7 +40,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 
 ### :money_with_wings: Transações
 
-- ⬜ criar transação;
+- ✅ criar transação;
 - ⬜ listar transações;
 - ⬜ visualizar transação;
 - ⬜ editar transação;
