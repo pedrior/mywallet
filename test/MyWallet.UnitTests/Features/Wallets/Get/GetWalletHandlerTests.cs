@@ -1,5 +1,5 @@
 using MyWallet.Features.Wallets.Get;
-using MyWallet.Features.Wallets.Shared.Errors;
+using MyWallet.Features.Wallets.Shared;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.UnitTests.Features.Wallets.Get;

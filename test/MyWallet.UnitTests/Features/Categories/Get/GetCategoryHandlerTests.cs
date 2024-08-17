@@ -1,6 +1,6 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Features.Categories.Get;
-using MyWallet.Features.Categories.Shared.Errors;
+using MyWallet.Features.Categories.Shared;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.UnitTests.Features.Categories.Get;

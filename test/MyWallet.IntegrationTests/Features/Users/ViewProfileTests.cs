@@ -32,7 +32,7 @@ public sealed class ViewProfileTests(TestApplicationFactory app) : IntegrationTe
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var userProfileResponse = await response.Content.ReadFromJsonAsync<UserProfileResponse>();
+        var userProfileResponse = await response.Content.ReadFromJsonAsync<ViewProfileResponse>();
 
         userProfileResponse!.Name.Should().Be(user.Name.Value);
         userProfileResponse.Email.Should().Be(user.Email.Value);

@@ -24,7 +24,7 @@ public sealed class ViewProfileHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnUserProfileResponseForCurrentUser()
     {
         // Arrange
-        var userProfileResponse = new UserProfileResponse
+        var userProfileResponse = new ViewProfileResponse
         {
             Name = "John Doe",
             Email = "john@doe.com",
@@ -32,7 +32,7 @@ public sealed class ViewProfileHandlerTests
             UpdatedAt = null
         };
 
-        A.CallTo(() => dbContext.QuerySingleOrDefaultAsync<UserProfileResponse>(
+        A.CallTo(() => dbContext.QuerySingleOrDefaultAsync<ViewProfileResponse>(
                 A<string>._,
                 A<object>._,
                 A<CancellationToken>._))

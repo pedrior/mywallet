@@ -1,3 +1,7 @@
+CREATE TYPE CATEGORY_TYPE AS ENUM ('income', 'expense');
+
+CREATE TYPE TRANSACTION_TYPE AS ENUM ('income', 'expense');
+
 CREATE TABLE users
 (
     id            CHAR(26)                 NOT NULL PRIMARY KEY,
@@ -8,13 +12,11 @@ CREATE TABLE users
     updated_at    TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TYPE category_type AS ENUM ('income', 'expense');
-
 CREATE TABLE categories
 (
     id         CHAR(26)                 NOT NULL PRIMARY KEY,
     user_id    CHAR(26)                 NOT NULL REFERENCES users (id),
-    type       category_type            NOT NULL,
+    type       CATEGORY_TYPE            NOT NULL,
     name       VARCHAR(30)              NOT NULL,
     color      VARCHAR(7)               NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -34,14 +36,12 @@ CREATE TABLE wallets
     updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT NULL
 );
 
-CREATE TYPE transaction_type AS ENUM ('income', 'expense');
-
 CREATE TABLE transactions
 (
     id          CHAR(26)                 NOT NULL PRIMARY KEY,
     wallet_id   CHAR(26)                 NOT NULL REFERENCES wallets (id),
     category_id CHAR(26)                 NOT NULL REFERENCES categories (id),
-    type        transaction_type         NOT NULL,
+    type        TRANSACTION_TYPE         NOT NULL,
     name        VARCHAR(30)              NOT NULL,
     amount      NUMERIC(10, 2)           NOT NULL,
     currency    VARCHAR(3)               NOT NULL,

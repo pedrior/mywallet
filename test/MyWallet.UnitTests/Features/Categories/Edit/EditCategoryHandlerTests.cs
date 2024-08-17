@@ -1,6 +1,6 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Features.Categories.Edit;
-using MyWallet.Features.Categories.Shared.Errors;
+using MyWallet.Features.Categories.Shared;
 
 namespace MyWallet.UnitTests.Features.Categories.Edit;
 

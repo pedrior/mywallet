@@ -42,7 +42,7 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
                                           created_at)
                   VALUES (@Id,
                           @UserId,
-                          @Type::category_type,
+                          @Type::CATEGORY_TYPE,
                           @Name,
                           @Color,
                           NOW() AT TIME ZONE 'UTC')

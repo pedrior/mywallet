@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using MyWallet.Startup;
+using MyWallet;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

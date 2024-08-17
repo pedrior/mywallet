@@ -45,7 +45,7 @@ public sealed class TransactionRepository(IDbContext context, IPublisher publish
                     VALUES (@Id,
                             @WalletId,
                             @CategoryId,
-                            @Type::transaction_type,
+                            @Type::TRANSACTION_TYPE,
                             @Name,
                             @Amount,
                             @Currency,
@@ -65,7 +65,7 @@ public sealed class TransactionRepository(IDbContext context, IPublisher publish
                     UPDATE transactions t
                     SET wallet_id = @WalletId,
                         category_id = @CategoryId,
-                        type = @Type::transaction_type,
+                        type = @Type::TRANSACTION_TYPE,
                         name = @Name,
                         amount = @Amount,
                         currency = @Currency,

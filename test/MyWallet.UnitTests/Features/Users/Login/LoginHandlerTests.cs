@@ -2,7 +2,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using MyWallet.Domain.Users;
 using MyWallet.Features.Users.Login;
 using MyWallet.Shared.Security.Tokens;
-using UserErrors = MyWallet.Features.Users.Shared.Errors.UserErrors;
+using UserErrors = MyWallet.Features.Users.Shared.UserErrors;
 
 namespace MyWallet.UnitTests.Features.Users.Login;
 
