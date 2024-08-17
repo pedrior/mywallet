@@ -3,6 +3,7 @@ using Asp.Versioning;
 using Cysharp.Serialization.Json;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Shared.Behaviors;
 using MyWallet.Shared.Features;
@@ -65,6 +66,8 @@ public static partial class ServiceExtensions
         services.AddTransient<IPasswordHasher, PasswordHasher>();
 
         services.AddTransient<IEmailUniquenessChecker, EmailUniquenessChecker>();
+        
+        services.AddTransient<ITransactionService, TransactionService>();
     }
 
     private static void AddEndpoints(this IServiceCollection services)

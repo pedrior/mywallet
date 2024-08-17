@@ -1,0 +1,13 @@
+POST {{baseUrl}}/transactions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "walletId": "{{walletId}}",
+  "categoryId": "{{categoryId}}",
+  "type": "expense",
+  "name": "Dinner with friends",
+  "amount": 100.00,
+  "currency": "BRL",
+  "date": "2024-08-17"
+}
