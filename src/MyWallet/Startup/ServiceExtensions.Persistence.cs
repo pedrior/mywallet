@@ -1,10 +1,12 @@
 using MyWallet.Domain.Categories;
+using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
 using MyWallet.Shared.Persistence;
 using MyWallet.Shared.Persistence.Repositories;
 using MyWallet.Shared.Persistence.TypeHandlers;
 using MyWallet.Shared.Persistence.TypeHandlers.Categories;
+using MyWallet.Shared.Persistence.TypeHandlers.Transactions;
 using MyWallet.Shared.Persistence.TypeHandlers.Users;
 using MyWallet.Shared.Persistence.TypeHandlers.Wallets;
 
@@ -29,6 +31,7 @@ public static partial class ServiceExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IWalletRepository, WalletRepository>();
     }
 
@@ -36,6 +39,7 @@ public static partial class ServiceExtensions
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
+        SqlMapper.AddTypeHandler(new AmountHandler());
         SqlMapper.AddTypeHandler(new UlidTypeHandler());
         SqlMapper.AddTypeHandler(new ColorTypeHandler());
         SqlMapper.AddTypeHandler(new CurrencyHandler());
@@ -48,6 +52,10 @@ public static partial class ServiceExtensions
         SqlMapper.AddTypeHandler(new CategoryIdTypeHandler());
         SqlMapper.AddTypeHandler(new CategoryTypeTypeHandler());
         SqlMapper.AddTypeHandler(new CategoryNameTypeHandler());
+        
+        SqlMapper.AddTypeHandler(new TransactionIdHandler());
+        SqlMapper.AddTypeHandler(new TransactionNameHandler());
+        SqlMapper.AddTypeHandler(new TransactionTypeHandler());
 
         SqlMapper.AddTypeHandler(new WalletIdTypeHandler());
         SqlMapper.AddTypeHandler(new WalletNameTypeHandler());

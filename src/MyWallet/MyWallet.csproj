@@ -18,6 +18,10 @@
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.2"/>
         <PackageReference Include="Ulid" Version="1.3.4"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="TestUtils" />
+    </ItemGroup>
 
     <ItemGroup>
         <None Update="Shared\Persistence\Scripts\*.sql">

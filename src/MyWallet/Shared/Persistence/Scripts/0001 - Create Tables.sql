@@ -33,3 +33,19 @@ CREATE TABLE wallets
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT NULL
 );
+
+CREATE TYPE transaction_type AS ENUM ('income', 'expense');
+
+CREATE TABLE transactions
+(
+    id          CHAR(26)                 NOT NULL PRIMARY KEY,
+    wallet_id   CHAR(26)                 NOT NULL REFERENCES wallets (id),
+    category_id CHAR(26)                 NOT NULL REFERENCES categories (id),
+    type        transaction_type         NOT NULL,
+    name        VARCHAR(30)              NOT NULL,
+    amount      NUMERIC(10, 2)           NOT NULL,
+    currency    VARCHAR(3)               NOT NULL,
+    date        DATE                     NOT NULL,
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
