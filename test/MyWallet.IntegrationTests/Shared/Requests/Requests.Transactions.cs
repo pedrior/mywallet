@@ -4,6 +4,9 @@ internal static partial class Requests
 {
     public static class Transactions
     {
+        public static HttpRequestMessage GetTransaction(Ulid transactionId) => 
+            new(HttpMethod.Get, $"{BasePath}/transactions/{transactionId}");
+
         public static HttpRequestMessage CreateTransaction(
             Ulid walletId,
             Ulid categoryId,

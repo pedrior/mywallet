@@ -1,4 +1,5 @@
 using MyWallet.Domain.Transactions;
+using MyWallet.Domain.Wallets;
 
 namespace MyWallet.Shared.Persistence.Repositories;
 
@@ -14,6 +15,18 @@ public sealed class TransactionRepository(IDbContext context, IPublisher publish
                     WHERE t.id = @id
                  """,
             param: new { id },
+            cancellationToken);
+    }
+
+    public Task<WalletId?> GetWalletIdAsync(TransactionId transactionId, CancellationToken cancellationToken)
+    {
+        return Context.QuerySingleOrDefaultAsync<WalletId>(
+            sql: """
+                    SELECT t.wallet_id
+                    FROM transactions t
+                    WHERE t.id = @transactionId
+                 """,
+            param: new { transactionId },
             cancellationToken);
     }
 

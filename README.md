@@ -42,7 +42,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 
 - ✅ criar transação;
 - ⬜ listar transações;
-- ⬜ visualizar transação;
+- ✅ visualizar transação;
 - ⬜ editar transação;
 - ⬜ excluir transação;
 

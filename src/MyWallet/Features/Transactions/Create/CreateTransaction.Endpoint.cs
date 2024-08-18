@@ -16,9 +16,9 @@ public sealed class CreateTransactionEndpoint : IEndpoint
         CancellationToken cancellationToken)
     {
         return sender.Send(request.ToCommand(), cancellationToken)
-            .ToResponseAsync(id => Results.Created(
-                    uri: new Uri($"https://www.replace-this/{id}"),
-                    value: null),
+            .ToResponseAsync(id => Results.CreatedAtRoute(
+                    routeName: "GetTransaction",
+                    routeValues: new { id }),
                 context);
     }
 }

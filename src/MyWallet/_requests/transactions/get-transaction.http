@@ -1,0 +1,2 @@
+GET {{baseUrl}}/transactions/01J5JM9JSC57ZSR36C91YC4XE0
+Authorization: Bearer {{accessToken}}
