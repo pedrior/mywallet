@@ -4,15 +4,11 @@ using MyWallet.Domain.Wallets;
 
 namespace MyWallet.Shared.Security;
 
-public sealed class TransactionOwnerRequirement(Ulid userId, Ulid transactionId) : ResourceRequirement
+public sealed class TransactionOwnerRequirement(Ulid userId, Ulid transactionId) : Requirement
 {
     public Ulid UserId => userId;
 
     public Ulid TransactionId => transactionId;
-
-    protected override string ResourceName => "Transaction";
-
-    protected override string ForbiddenDescription => "You are not the owner of this transaction.";
 }
 
 public sealed class TransactionOwnerRequirementHandler(
@@ -28,13 +24,13 @@ public sealed class TransactionOwnerRequirementHandler(
 
         if (!await transactionRepository.ExistsAsync(transactionId, cancellationToken))
         {
-            return requirement.ResourceNotFound();
+            return requirement.Allow();
         }
 
         var walletId = await transactionRepository.GetWalletIdAsync(transactionId, cancellationToken);
         if (walletId is null)
         {
-            return requirement.Forbid();
+            return requirement.Allow();
         }
 
         return await walletRepository.IsOwnedByUserAsync(walletId, userId, cancellationToken)

@@ -1,5 +1,6 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Archive;
+using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Archive;
 
@@ -68,6 +69,21 @@ public sealed class ArchiveWalletHandlerTests
         // Assert
         A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
             .MustHaveHappened();
+    }
+    
+    [Fact]
+    public async Task Handle_WhenWalletDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+            .Returns(null as Wallet);
+
+        // Act
+        var result = await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WalletErrors.NotFound);
     }
 
     [Fact]

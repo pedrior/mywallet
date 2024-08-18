@@ -11,8 +11,12 @@ public sealed class UnarchiveWalletHandler(IWalletRepository walletRepository)
     {
         var walletId = new WalletId(command.WalletId);
         var wallet = await walletRepository.GetAsync(walletId, cancellationToken);
+        if (wallet is null)
+        {
+            return Shared.WalletErrors.NotFound;
+        }
         
-        return await wallet!.Unarchive()
+        return await wallet.Unarchive()
             .ThenDoAsync(_ => walletRepository.UpdateAsync(wallet, cancellationToken));
     }
 }

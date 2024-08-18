@@ -1,5 +1,6 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Delete;
+using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Delete;
 
@@ -23,6 +24,9 @@ public sealed class DeleteWalletHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnDeleted()
     {
         // Arrange
+        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+            .Returns(true);
+        
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
@@ -35,11 +39,29 @@ public sealed class DeleteWalletHandlerTests
     public async Task Handle_WhenCalled_ShouldDeleteWallet()
     {
         // Arrange
+        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+            .Returns(true);
+        
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         A.CallTo(() => walletRepository.DeleteAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
+    }
+    
+    [Fact]
+    public async Task Handle_WhenWalletDoesNotExist_ShouldReturnWalletNotFound()
+    {
+        // Arrange
+        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+            .Returns(false);
+
+        // Act
+        var result = await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WalletErrors.NotFound);
     }
 }

@@ -11,12 +11,16 @@ public sealed class EditWalletHandler(IWalletRepository walletRepository)
         CancellationToken cancellationToken)
     {
         var wallet = await walletRepository.GetAsync(new(command.WalletId), cancellationToken);
-        
+        if (wallet is null)
+        {
+            return Shared.WalletErrors.NotFound;
+        }
+
         var name = WalletName.Create(command.Name).Value;
         var color = Color.Create(command.Color).Value;
         var currency = Currency.FromName(command.Currency, ignoreCase: true);
-        
-        return await wallet!.Edit(name, color, currency)
+
+        return await wallet.Edit(name, color, currency)
             .ThenDoAsync(_ => walletRepository.UpdateAsync(wallet, cancellationToken));
     }
 }

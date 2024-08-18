@@ -3,6 +3,7 @@ using MyWallet.Domain.Categories;
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Transactions.Create;
+using TransactionErrors = MyWallet.Features.Transactions.Shared.TransactionErrors;
 
 namespace MyWallet.UnitTests.Features.Transactions.Create;
 
@@ -82,5 +83,39 @@ public sealed class CreateTransactionHandlerTests
         // Assert
         A.CallTo(() => transactionRepository.AddAsync(transaction, A<CancellationToken>.Ignored))
             .MustHaveHappenedOnceExactly();
+    }
+    
+    [Fact]
+    public async Task Handle_WhenWalletDoesNotExist_ShouldReturnWalletNotFound()
+    {
+        // Arrange
+        A.CallTo(() => walletRepository.GetAsync(
+                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
+                A<CancellationToken>.Ignored))
+            .Returns(null as Wallet);
+
+        // Act
+        var result = await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(TransactionErrors.WalletNotFound);
+    }
+    
+    [Fact]
+    public async Task Handle_WhenCategoryDoesNotExist_ShouldReturnCategoryNotFound()
+    {
+        // Arrange
+        A.CallTo(() => categoryRepository.GetAsync(
+                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
+                A<CancellationToken>.Ignored))
+            .Returns(null as Category);
+
+        // Act
+        var result = await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(TransactionErrors.CategoryNotFound);
     }
 }

@@ -1,5 +1,6 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Edit;
+using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Edit;
 
@@ -57,6 +58,21 @@ public sealed class EditWalletHandlerTests
             .MustHaveHappenedOnceExactly();
     }
 
+    [Fact]
+    public async Task Handle_WhenWalletDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+            .Returns(null as Wallet);
+
+        // Act
+        var result = await sut.Handle(Command, CancellationToken.None);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WalletErrors.NotFound);
+    }
+    
     [Fact]
     public async Task Handle_WhenEditFails_ShouldReturnError()
     {
