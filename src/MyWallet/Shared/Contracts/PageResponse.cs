@@ -1,6 +1,6 @@
 namespace MyWallet.Shared.Contracts;
 
-public sealed record PageResponse<T>(IEnumerable<T> Items, int Page, int Limit, int Total)
+public record PageResponse<T>(IEnumerable<T> Items, int Page, int Limit, int Total)
 {
     public static PageResponse<T> Empty(int page, int limit) => new([], page, limit, 0);
     

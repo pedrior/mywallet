@@ -1,0 +1,2 @@
+GET {{baseUrl}}/transactions?walletId=01J5GXMBHYMZAT9YN8H7J3DS4J&from=2024-08-17
+Authorization: Bearer {{accessToken}}
