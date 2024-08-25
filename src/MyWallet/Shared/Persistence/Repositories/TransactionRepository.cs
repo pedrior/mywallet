@@ -82,7 +82,7 @@ public sealed class TransactionRepository(IDbContext context, IPublisher publish
                         name = @Name,
                         amount = @Amount,
                         currency = @Currency,
-                        date = @Date:DATE,
+                        date = @Date::DATE,
                         updated_at = NOW() AT TIME ZONE 'UTC'
                     WHERE t.id = @Id
                  """,
