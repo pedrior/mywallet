@@ -105,7 +105,7 @@ public sealed class EditTransactionTests(TestApplicationFactory app) : Integrati
     {
         // Arrange
         var client = CreateClient();
-        var request = Requests.Transactions.GetTransaction(transactionId.Value);
+        var request = Requests.Transactions.EditTransaction(transactionId.Value);
 
         // Act
         var response = await client.SendAsync(request);
@@ -128,7 +128,7 @@ public sealed class EditTransactionTests(TestApplicationFactory app) : Integrati
         var otherUserAccessToken = CreateAccessToken(otherUser.Value);
 
         var client = CreateClient(otherUserAccessToken);
-        var request = Requests.Transactions.GetTransaction(transactionId.Value);
+        var request = Requests.Transactions.EditTransaction(transactionId.Value);
 
         // Act
         var response = await client.SendAsync(request);
