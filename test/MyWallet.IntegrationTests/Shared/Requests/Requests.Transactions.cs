@@ -79,5 +79,8 @@ internal static partial class Requests
                 })
             };
         }
+        
+        public static HttpRequestMessage DeleteTransaction(Ulid transactionId) =>
+            new(HttpMethod.Delete, $"{BasePath}/transactions/{transactionId}");
     }
 }

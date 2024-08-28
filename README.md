@@ -44,7 +44,7 @@ relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem 
 - ✅ listar transações;
 - ✅ visualizar transação;
 - ✅ editar transação;
-- ⬜ excluir transação;
+- ✅ excluir transação;
 
 ### :moneybag: Orçamentos
 

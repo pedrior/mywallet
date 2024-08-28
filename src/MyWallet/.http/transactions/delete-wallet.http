@@ -1,0 +1,2 @@
+DELETE {{baseUrl}}/transactions/{{transactionId}}
+Authorization: Bearer {{accessToken}}
