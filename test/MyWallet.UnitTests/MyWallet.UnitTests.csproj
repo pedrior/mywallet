@@ -6,4 +6,7 @@
         <ProjectReference Include="..\..\src\MyWallet\MyWallet.csproj" />
         <ProjectReference Include="..\TestUtils\TestUtils.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    </ItemGroup>
 </Project>
