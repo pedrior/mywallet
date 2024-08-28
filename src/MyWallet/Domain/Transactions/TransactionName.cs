@@ -17,8 +17,8 @@ public sealed class TransactionName : ValueObject
 
     public string Value { get; private init; } = null!;
 
-    public static ErrorOr<TransactionName> Create(string value) => Validate(value)
-        .Then(_ => new TransactionName { Value = value });
+    public static ErrorOr<TransactionName> Create(string? value) => Validate(value)
+        .Then(_ => new TransactionName { Value = value! });
 
     public static ErrorOr<Success> Validate(string? value) => ErrorCollection.Empty
         .For(string.IsNullOrWhiteSpace(value), IsEmpty)

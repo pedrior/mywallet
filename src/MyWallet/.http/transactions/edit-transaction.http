@@ -1,0 +1,9 @@
+PATCH {{baseUrl}}/transactions/{{transactionId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Jantar com amigos",
+  "amount": 30,
+  "currency: "USD"
+}

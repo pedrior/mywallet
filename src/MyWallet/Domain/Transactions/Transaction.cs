@@ -16,13 +16,13 @@ public sealed class Transaction : Entity<TransactionId>, IAggregateRoot, IAudita
     public CategoryId CategoryId { get; private set; } = null!;
 
     public TransactionType Type { get; init; } = null!;
-    
-    public TransactionName Name { get; init; } = null!;
+
+    public TransactionName Name { get; private set; } = null!;
 
     public Amount Amount { get; private set; } = null!;
-    
-    public Currency Currency { get; init; } = null!;
-    
+
+    public Currency Currency { get; private set; } = null!;
+
     public DateOnly Date { get; private set; }
 
     // ReSharper disable UnassignedGetOnlyAutoProperty
@@ -45,7 +45,7 @@ public sealed class Transaction : Entity<TransactionId>, IAggregateRoot, IAudita
         {
             return TransactionErrors.AmountIsZero;
         }
-        
+
         return new Transaction
         {
             Id = id,
@@ -58,8 +58,34 @@ public sealed class Transaction : Entity<TransactionId>, IAggregateRoot, IAudita
             Date = date
         };
     }
-    
-    internal void ChangeWallet(WalletId walletId) => WalletId = walletId;
 
-    internal void ChangeCategory(CategoryId categoryId) => CategoryId = categoryId;
+    public ErrorOr<Success> ChangeWallet(Wallet wallet)
+    {
+        if (wallet.IsArchived)
+        {
+            return TransactionErrors.WalletIsArchived;
+        }
+
+        WalletId = wallet.Id;
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> ChangeCategory(Category category)
+    {
+        if (!Type.MatchCategoryType(category.Type))
+        {
+            return TransactionErrors.CategoryTypeMismatch;
+        }
+
+        CategoryId = category.Id;
+        return Result.Success;
+    }
+
+    public void ChangeName(TransactionName name) => Name = name;
+
+    public void ChangeAmount(Amount amount) => Amount = amount;
+
+    public void ChangeCurrency(Currency currency) => Currency = currency;
+
+    public void ChangeDate(DateOnly date) => Date = date;
 }
