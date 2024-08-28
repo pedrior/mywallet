@@ -53,6 +53,32 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
         await base.AddAsync(category, cancellationToken);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Category> categories, CancellationToken cancellationToken = default)
+    {
+        await Context.ExecuteAsync(
+            sql: """
+                  INSERT INTO categories (id,
+                                          user_id,
+                                          type,
+                                          name,
+                                          color,
+                                          created_at)
+                  VALUES (@Id,
+                          @UserId,
+                          @Type::CATEGORY_TYPE,
+                          @Name,
+                          @Color,
+                          NOW() AT TIME ZONE 'UTC')
+                  """,
+            param: categories,
+            cancellationToken: cancellationToken);
+        
+        foreach (var category in categories)
+        {
+            await PublishEventsAsync(category, cancellationToken);
+        }
+    }
+    
     public override async Task UpdateAsync(Category category, CancellationToken cancellationToken = default)
     {
         await Context.ExecuteAsync(

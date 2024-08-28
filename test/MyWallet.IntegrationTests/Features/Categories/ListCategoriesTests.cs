@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Users;
-using MyWallet.Features.Categories;
 using MyWallet.Features.Categories.List;
+using MyWallet.Shared.Persistence;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 
@@ -21,6 +21,15 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
         await userRepository.AddAsync(user.Value);
 
         accessToken = CreateAccessToken(user.Value);
+
+        // Remove any default category
+        var db = GetRequiredService<IDbContext>();
+        await db.ExecuteAsync(
+            sql: """
+                     DELETE FROM Categories c
+                     WHERE c.user_id = @user_id
+                 """,
+            param: new { user_id = user.Value.Id });
 
         // Create categories
         for (var i = 0; i < CategoriesCount; i++)
@@ -68,6 +77,15 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
 
         var otherAccessToken = CreateAccessToken(otherUser.Value);
 
+        // Remove any default category
+        var db = GetRequiredService<IDbContext>();
+        await db.ExecuteAsync(
+            sql: """
+                     DELETE FROM Categories c
+                     WHERE c.user_id = @user_id
+                 """,
+            param: new { user_id = otherUser.Value.Id });
+        
         var request = Requests.Categories.ListCategories();
 
         var client = CreateClient(otherAccessToken);

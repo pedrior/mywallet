@@ -1,3 +1,5 @@
+using MyWallet.Domain.Users.Events;
+
 namespace MyWallet.Domain.Users;
 
 public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
@@ -34,13 +36,17 @@ public sealed class User : Entity<UserId>, IAggregateRoot, IAuditable
             return UserErrors.EmailNotUnique;
         }
 
-        return new User
+        var user = new User
         {
             Id = id,
             Name = name,
             Email = email,
             PasswordHash = passwordHasher.Hash(password)
         };
+        
+        user.AddEvent(new UserCreatedEvent(id));
+
+        return user;
     }
 
     public void UpdateProfile(UserName name)

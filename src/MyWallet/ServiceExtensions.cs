@@ -83,6 +83,8 @@ public static class ServiceExtensions
         services.AddTransient<IEmailUniquenessChecker, EmailUniquenessChecker>();
         
         services.AddTransient<ITransactionService, TransactionService>();
+
+        services.AddTransient<IDefaultCategoriesProvider, DefaultCategoriesProvider>();
     }
 
     private static void AddEndpoints(this IServiceCollection services)

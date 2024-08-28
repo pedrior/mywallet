@@ -1,4 +1,5 @@
 using MyWallet.Domain.Users;
+using MyWallet.Domain.Users.Events;
 
 namespace MyWallet.UnitTests.Domain.Users;
 
@@ -8,6 +9,18 @@ public sealed class UserTest
     private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
     private readonly IEmailUniquenessChecker emailUniquenessChecker = A.Fake<IEmailUniquenessChecker>();
 
+    [Fact]
+    public async Task CreateAsync_WhenCalled_ShouldRaiseUserCreatedEvent()
+    {
+        // Arrange
+        // Act
+        var result = await Factories.User.CreateDefault();
+        
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Events.Should().ContainSingle(e => e is UserCreatedEvent);
+    }
+    
     [Fact]
     public async Task CreateAsync_WhenEmailIsNotUnique_ShouldReturnEmailNotUnique()
     {

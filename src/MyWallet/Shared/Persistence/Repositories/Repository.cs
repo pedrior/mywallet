@@ -17,7 +17,7 @@ public abstract class Repository<TEntity, TId>(IDbContext context, IPublisher pu
 
     public abstract Task DeleteAsync(TId id, CancellationToken cancellationToken = default);
 
-    private async Task PublishEventsAsync(TEntity entity, CancellationToken cancellationToken = default)
+    protected async Task PublishEventsAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity.Events.Count is 0)
         {
