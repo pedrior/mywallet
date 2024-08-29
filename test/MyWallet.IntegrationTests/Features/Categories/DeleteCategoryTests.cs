@@ -1,65 +1,57 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Users;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 
-public sealed class DeleteCategoryTests(TestApplicationFactory app) : IntegrationTest(app)
+public sealed class DeleteCategoryTests(TestApplicationFactory app) : CategoryIntegrationTest(app)
 {
-    private string accessToken = null!;
-    private CategoryId categoryId = null!;
-
-    public override async Task InitializeAsync()
-    {
-        var userRepository = GetRequiredService<IUserRepository>();
-        var categoryRepository = GetRequiredService<ICategoryRepository>();
-
-        var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-        await userRepository.AddAsync(user.Value);
-
-        accessToken = CreateAccessToken(user.Value);
-
-        var category = Factories.Category.CreateDefault(userId: user.Value.Id);
-        await categoryRepository.AddAsync(category);
-
-        categoryId = category.Id;
-    }
-    
     [Fact]
-    public async Task DeleteCategory_WhenRequestIsValid_ShouldDeleteCategory()
+    public async Task DeleteCategory_WhenRequestIsValid_ShouldReturnNoContent()
     {
         // Arrange
-        var request = Requests.Categories.DeleteCategory(categoryId.Value);
+        var (userId, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.DeleteCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
 
-        var categoryRepository = GetRequiredService<ICategoryRepository>();
-        var category = await categoryRepository.GetAsync(categoryId);
+    [Fact]
+    public async Task DeleteCategory_WhenRequestIsValid_ShouldDeleteCategory()
+    {
+        // Arrange
+        var (userId, accessToken) = await CreateUserAsync();
+        var client = CreateClient(accessToken);
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.DeleteCategory(categoryId);
+
+        // Act
+        await client.SendAsync(request);
+
+        // Assert
+        var category = await GetRequiredService<ICategoryRepository>()
+            .GetAsync(categoryId);
 
         category.Should().BeNull();
     }
 
     [Fact]
-    public async Task DeleteCategory_WhenUserDoesNotOwnCategory_ShouldReturnForbidden()
+    public async Task DeleteCategory_WhenCategoryIsOwnedByAnotherUser_ShouldReturnForbidden()
     {
         // Arrange
-        var userRepository = GetRequiredService<IUserRepository>();
-        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
-            Services,
-            id: UserId.New(),
-            email: Constants.User.Email2);
+        var (_, accessToken) = await CreateUserAsync();
+        var (userId, _) = await CreateUser2Async();
 
-        await userRepository.AddAsync(otherUser.Value);
+        var client = CreateClient(accessToken);
 
-        var otherAccessToken = CreateAccessToken(otherUser.Value);
-
-        var request = Requests.Categories.DeleteCategory(categoryId.Value);
-
-        var client = CreateClient(otherAccessToken);
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.DeleteCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
@@ -72,9 +64,10 @@ public sealed class DeleteCategoryTests(TestApplicationFactory app) : Integratio
     public async Task DeleteCategory_WhenCategoryDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        var request = Requests.Categories.DeleteCategory(Ulid.NewUlid());
-
+        var (_, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
+
+        var request = Requests.Categories.DeleteCategory(CategoryId.New());
 
         // Act
         var response = await client.SendAsync(request);
@@ -87,8 +80,11 @@ public sealed class DeleteCategoryTests(TestApplicationFactory app) : Integratio
     public async Task DeleteCategory_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = Requests.Categories.DeleteCategory(categoryId.Value);
+        var (userId, _) = await CreateUserAsync();
         var client = CreateClient();
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.DeleteCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);

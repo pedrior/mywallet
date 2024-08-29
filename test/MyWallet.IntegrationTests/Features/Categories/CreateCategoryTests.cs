@@ -1,43 +1,46 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Users;
+using MyWallet.IntegrationTests.Shared.Extensions;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 
-public sealed class CreateCategoryTests(TestApplicationFactory app) : IntegrationTest(app)
+public sealed class CreateCategoryTests(TestApplicationFactory app) : CategoryIntegrationTest(app)
 {
-    private string accessToken = null!;
-
-    public override async Task InitializeAsync()
-    {
-        var userRepository = GetRequiredService<IUserRepository>();
-
-        var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-        await userRepository.AddAsync(user.Value);
-
-        accessToken = CreateAccessToken(user.Value);
-    }
-
     [Fact]
-    public async Task CreateCategory_WhenRequestIsValid_ShouldCreateCategory()
+    public async Task CreateCategory_WhenRequestIsValid_ShouldReturnCreated()
     {
         // Arrange
-        var request = CreateDefaultRequest();
+        var (_, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
+
+        var request = Requests.Categories.CreateCategory();
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        
-        // Get the category id from the response location header
-        var categoryId = response.Headers.Location!
-            .ToString()
-            .Split('/')
-            .Last();
 
-        var categoryRepository = GetRequiredService<ICategoryRepository>();
-        var category = await categoryRepository.GetAsync(new(Ulid.Parse(categoryId)));
+        response.Headers.Location.Should().NotBeNull();
+        response.Headers.Location!.ToString().Should().Contain(
+            $"/categories/{response.Headers.FindLastResourceIdentifier()}");
+    }
+
+    [Fact]
+    public async Task CreateCategory_WhenRequestIsValid_ShouldCreateCategory()
+    {
+        // Arrange
+        var (_, accessToken) = await CreateUserAsync();
+        var client = CreateClient(accessToken);
+
+        var request = Requests.Categories.CreateCategory();
+
+        // Act
+        var response = await client.SendAsync(request);
+
+        // Assert
+        var categoryId = Ulid.Parse(response.Headers.FindLastResourceIdentifier());
+        var category = await GetRequiredService<ICategoryRepository>()
+            .GetAsync(new CategoryId(categoryId));
 
         category.Should().NotBeNull();
         category!.Type.Should().Be(Constants.Category.Type);
@@ -49,8 +52,9 @@ public sealed class CreateCategoryTests(TestApplicationFactory app) : Integratio
     public async Task CreateCategory_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = CreateDefaultRequest();
         var client = CreateClient();
+
+        var request = Requests.Categories.CreateCategory();
 
         // Act
         var response = await client.SendAsync(request);
@@ -58,10 +62,4 @@ public sealed class CreateCategoryTests(TestApplicationFactory app) : Integratio
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
-
-    private static HttpRequestMessage CreateDefaultRequest() =>
-        Requests.Categories.CreateCategory(
-            type: Constants.Category.Type.Name,
-            name: Constants.Category.Name.Value,
-            color: Constants.Category.Color.Value);
 }

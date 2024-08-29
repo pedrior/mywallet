@@ -1,61 +1,48 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Users;
 using MyWallet.Features.Categories.List;
-using MyWallet.Shared.Persistence;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 
-public sealed class ListCategoriesTests(TestApplicationFactory app) : IntegrationTest(app)
+public sealed class ListCategoriesTests(TestApplicationFactory app) : CategoryIntegrationTest(app)
 {
     private const int CategoriesCount = 5;
 
-    private string accessToken = null!;
-
-    public override async Task InitializeAsync()
-    {
-        var userRepository = GetRequiredService<IUserRepository>();
-        var categoryRepository = GetRequiredService<ICategoryRepository>();
-
-        var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-        await userRepository.AddAsync(user.Value);
-
-        accessToken = CreateAccessToken(user.Value);
-
-        // Remove any default category
-        var db = GetRequiredService<IDbContext>();
-        await db.ExecuteAsync(
-            sql: """
-                     DELETE FROM Categories c
-                     WHERE c.user_id = @user_id
-                 """,
-            param: new { user_id = user.Value.Id });
-
-        // Create categories
-        for (var i = 0; i < CategoriesCount; i++)
-        {
-            var category = Factories.Category.CreateDefault(
-                id: CategoryId.New(),
-                userId: user.Value.Id);
-
-            await categoryRepository.AddAsync(category);
-        }
-    }
-
     [Fact]
-    public async Task ListCategories_WhenRequestIsValid_ShouldReturnCategories()
+    public async Task ListCategories_WhenRequestIsValid_ShouldReturnOK()
     {
         // Arrange
-        var request = Requests.Categories.ListCategories();
-
+        var (_, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
+
+        var request = Requests.Categories.ListCategories();
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 
+    [Fact]
+    public async Task ListCategories_WhenRequestIsValid_ShouldReturnCategories()
+    {
+        // Arrange
+        var (userId, accessToken) = await CreateUserAsync();
+        var client = CreateClient(accessToken);
+        
+        await RemoveAllCategoriesAsync(userId);
+        for (var i = 0; i < CategoriesCount; i++)
+        {
+            await CreateCategoryAsync(userId, id: CategoryId.New());
+        }
+        
+        var request = Requests.Categories.ListCategories();
+
+        // Act
+        var response = await client.SendAsync(request);
+
+        // Assert
         var categoriesResponse = await response.Content
             .ReadFromJsonAsync<List<ListCategoriesResponse>>();
 
@@ -67,28 +54,12 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
     public async Task ListCategories_WhenUserHasNoCategories_ShouldReturnEmptyList()
     {
         // Arrange
-        var userRepository = GetRequiredService<IUserRepository>();
-        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
-            Services,
-            id: UserId.New(),
-            email: Constants.User.Email2);
-
-        await userRepository.AddAsync(otherUser.Value);
-
-        var otherAccessToken = CreateAccessToken(otherUser.Value);
-
-        // Remove any default category
-        var db = GetRequiredService<IDbContext>();
-        await db.ExecuteAsync(
-            sql: """
-                     DELETE FROM Categories c
-                     WHERE c.user_id = @user_id
-                 """,
-            param: new { user_id = otherUser.Value.Id });
+        var (userId, accessToken) = await CreateUserAsync();
+        var client = CreateClient(accessToken);
+        
+        await RemoveAllCategoriesAsync(userId);
         
         var request = Requests.Categories.ListCategories();
-
-        var client = CreateClient(otherAccessToken);
 
         // Act
         var response = await client.SendAsync(request);
@@ -107,9 +78,9 @@ public sealed class ListCategoriesTests(TestApplicationFactory app) : Integratio
     public async Task ListCategories_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = Requests.Categories.ListCategories();
-
         var client = CreateClient();
+
+        var request = Requests.Categories.ListCategories();
 
         // Act
         var response = await client.SendAsync(request);

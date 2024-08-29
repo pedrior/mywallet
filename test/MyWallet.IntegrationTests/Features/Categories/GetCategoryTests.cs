@@ -1,45 +1,42 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Users;
-using MyWallet.Features.Categories;
 using MyWallet.Features.Categories.Get;
 
 namespace MyWallet.IntegrationTests.Features.Categories;
 
-public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTest(app)
+public sealed class GetCategoryTests(TestApplicationFactory app) : CategoryIntegrationTest(app)
 {
-    private string accessToken = null!;
-    private CategoryId categoryId = null!;
-
-    public override async Task InitializeAsync()
-    {
-        var userRepository = GetRequiredService<IUserRepository>();
-        var categoryRepository = GetRequiredService<ICategoryRepository>();
-
-        var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
-        await userRepository.AddAsync(user.Value);
-
-        accessToken = CreateAccessToken(user.Value);
-
-        var category = Factories.Category.CreateDefault(userId: user.Value.Id);
-        await categoryRepository.AddAsync(category);
-
-        categoryId = category.Id;
-    }
-
     [Fact]
-    public async Task GetCategory_WhenRequestIsValid_ShouldReturnCategory()
+    public async Task GetCategory_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
+        var (userId, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
-        var request = Requests.Categories.GetCategory(categoryId.Value);
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.GetCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 
+    [Fact]
+    public async Task GetCategory_WhenRequestIsValid_ShouldReturnCategory()
+    {
+        // Arrange
+        var (userId, accessToken) = await CreateUserAsync();
+        var client = CreateClient(accessToken);
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.GetCategory(categoryId);
+
+        // Act
+        var response = await client.SendAsync(request);
+
+        // Assert
         var categoryResponse = await response.Content.ReadFromJsonAsync<CategoryResponse>();
 
         categoryResponse.Should().NotBeNull();
@@ -51,22 +48,16 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     }
 
     [Fact]
-    public async Task GetCategory_WhenUserDoesNotOwnCategory_ShouldReturnForbidden()
+    public async Task GetCategory_WhenCategoryIsOwnedByAnotherUser_ShouldReturnForbidden()
     {
         // Arrange
-        var userRepository = GetRequiredService<IUserRepository>();
-        var otherUser = await Factories.User.CreateDefaultWithServiceProvider(
-            Services,
-            id: UserId.New(),
-            email: Constants.User.Email2);
+        var (_, accessToken) = await CreateUserAsync();
+        var (userId, _) = await CreateUser2Async();
 
-        await userRepository.AddAsync(otherUser.Value);
+        var client = CreateClient(accessToken);
 
-        var otherAccessToken = CreateAccessToken(otherUser.Value);
-
-        var request = Requests.Categories.GetCategory(categoryId.Value);
-
-        var client = CreateClient(otherAccessToken);
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.GetCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
@@ -79,9 +70,10 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     public async Task GetCategory_WhenCategoryDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        var request = Requests.Categories.GetCategory(Ulid.NewUlid());
-
+        var (_, accessToken) = await CreateUserAsync();
         var client = CreateClient(accessToken);
+
+        var request = Requests.Categories.GetCategory(CategoryId.New());
 
         // Act
         var response = await client.SendAsync(request);
@@ -94,9 +86,11 @@ public sealed class GetCategoryTests(TestApplicationFactory app) : IntegrationTe
     public async Task GetCategory_WhenUserIsNotAuthenticated_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = Requests.Categories.GetCategory(categoryId.Value);
-
+        var (userId, _) = await CreateUserAsync();
         var client = CreateClient();
+
+        var categoryId = await CreateCategoryAsync(userId);
+        var request = Requests.Categories.GetCategory(categoryId);
 
         // Act
         var response = await client.SendAsync(request);
