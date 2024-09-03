@@ -44,10 +44,14 @@ public sealed class EditWalletTests(TestApplicationFactory app) : IntegrationTes
 
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new(walletId));
-
-        wallet!.Name.Should().Be(Constants.Wallet.Name2);
-        wallet.Color.Should().Be(Constants.Wallet.Color2);
-        wallet.Currency.Should().Be(Constants.Wallet.Currency2);
+        
+        wallet.IsError.Should().BeFalse();
+        wallet.Value.Should().BeEquivalentTo(new
+        {
+            Name = Constants.Wallet.Name2,
+            Color = Constants.Wallet.Color2,
+            Currency = Constants.Wallet.Currency2
+        });
     }
 
     [Fact]

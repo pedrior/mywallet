@@ -1,6 +1,5 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Unarchive;
-using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Unarchive;
 
@@ -80,7 +79,7 @@ public sealed class UnarchiveWalletHandlerTests
     {
         // Arrange
         walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
-            .Returns(null as Wallet);
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);

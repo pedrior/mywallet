@@ -43,8 +43,8 @@ public sealed class UnarchiveWalletTests(TestApplicationFactory app) : Integrati
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(walletId));
 
-        wallet.Should().NotBeNull();
-        wallet!.IsArchived.Should().BeFalse();
+        wallet.IsError.Should().BeFalse();
+        wallet.Value.IsArchived.Should().BeFalse();
     }
 
     [Fact]
@@ -53,9 +53,9 @@ public sealed class UnarchiveWalletTests(TestApplicationFactory app) : Integrati
         // Arrange
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(walletId));
-        wallet!.Unarchive();
+        wallet.Value.Unarchive();
 
-        await walletRepository.UpdateAsync(wallet);
+        await walletRepository.UpdateAsync(wallet.Value);
 
         var request = Requests.Wallets.UnarchiveWallet(walletId);
 

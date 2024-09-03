@@ -1,6 +1,5 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Edit;
-using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Edit;
 
@@ -63,7 +62,7 @@ public sealed class EditWalletHandlerTests
     {
         // Arrange
         walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
-            .Returns(null as Wallet);
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -108,6 +107,6 @@ public sealed class EditWalletHandlerTests
         // Assert
         await walletRepository
             .DidNotReceive()
-            .UpdateAsync(wallet, Arg.Any<CancellationToken>());
+            .UpdateAsync(Arg.Any<Wallet>(), Arg.Any<CancellationToken>());
     }
 }

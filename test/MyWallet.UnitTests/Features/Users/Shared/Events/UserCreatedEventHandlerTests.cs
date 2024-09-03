@@ -52,7 +52,7 @@ public sealed class UserCreatedEventHandlerTests
         var userCreatedEvent = new UserCreatedEvent(userId);
 
         userRepository.GetAsync(userId, Arg.Any<CancellationToken>())
-            .Returns(null as User);
+            .Returns(UserErrors.NotFound);
 
         // Act
         var act = () => sut.Handle(userCreatedEvent, CancellationToken.None);

@@ -2,6 +2,10 @@ namespace MyWallet.Domain.Wallets;
 
 public static class WalletErrors
 {
+    public static readonly Error NotFound = Error.NotFound(
+        code: "wallet.not_found",
+        description: "The Wallet does not exist.");
+    
     public static readonly Error AlreadyArchived = Error.Failure(
         code: "wallet.already_archived",
         description: "The Wallet is already archived.");

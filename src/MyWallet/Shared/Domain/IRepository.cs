@@ -2,7 +2,7 @@ namespace MyWallet.Shared.Domain;
 
 public interface IRepository<TEntity, in TId> where TEntity : IEntity<TId>, IAggregateRoot where TId : notnull
 {
-    Task<TEntity?> GetAsync(TId id, CancellationToken cancellationToken = default);
+    Task<ErrorOr<TEntity>> GetAsync(TId id, CancellationToken cancellationToken = default);
     
     Task<bool> ExistsAsync(TId id, CancellationToken cancellationToken = default);
     

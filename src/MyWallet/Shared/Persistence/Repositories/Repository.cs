@@ -5,7 +5,7 @@ public abstract class Repository<TEntity, TId>(IDbContext context, IPublisher pu
 {
     protected IDbContext Context => context;
 
-    public abstract Task<TEntity?> GetAsync(TId id, CancellationToken cancellationToken = default);
+    public abstract Task<ErrorOr<TEntity>> GetAsync(TId id, CancellationToken cancellationToken = default);
 
     public abstract Task<bool> ExistsAsync(TId id, CancellationToken cancellationToken = default);
 

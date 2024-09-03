@@ -38,9 +38,10 @@ public sealed class ChangePasswordTests(TestApplicationFactory app) : Integratio
         var passwordHasher = GetRequiredService<IPasswordHasher>();
 
         var user = await userRepository.GetAsync(userId);
+        user.IsError.Should().BeFalse();
 
         // Check if the new user password is correct
-        var verifyPasswordResult = user!.VerifyPassword(Constants.User.Password2, passwordHasher);
+        var verifyPasswordResult = user.Value.VerifyPassword(Constants.User.Password2, passwordHasher);
         verifyPasswordResult.Should().BeTrue();
     }
 

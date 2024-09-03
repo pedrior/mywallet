@@ -1,5 +1,3 @@
-using MyWallet.Shared.Errors;
-
 namespace MyWallet.Domain;
 
 public sealed class Amount : ValueObject

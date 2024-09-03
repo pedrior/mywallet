@@ -18,18 +18,13 @@ public sealed class EditTransactionHandler(
             new TransactionId(command.TransactionId),
             cancellationToken);
 
-        if (transaction is null)
-        {
-            return Shared.TransactionErrors.NotFound;
-        }
-
-        return await transaction.ToErrorOr()
-            .Then(t => command.Name is null ? t : ChangeName(t, command.Name))
-            .Then(t => command.Amount is null ? t : ChangeAmount(t, command.Amount.Value))
-            .Then(t => command.Currency is null ? t : ChangeCurrency(t, command.Currency))
-            .Then(t => command.Date is null ? t : ChangeDate(t, command.Date.Value))
-            .ThenAsync(t => ChangeWalletAsync(t, command.WalletId, cancellationToken))
-            .ThenAsync(t => ChangeCategoryAsync(t, command.CategoryId, cancellationToken))
+        return await transaction
+            .ThenDoOrFail(t => command.Name is null ? t : ChangeName(t, command.Name))
+            .ThenDoOrFail(t => command.Amount is null ? t : ChangeAmount(t, command.Amount.Value))
+            .ThenDoOrFail(t => command.Currency is null ? t : ChangeCurrency(t, command.Currency))
+            .ThenDoOrFail(t => command.Date is null ? t : ChangeDate(t, command.Date.Value))
+            .ThenDoOrFailAsync(t => ChangeWalletAsync(t, command.WalletId, cancellationToken))
+            .ThenDoOrFailAsync(t => ChangeCategoryAsync(t, command.CategoryId, cancellationToken))
             .ThenDoAsync(t => transactionRepository.UpdateAsync(t, cancellationToken))
             .Then(_ => Result.Updated);
     }
@@ -60,41 +55,38 @@ public sealed class EditTransactionHandler(
         return transaction;
     }
 
-    private async Task<ErrorOr<Transaction>> ChangeWalletAsync(
+    private async Task<IErrorOr> ChangeWalletAsync(
         Transaction transaction,
         Ulid? walletId,
         CancellationToken cancellationToken)
     {
         if (walletId is null)
         {
-            return transaction;
+            return ErrorOrFactory.From(Unit.Value);
         }
 
-        var wallet = await walletRepository.GetAsync(new WalletId(walletId.Value),
+        var wallet = await walletRepository.GetAsync(
+            new WalletId(walletId.Value),
             cancellationToken);
 
-        return wallet is null
-            ? Shared.TransactionErrors.WalletNotFound
-            : transaction.ChangeWallet(wallet)
-                .Then(_ => transaction);
+        return wallet.ThenDoOrFail(w => transaction.ChangeWallet(w));
     }
 
-    private async Task<ErrorOr<Transaction>> ChangeCategoryAsync(
+    private async Task<IErrorOr> ChangeCategoryAsync(
         Transaction transaction,
         Ulid? categoryId,
         CancellationToken cancellationToken)
     {
         if (categoryId is null)
         {
-            return transaction;
+            return ErrorOrFactory.From(Unit.Value);
         }
 
         var category = await categoryRepository.GetAsync(new CategoryId(categoryId.Value),
             cancellationToken);
 
-        return category is null
-            ? Shared.TransactionErrors.CategoryNotFound
-            : transaction.ChangeCategory(category)
-                .Then(_ => transaction);
+        return category
+            .ThenDo(c => transaction.ChangeCategory(c))
+            .Then(_ => transaction);
     }
 }

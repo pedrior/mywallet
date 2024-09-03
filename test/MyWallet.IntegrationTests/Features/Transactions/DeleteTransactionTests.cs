@@ -59,7 +59,9 @@ public sealed class DeleteTransactionTests(TestApplicationFactory app) : Integra
         
         // Assert
         var transaction = await transactionRepository.GetAsync(transactionId);
-        transaction.Should().BeNull();
+        
+        transaction.IsError.Should().BeTrue();
+        transaction.FirstError.Should().Be(TransactionErrors.NotFound);
     }
     
     [Fact]

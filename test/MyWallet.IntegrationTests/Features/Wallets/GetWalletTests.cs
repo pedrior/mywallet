@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
-using MyWallet.Features.Wallets;
 using MyWallet.Features.Wallets.Get;
 
 namespace MyWallet.IntegrationTests.Features.Wallets;
@@ -43,11 +42,12 @@ public sealed class GetWalletTests(TestApplicationFactory app) : IntegrationTest
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new(walletId));
 
+        wallet.IsError.Should().BeFalse();
         walletResponse.Should().BeEquivalentTo(new
         {
-            Id = wallet!.Id.Value,
-            Name = wallet.Name.Value,
-            Color = wallet.Color.Value
+            Id = wallet.Value.Id.Value,
+            Name = wallet.Value.Name.Value,
+            Color = wallet.Value.Color.Value
         });
     }
 

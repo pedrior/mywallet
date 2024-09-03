@@ -5,9 +5,9 @@ namespace MyWallet.Shared.Persistence.Repositories;
 public sealed class UserRepository(IDbContext context, IPublisher publisher)
     : Repository<User, UserId>(context, publisher), IUserRepository
 {
-    public override Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default)
+    public override async Task<ErrorOr<User>> GetAsync(UserId id, CancellationToken cancellationToken = default)
     {
-       return Context.QuerySingleOrDefaultAsync<User>(
+        var user = await Context.QuerySingleOrDefaultAsync<User>(
             sql: """
                  SELECT u.*
                  FROM users u
@@ -15,11 +15,13 @@ public sealed class UserRepository(IDbContext context, IPublisher publisher)
                  """,
             param: new { id },
             cancellationToken: cancellationToken);
+
+        return user is not null ? user : UserErrors.NotFound;
     }
 
-    public Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<User>> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
-        return Context.QuerySingleOrDefaultAsync<User>(
+        var user = await Context.QuerySingleOrDefaultAsync<User>(
             sql: """
                  SELECT u.*
                  FROM users u
@@ -27,6 +29,8 @@ public sealed class UserRepository(IDbContext context, IPublisher publisher)
                  """,
             param: new { email },
             cancellationToken: cancellationToken);
+
+        return user is not null ? user : UserErrors.NotFound;
     }
 
     public override Task<bool> ExistsAsync(UserId id, CancellationToken cancellationToken = default)

@@ -1,3 +1,4 @@
+using MyWallet.Domain.Transactions;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
@@ -29,8 +30,6 @@ public sealed class GetTransactionHandler(IDbContext db)
             param: new { id = query.TransactionId },
             cancellationToken);
 
-        return response is not null
-            ? response
-            : Shared.TransactionErrors.NotFound;
+        return response is not null ? response : TransactionErrors.NotFound;
     }
 }

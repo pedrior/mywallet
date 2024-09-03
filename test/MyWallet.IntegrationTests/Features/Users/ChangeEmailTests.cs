@@ -41,7 +41,8 @@ public sealed class ChangeEmailTests(TestApplicationFactory app) : IntegrationTe
         var userRepository = GetRequiredService<IUserRepository>();
         var user = await userRepository.GetAsync(userId);
 
-        user!.Email.Should().Be(Constants.User.Email2);
+        user.IsError.Should().BeFalse();
+        user.Value.Email.Should().Be(Constants.User.Email2);
     }
 
     [Fact]

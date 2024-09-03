@@ -2,7 +2,6 @@ using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Transactions.List;
 using MyWallet.Shared.Persistence;
-using TransactionErrors = MyWallet.Features.Transactions.Shared.TransactionErrors;
 
 namespace MyWallet.UnitTests.Features.Transactions.LIst;
 

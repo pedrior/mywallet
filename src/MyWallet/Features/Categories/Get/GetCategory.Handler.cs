@@ -1,4 +1,4 @@
-using MyWallet.Features.Categories.Shared;
+using MyWallet.Domain.Categories;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
@@ -19,8 +19,6 @@ public sealed class GetCategoryHandler(IDbContext dbContext)
             param: new { Id = query.CategoryId },
             cancellationToken: cancellationToken);
 
-        return categoryResponse is not null
-            ? categoryResponse
-            : CategoryErrors.NotFound;
+        return categoryResponse is not null ? categoryResponse : CategoryErrors.NotFound;
     }
 }

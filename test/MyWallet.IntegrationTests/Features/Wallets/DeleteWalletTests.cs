@@ -41,7 +41,8 @@ public sealed class DeleteWalletTests(TestApplicationFactory app) : IntegrationT
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(walletId));
 
-        wallet.Should().BeNull();
+        wallet.IsError.Should().BeTrue();
+        wallet.FirstError.Should().Be(WalletErrors.NotFound);
     }
 
     [Fact]

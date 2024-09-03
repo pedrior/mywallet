@@ -2,7 +2,6 @@ using MyWallet.Domain.Categories;
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Transactions.Edit;
-using TransactionErrors = MyWallet.Features.Transactions.Shared.TransactionErrors;
 
 namespace MyWallet.UnitTests.Features.Transactions.Edit;
 
@@ -94,7 +93,7 @@ public sealed class EditTransactionHandlerTests
     {
         // Arrange
         transactionRepository.GetAsync(transaction.Id, Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(TransactionErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -201,14 +200,14 @@ public sealed class EditTransactionHandlerTests
         walletRepository.GetAsync(
                 Arg.Is<WalletId>(id => id.Value == Command.WalletId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TransactionErrors.WalletNotFound);
+        result.FirstError.Should().Be(WalletErrors.NotFound);
     }
 
     [Fact]
@@ -218,14 +217,14 @@ public sealed class EditTransactionHandlerTests
         categoryRepository.GetAsync(
                 Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(CategoryErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TransactionErrors.CategoryNotFound);
+        result.FirstError.Should().Be(CategoryErrors.NotFound);
     }
 
     [Fact]
@@ -235,7 +234,7 @@ public sealed class EditTransactionHandlerTests
         walletRepository.GetAsync(
                 Arg.Is<WalletId>(id => id.Value == Command.WalletId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(WalletErrors.NotFound);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
@@ -253,7 +252,7 @@ public sealed class EditTransactionHandlerTests
         categoryRepository.GetAsync(
                 Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(CategoryErrors.NotFound);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);

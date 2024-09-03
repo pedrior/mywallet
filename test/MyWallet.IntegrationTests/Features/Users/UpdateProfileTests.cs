@@ -36,7 +36,8 @@ public sealed class UpdateProfileTests(TestApplicationFactory app) : Integration
         var userRepository = GetRequiredService<IUserRepository>();
         var user = await userRepository.GetAsync(userId);
 
-        user!.Name.Should().Be(Constants.User.Name2);
+        user.IsError.Should().BeFalse();
+        user.Value.Name.Should().Be(Constants.User.Name2);
     }
 
     [Fact]

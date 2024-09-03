@@ -1,3 +1,4 @@
+using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
@@ -12,7 +13,7 @@ public sealed class ListTransactionsHandler(IWalletRepository walletRepository, 
     {
         if (!await walletRepository.ExistsAsync(new WalletId(query.WalletId), cancellationToken))
         {
-            return Shared.TransactionErrors.WalletNotFound;
+            return TransactionErrors.WalletNotFound;
         }
         
         var total = await CountTotalTransactionsAsync(query, cancellationToken);

@@ -67,9 +67,9 @@ public sealed class CreateTests(TestApplicationFactory app) : IntegrationTest(ap
     {
         // Arrange
         var wallet = await walletRepository.GetAsync(walletId);
-        wallet!.Archive();
+        wallet.Value.Archive();
 
-        await walletRepository.UpdateAsync(wallet);
+        await walletRepository.UpdateAsync(wallet.Value);
 
         var request = GetRequest();
         var client = CreateClient(accessToken);

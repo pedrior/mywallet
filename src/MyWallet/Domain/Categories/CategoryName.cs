@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using MyWallet.Shared.Errors;
 
 namespace MyWallet.Domain.Categories;
 

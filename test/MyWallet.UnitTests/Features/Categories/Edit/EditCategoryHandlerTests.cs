@@ -85,7 +85,7 @@ public sealed class EditCategoryHandlerTests
         categoryRepository.GetAsync(
                 Arg.Is<CategoryId>(v => v.Value == Command.CategoryId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(CategoryErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);

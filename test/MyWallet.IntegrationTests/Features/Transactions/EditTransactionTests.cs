@@ -74,15 +74,17 @@ public sealed class EditTransactionTests(TestApplicationFactory app) : Integrati
         // Assert
 
         var transaction = await transactionRepository.GetAsync(transactionId);
-
-        transaction.Should().NotBeNull();
-
-        transaction!.WalletId.Should().Be(Constants.Wallet.Id2);
-        transaction.CategoryId.Should().Be(Constants.Category.Id2);
-        transaction.Name.Should().Be(Constants.Transaction.Name2);
-        transaction.Amount.Should().Be(Constants.Transaction.Amount2);
-        transaction.Currency.Should().Be(Constants.Transaction.Currency2);
-        transaction.Date.Should().Be(Constants.Transaction.Date2);
+        
+        transaction.IsError.Should().BeFalse();
+        transaction.Value.Should().BeEquivalentTo(new
+        {
+            WalletId = Constants.Wallet.Id2,
+            CategoryId = Constants.Category.Id2,
+            Name = Constants.Transaction.Name2,
+            Amount = Constants.Transaction.Amount2,
+            Currency = Constants.Transaction.Currency2,
+            Date = Constants.Transaction.Date2
+        });
     }
 
     [Fact]

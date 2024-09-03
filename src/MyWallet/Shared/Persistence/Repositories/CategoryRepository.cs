@@ -6,9 +6,10 @@ namespace MyWallet.Shared.Persistence.Repositories;
 public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
     : Repository<Category, CategoryId>(context, publisher), ICategoryRepository
 {
-    public override Task<Category?> GetAsync(CategoryId id, CancellationToken cancellationToken = default)
+    public override async Task<ErrorOr<Category>> GetAsync(CategoryId id,
+        CancellationToken cancellationToken = default)
     {
-        return Context.QuerySingleOrDefaultAsync<Category>(
+        var category = await Context.QuerySingleOrDefaultAsync<Category>(
             sql: """
                  SELECT c.*
                  FROM categories c
@@ -16,6 +17,8 @@ public sealed class CategoryRepository(IDbContext context, IPublisher publisher)
                  """,
             param: new { id },
             cancellationToken: cancellationToken);
+
+        return category is not null ? category : CategoryErrors.NotFound;
     }
 
     public override Task<bool> ExistsAsync(CategoryId id, CancellationToken cancellationToken = default)

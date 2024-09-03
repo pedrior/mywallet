@@ -6,9 +6,9 @@ namespace MyWallet.Shared.Persistence.Repositories;
 public sealed class WalletRepository(IDbContext context, IPublisher publisher)
     : Repository<Wallet, WalletId>(context, publisher), IWalletRepository
 {
-    public override Task<Wallet?> GetAsync(WalletId id, CancellationToken cancellationToken = default)
+    public override async Task<ErrorOr<Wallet>> GetAsync(WalletId id, CancellationToken cancellationToken = default)
     {
-        return Context.QuerySingleOrDefaultAsync<Wallet>(
+        var wallet = await Context.QuerySingleOrDefaultAsync<Wallet>(
             sql: """
                     SELECT w.*
                     FROM wallets w
@@ -16,6 +16,8 @@ public sealed class WalletRepository(IDbContext context, IPublisher publisher)
                  """,
             param: new { id },
             cancellationToken);
+
+        return wallet is not null ? wallet : WalletErrors.NotFound;
     }
 
     public override Task<bool> ExistsAsync(WalletId id, CancellationToken cancellationToken = default)

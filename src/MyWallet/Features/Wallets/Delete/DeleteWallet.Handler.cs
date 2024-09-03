@@ -10,10 +10,9 @@ public sealed class DeleteWalletHandler(IWalletRepository walletRepository)
         CancellationToken cancellationToken)
     {
         var walletId = new WalletId(commnad.WalletId);
-
         if (!await walletRepository.ExistsAsync(walletId, cancellationToken))
         {
-            return Shared.WalletErrors.NotFound;
+            return WalletErrors.NotFound;
         }
 
         await walletRepository.DeleteAsync(walletId, cancellationToken);

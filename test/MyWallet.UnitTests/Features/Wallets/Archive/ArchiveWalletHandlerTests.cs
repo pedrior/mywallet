@@ -1,6 +1,6 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Archive;
-using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
+using NSubstitute.Extensions;
 
 namespace MyWallet.UnitTests.Features.Wallets.Archive;
 
@@ -77,7 +77,7 @@ public sealed class ArchiveWalletHandlerTests
     {
         // Arrange
         walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
-            .Returns(null as Wallet);
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);

@@ -24,9 +24,12 @@ public sealed class RegisterTests(TestApplicationFactory app) : IntegrationTest(
         var userRepository = GetRequiredService<IUserRepository>();
         var user = await userRepository.GetByEmailAsync(Constants.User.Email);
 
-        user.Should().NotBeNull();
-        user!.Name.Should().Be(Constants.User.Name);
-        user.Email.Should().Be(Constants.User.Email);
+        user.IsError.Should().BeFalse();
+        user.Value.Should().BeEquivalentTo(new
+        {
+            Constants.User.Name,
+            Constants.User.Email
+        });
     }
 
     [Fact]

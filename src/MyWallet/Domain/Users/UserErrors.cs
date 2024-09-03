@@ -2,6 +2,10 @@ namespace MyWallet.Domain.Users;
 
 public static class UserErrors
 {
+    public static readonly Error NotFound = Error.NotFound(
+        code: "user.not_found",
+        description: "The User does not exist.");
+
     public static readonly Error EmailNotUnique = Error.Conflict(
         code: "user.email_not_unique",
         description: "The email is already taken.");

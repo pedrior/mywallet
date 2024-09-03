@@ -41,11 +41,14 @@ public sealed class CreateCategoryTests(TestApplicationFactory app) : CategoryIn
         var categoryId = Ulid.Parse(response.Headers.FindLastResourceIdentifier());
         var category = await GetRequiredService<ICategoryRepository>()
             .GetAsync(new CategoryId(categoryId));
-
-        category.Should().NotBeNull();
-        category!.Type.Should().Be(Constants.Category.Type);
-        category.Name.Should().Be(Constants.Category.Name);
-        category.Color.Should().Be(Constants.Category.Color);
+        
+        category.IsError.Should().BeFalse();
+        category.Value.Should().BeEquivalentTo(new
+        {
+            Constants.Category.Type,
+            Constants.Category.Name,
+            Constants.Category.Color
+        });
     }
 
     [Fact]

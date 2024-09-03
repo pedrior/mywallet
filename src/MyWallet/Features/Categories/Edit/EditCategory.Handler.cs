@@ -1,6 +1,5 @@
 using MyWallet.Domain;
 using MyWallet.Domain.Categories;
-using MyWallet.Features.Categories.Shared;
 using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Categories.Edit;
@@ -11,24 +10,16 @@ public sealed class EditCategoryHandler(ICategoryRepository categoryRepository)
     public async Task<ErrorOr<Success>> Handle(EditCategoryCommand command,
         CancellationToken cancellationToken)
     {
+        var name = CategoryName.Create(command.Name).Value;
+        var color = Color.Create(command.Color).Value;
+        
         var category = await categoryRepository.GetAsync(
             new CategoryId(command.CategoryId),
             cancellationToken);
 
-        if (category is null)
-        {
-            return CategoryErrors.NotFound;
-        }
-
-        var name = CategoryName.Create(command.Name);
-        var color = Color.Create(command.Color);
-
-        category.Edit(
-            name: name.Value,
-            color: color.Value);
-
-        await categoryRepository.UpdateAsync(category, cancellationToken);
-
-        return Result.Success;
+        return await category
+            .ThenDo(c => c.Edit(name, color))
+            .ThenDoAsync(c => categoryRepository.UpdateAsync(c, cancellationToken))
+            .Then(_ => Result.Success);
     }
 }

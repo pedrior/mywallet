@@ -41,8 +41,8 @@ public sealed class ArchiveWalletTests(TestApplicationFactory app) : Integration
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(walletId));
 
-        wallet.Should().NotBeNull();
-        wallet!.IsArchived.Should().BeTrue();
+        wallet.IsError.Should().BeFalse();
+        wallet.Value.IsArchived.Should().BeTrue();
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public sealed class ArchiveWalletTests(TestApplicationFactory app) : Integration
         // Arrange
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(walletId));
-        wallet!.Archive();
+        wallet.Value.Archive();
 
-        await walletRepository.UpdateAsync(wallet);
+        await walletRepository.UpdateAsync(wallet.Value);
 
         var request = Requests.Wallets.ArchiveWallet(walletId);
 

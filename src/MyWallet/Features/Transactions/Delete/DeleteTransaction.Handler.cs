@@ -12,7 +12,7 @@ public sealed class DeleteTransactionHandler(ITransactionRepository transactionR
         var transactionId = new TransactionId(command.TransactionId);
         if (!await transactionRepository.ExistsAsync(transactionId, cancellationToken))
         {
-            return Shared.TransactionErrors.NotFound;
+            return TransactionErrors.NotFound;
         }
 
         await transactionRepository.DeleteAsync(transactionId, cancellationToken);

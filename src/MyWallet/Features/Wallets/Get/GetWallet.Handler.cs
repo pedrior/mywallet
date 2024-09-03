@@ -1,4 +1,4 @@
-using MyWallet.Features.Wallets.Shared;
+using MyWallet.Domain.Wallets;
 using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
@@ -22,8 +22,6 @@ public sealed class GetWalletHandler(IDbContext db) : IQueryHandler<GetWalletQue
             param: new { Id = query.WalletId },
             cancellationToken);
 
-        return response is not null
-            ? response
-            : WalletErrors.NotFound;
+        return response is not null ? response : WalletErrors.NotFound;
     }
 }

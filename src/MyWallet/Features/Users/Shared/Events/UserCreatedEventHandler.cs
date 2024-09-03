@@ -1,5 +1,4 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Users.Events;
 using MyWallet.Shared.Features;
@@ -17,12 +16,12 @@ public sealed class UserCreatedEventHandler(
         logger.LogInformation("Handling domain event {@Event}", e);
         
         var user = await userRepository.GetAsync(e.UserId, cancellationToken);
-        if (user is null)
+        if (user.IsError)
         {
             throw new ApplicationException($"User with ID '{e.UserId}' not found.");
         }
 
-        await CreateDefaultCategoriesForUserAsync(user, cancellationToken);
+        await CreateDefaultCategoriesForUserAsync(user.Value, cancellationToken);
     }
 
     private Task CreateDefaultCategoriesForUserAsync(User user, CancellationToken cancellationToken)

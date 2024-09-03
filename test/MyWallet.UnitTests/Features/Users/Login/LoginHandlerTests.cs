@@ -2,7 +2,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using MyWallet.Domain.Users;
 using MyWallet.Features.Users.Login;
 using MyWallet.Shared.Security.Tokens;
-using UserErrors = MyWallet.Features.Users.Shared.UserErrors;
 
 namespace MyWallet.UnitTests.Features.Users.Login;
 
@@ -78,14 +77,14 @@ public sealed class LoginHandlerTests
         userRepository.GetByEmailAsync(
                 Arg.Is<Email>(e => e.Value == Command.Email),
                 Arg.Any<CancellationToken>())
-            .Returns(null as User);
+            .Returns(UserErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(UserErrors.InvalidCredentials);
+        result.FirstError.Should().Be(MyWallet.Features.Users.Shared.UserErrors.InvalidCredentials);
 
         securityTokenProvider
             .DidNotReceiveWithAnyArgs();
@@ -112,7 +111,7 @@ public sealed class LoginHandlerTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(UserErrors.InvalidCredentials);
+        result.FirstError.Should().Be(MyWallet.Features.Users.Shared.UserErrors.InvalidCredentials);
 
         securityTokenProvider
             .DidNotReceiveWithAnyArgs();

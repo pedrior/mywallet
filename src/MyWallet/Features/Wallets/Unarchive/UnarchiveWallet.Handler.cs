@@ -9,14 +9,13 @@ public sealed class UnarchiveWalletHandler(IWalletRepository walletRepository)
     public async Task<ErrorOr<Success>> Handle(UnarchiveWalletCommand command,
         CancellationToken cancellationToken)
     {
-        var walletId = new WalletId(command.WalletId);
-        var wallet = await walletRepository.GetAsync(walletId, cancellationToken);
-        if (wallet is null)
-        {
-            return Shared.WalletErrors.NotFound;
-        }
-        
-        return await wallet.Unarchive()
-            .ThenDoAsync(_ => walletRepository.UpdateAsync(wallet, cancellationToken));
+        var wallet = await walletRepository.GetAsync(
+            new WalletId(command.WalletId), 
+            cancellationToken);
+
+        return await wallet
+            .ThenDoOrFail(w => w.Unarchive())
+            .ThenDoAsync(w => walletRepository.UpdateAsync(w, cancellationToken))
+            .Then(_ => Result.Success);
     }
 }

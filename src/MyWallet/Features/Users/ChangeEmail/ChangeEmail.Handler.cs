@@ -12,13 +12,16 @@ public sealed class ChangeEmailHandler(
     public async Task<ErrorOr<Success>> Handle(ChangeEmailCommand command,
         CancellationToken cancellationToken)
     {
-        var userId = new UserId(command.UserId);
-        var user = await userRepository.GetAsync(userId, cancellationToken);
-
         var newEmail = Email.Create(command.NewEmail).Value;
         var password = Password.Create(command.Password).Value;
+        
+        var user = await userRepository.GetAsync(new UserId(command.UserId), cancellationToken);
+        if (user.IsError)
+        {
+            return user.Errors;
+        }
 
-        var result = await user!.ChangeEmailAsync(
+        var result = await user.Value.ChangeEmailAsync(
             password,
             newEmail,
             passwordHasher,
@@ -26,6 +29,6 @@ public sealed class ChangeEmailHandler(
             cancellationToken);
 
         return await result
-            .ThenDoAsync(_ => userRepository.UpdateAsync(user, cancellationToken));
+            .ThenDoAsync(_ => userRepository.UpdateAsync(user.Value, cancellationToken));
     }
 }

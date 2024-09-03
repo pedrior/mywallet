@@ -42,9 +42,12 @@ public sealed class CreateWalletTests(TestApplicationFactory app) : IntegrationT
         var walletRepository = GetRequiredService<IWalletRepository>();
         var wallet = await walletRepository.GetAsync(new WalletId(Ulid.Parse(walletId)));
 
-        wallet.Should().NotBeNull();
-        wallet!.Name.Should().Be(Constants.Wallet.Name);
-        wallet.Color.Should().Be(Constants.Wallet.Color);
+        wallet.IsError.Should().BeFalse();
+        wallet.Value.Should().BeEquivalentTo(new
+        {
+            Constants.Wallet.Name,
+            Constants.Wallet.Color
+        });
     }
 
     [Fact]

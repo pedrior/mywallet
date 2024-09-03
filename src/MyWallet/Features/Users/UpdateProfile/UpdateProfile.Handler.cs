@@ -9,13 +9,12 @@ public sealed class UpdateProfileHandler(IUserRepository userRepository)
     public async Task<ErrorOr<Success>> Handle(UpdateProfileCommand command,
         CancellationToken cancellationToken)
     {
-        var name = UserName.Create(command.Name);
+        var name = UserName.Create(command.Name).Value;
         
-        var user = await userRepository.GetAsync(new(command.UserId), cancellationToken);
-        user!.UpdateProfile(name.Value);
-
-        await userRepository.UpdateAsync(user, cancellationToken);
-
-        return Result.Success;
+        var user = await userRepository.GetAsync(new UserId(command.UserId), cancellationToken);
+        return await user
+            .ThenDo(u => u.UpdateProfile(name))
+            .ThenDoAsync(u => userRepository.UpdateAsync(u, cancellationToken))
+            .Then(_ => Result.Success);
     }
 }

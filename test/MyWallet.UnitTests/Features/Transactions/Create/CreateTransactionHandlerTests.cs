@@ -2,7 +2,6 @@ using MyWallet.Domain.Categories;
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Transactions.Create;
-using TransactionErrors = MyWallet.Features.Transactions.Shared.TransactionErrors;
 
 namespace MyWallet.UnitTests.Features.Transactions.Create;
 
@@ -87,14 +86,14 @@ public sealed class CreateTransactionHandlerTests
         walletRepository.GetAsync(
                 Arg.Is<WalletId>(id => id.Value == Command.WalletId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TransactionErrors.WalletNotFound);
+        result.FirstError.Should().Be(WalletErrors.NotFound);
     }
     
     [Fact]
@@ -104,13 +103,13 @@ public sealed class CreateTransactionHandlerTests
         categoryRepository.GetAsync(
                 Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
                 Arg.Any<CancellationToken>())
-            .ReturnsNull();
+            .Returns(CategoryErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TransactionErrors.CategoryNotFound);
+        result.FirstError.Should().Be(CategoryErrors.NotFound);
     }
 }

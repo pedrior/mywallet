@@ -37,11 +37,13 @@ public sealed class EditCategoryTests(TestApplicationFactory app) : CategoryInte
         // Assert
         var category = await GetRequiredService<ICategoryRepository>()
             .GetAsync(categoryId);
-
-        category.Should().NotBeNull();
-
-        category!.Name.Should().Be(Constants.Category.Name2);
-        category.Color.Should().Be(Constants.Category.Color2);
+        
+        category.IsError.Should().BeFalse();
+        category.Value.Should().BeEquivalentTo(new
+        {
+            Name = Constants.Category.Name2,
+            Color = Constants.Category.Color2
+        });
     }
 
     [Fact]

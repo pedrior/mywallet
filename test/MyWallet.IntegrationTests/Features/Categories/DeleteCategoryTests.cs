@@ -38,7 +38,8 @@ public sealed class DeleteCategoryTests(TestApplicationFactory app) : CategoryIn
         var category = await GetRequiredService<ICategoryRepository>()
             .GetAsync(categoryId);
 
-        category.Should().BeNull();
+        category.IsError.Should().BeTrue();
+        category.FirstError.Should().Be(CategoryErrors.NotFound);
     }
 
     [Fact]

@@ -1,4 +1,3 @@
-using MyWallet.Shared.Errors;
 using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Users.UpdateProfile;

@@ -1,6 +1,5 @@
 using MyWallet.Domain.Wallets;
 using MyWallet.Features.Wallets.Delete;
-using WalletErrors = MyWallet.Features.Wallets.Shared.WalletErrors;
 
 namespace MyWallet.UnitTests.Features.Wallets.Delete;
 

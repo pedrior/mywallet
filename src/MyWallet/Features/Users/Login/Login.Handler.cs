@@ -19,12 +19,12 @@ public sealed class LoginHandler(
         var password = Password.Create(command.Password);
 
         var user = await userRepository.GetByEmailAsync(email.Value, cancellationToken);
-        if (user is null || !user.VerifyPassword(password.Value, passwordHasher))
+        if (user.IsError || !user.Value.VerifyPassword(password.Value, passwordHasher))
         {
             return UserErrors.InvalidCredentials;
         }
 
-        var claims = CreateUserClaims(user);
+        var claims = CreateUserClaims(user.Value);
         var securityToken = securityTokenProvider.GenerateToken(claims);
 
         return new LoginResponse

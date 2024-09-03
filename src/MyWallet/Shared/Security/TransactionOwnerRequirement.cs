@@ -28,12 +28,12 @@ public sealed class TransactionOwnerRequirementHandler(
         }
 
         var walletId = await transactionRepository.GetWalletIdAsync(transactionId, cancellationToken);
-        if (walletId is null)
+        if (walletId.IsError)
         {
             return requirement.Allow();
         }
 
-        return await walletRepository.IsOwnedByUserAsync(walletId, userId, cancellationToken)
+        return await walletRepository.IsOwnedByUserAsync(walletId.Value, userId, cancellationToken)
             ? requirement.Allow()
             : requirement.Forbid();
     }
