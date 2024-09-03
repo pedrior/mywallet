@@ -1,6 +1,6 @@
 namespace MyWallet.Features.Categories.Edit;
 
-public sealed record EditCategoryCommand : ICommand<Success>, IHaveUser
+public sealed record EditCategoryCommand : ICommand<Updated>, IHaveUser
 {
     public required Ulid CategoryId { get; init; }
 

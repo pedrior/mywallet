@@ -1,6 +1,6 @@
 namespace MyWallet.Features.Wallets.Edit;
 
-public sealed record EditWalletCommand : ICommand<Success>, IHaveUser
+public sealed record EditWalletCommand : ICommand<Updated>, IHaveUser
 {
     public required Ulid WalletId { get; init; }
 

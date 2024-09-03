@@ -22,7 +22,7 @@ public sealed class UpdateProfileHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCommandIsValid_ShouldReturnSuccess()
+    public async Task Handle_WhenCommandIsValid_ShouldReturnUpdated()
     {
         // Arrange
         var user = await Factories.User.CreateDefault();
@@ -37,7 +37,7 @@ public sealed class UpdateProfileHandlerTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(Result.Success);
+        result.Value.Should().Be(Result.Updated);
     }
 
     [Fact]

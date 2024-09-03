@@ -27,7 +27,7 @@ public sealed class EditCategoryHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCalled_ShouldReturnSuccess()
+    public async Task Handle_WhenCalled_ShouldReturnUpdated()
     {
         // Arrange
         categoryRepository.GetAsync(
@@ -40,7 +40,7 @@ public sealed class EditCategoryHandlerTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Success>();
+        result.Value.Should().BeOfType<Updated>();
     }
 
     [Fact]

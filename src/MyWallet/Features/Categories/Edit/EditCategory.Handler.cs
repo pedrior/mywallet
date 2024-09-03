@@ -4,9 +4,9 @@ using MyWallet.Domain.Categories;
 namespace MyWallet.Features.Categories.Edit;
 
 public sealed class EditCategoryHandler(ICategoryRepository categoryRepository)
-    : ICommandHandler<EditCategoryCommand, Success>
+    : ICommandHandler<EditCategoryCommand, Updated>
 {
-    public async Task<ErrorOr<Success>> Handle(EditCategoryCommand command,
+    public async Task<ErrorOr<Updated>> Handle(EditCategoryCommand command,
         CancellationToken cancellationToken)
     {
         var name = CategoryName.Create(command.Name).Value;
@@ -19,6 +19,6 @@ public sealed class EditCategoryHandler(ICategoryRepository categoryRepository)
         return await category
             .ThenDo(c => c.Edit(name, color))
             .ThenDoAsync(c => categoryRepository.UpdateAsync(c, cancellationToken))
-            .Then(_ => Result.Success);
+            .Then(_ => Result.Updated);
     }
 }

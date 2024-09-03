@@ -23,7 +23,7 @@ public sealed class EditWalletHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCalled_ShouldReturnSuccess()
+    public async Task Handle_WhenCalled_ShouldReturnUpdated()
     {
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
@@ -36,7 +36,7 @@ public sealed class EditWalletHandlerTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(Result.Success);
+        result.Value.Should().Be(Result.Updated);
     }
 
     [Fact]

@@ -3,9 +3,9 @@ using MyWallet.Domain.Users;
 namespace MyWallet.Features.Users.UpdateProfile;
 
 public sealed class UpdateProfileHandler(IUserRepository userRepository)
-    : ICommandHandler<UpdateProfileCommand, Success>
+    : ICommandHandler<UpdateProfileCommand, Updated>
 {
-    public async Task<ErrorOr<Success>> Handle(UpdateProfileCommand command,
+    public async Task<ErrorOr<Updated>> Handle(UpdateProfileCommand command,
         CancellationToken cancellationToken)
     {
         var name = UserName.Create(command.Name).Value;
@@ -14,6 +14,6 @@ public sealed class UpdateProfileHandler(IUserRepository userRepository)
         return await user
             .ThenDo(u => u.UpdateProfile(name))
             .ThenDoAsync(u => userRepository.UpdateAsync(u, cancellationToken))
-            .Then(_ => Result.Success);
+            .Then(_ => Result.Updated);
     }
 }

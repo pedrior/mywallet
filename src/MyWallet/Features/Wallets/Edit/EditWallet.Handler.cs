@@ -4,9 +4,9 @@ using MyWallet.Domain.Wallets;
 namespace MyWallet.Features.Wallets.Edit;
 
 public sealed class EditWalletHandler(IWalletRepository walletRepository)
-    : ICommandHandler<EditWalletCommand, Success>
+    : ICommandHandler<EditWalletCommand, Updated>
 {
-    public async Task<ErrorOr<Success>> Handle(EditWalletCommand command,
+    public async Task<ErrorOr<Updated>> Handle(EditWalletCommand command,
         CancellationToken cancellationToken)
     {
         var name = WalletName.Create(command.Name).Value;
@@ -20,6 +20,6 @@ public sealed class EditWalletHandler(IWalletRepository walletRepository)
         return await wallet
             .ThenDoOrFail(w => w.Edit(name, color, currency))
             .ThenDoAsync(w => walletRepository.UpdateAsync(w, cancellationToken))
-            .Then(_ => Result.Success);
+            .Then(_ => Result.Updated);
     }
 }
