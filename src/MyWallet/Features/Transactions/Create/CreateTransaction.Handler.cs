@@ -27,7 +27,7 @@ public sealed class CreateTransactionHandler(
             new CategoryId(command.CategoryId),
             cancellationToken);
 
-        var result = ErrorCombiner.Combine(wallet, category);
+        var result = ErrorOrCombiner.Combine(wallet, category);
         if (result.IsError)
         {
             return result.Errors;

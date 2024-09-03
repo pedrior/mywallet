@@ -1,6 +1,6 @@
 namespace MyWallet.Shared.Errors;
 
-public static class ErrorCombiner
+public static class ErrorOrCombiner
 {
     public static ErrorOr<Success> Combine(params IErrorOr[] results)
     {
