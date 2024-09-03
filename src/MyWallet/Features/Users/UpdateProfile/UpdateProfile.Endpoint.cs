@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.UpdateProfile;
 
 public sealed class UpdateProfileEndpoint : IEndpoint

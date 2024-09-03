@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Wallets.Unarchive;
 
 public sealed class UnarchiveWalletEndpoint : IEndpoint

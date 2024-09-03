@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.ChangeEmail;
 
 public sealed class ChangeEmailEndpoint : IEndpoint

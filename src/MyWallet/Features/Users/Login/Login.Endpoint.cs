@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.Login;
 
 public sealed class LoginEndpoint : IEndpoint

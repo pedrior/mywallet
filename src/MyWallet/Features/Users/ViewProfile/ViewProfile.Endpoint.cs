@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.ViewProfile;
 
 public sealed class ViewProfileEndpoint : IEndpoint

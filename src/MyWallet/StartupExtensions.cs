@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet;

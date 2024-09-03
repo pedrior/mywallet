@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.Register;
 
 public sealed record RegisterCommand : ICommand<Created>

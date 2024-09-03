@@ -1,5 +1,4 @@
 using MyWallet.Domain.Users;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Users.UpdateProfile;
 

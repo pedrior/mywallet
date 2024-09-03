@@ -1,5 +1,4 @@
 using MediatR.Pipeline;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Identity;
 
 namespace MyWallet.Shared.Behaviors;

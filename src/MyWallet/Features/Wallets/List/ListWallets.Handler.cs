@@ -1,5 +1,4 @@
 using MyWallet.Shared.Contracts;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.Features.Wallets.List;

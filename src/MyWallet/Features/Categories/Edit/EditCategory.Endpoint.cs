@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Categories.Edit;
 
 public sealed class EditCategoryEndpoint : IEndpoint

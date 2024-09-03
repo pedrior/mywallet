@@ -1,6 +1,5 @@
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Categories.Events;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Categories.Shared.Events;
 

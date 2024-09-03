@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Categories.Create;
 
 public sealed class CreateCategoryEndpoint : IEndpoint

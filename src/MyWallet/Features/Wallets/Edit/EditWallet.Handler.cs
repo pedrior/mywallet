@@ -1,6 +1,5 @@
 using MyWallet.Domain;
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Wallets.Edit;
 

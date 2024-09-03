@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Wallets.Get;
 
 public sealed record GetWalletQuery(Ulid WalletId) : IQuery<WalletResponse>, IHaveUser

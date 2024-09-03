@@ -1,7 +1,6 @@
 using MyWallet.Domain;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Wallets.Create;
 

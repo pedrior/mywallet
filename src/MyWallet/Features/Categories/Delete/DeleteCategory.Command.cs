@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Categories.Delete;
 
 public sealed record DeleteCategoryCommand : ICommand<Deleted>, IHaveUser

@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Categories.Get;
 
 public sealed class GetCategoryEndpoint : IEndpoint

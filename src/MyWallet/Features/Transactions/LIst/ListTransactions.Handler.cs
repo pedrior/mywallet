@@ -1,6 +1,5 @@
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.Features.Transactions.List;

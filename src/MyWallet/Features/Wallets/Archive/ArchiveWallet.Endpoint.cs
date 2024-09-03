@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Wallets.Archive;
 
 public sealed class ArchiveWalletEndpoint : IEndpoint

@@ -1,5 +1,4 @@
 using MyWallet.Domain.Transactions;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Transactions.Delete;
 

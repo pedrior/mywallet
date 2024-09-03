@@ -12,7 +12,6 @@ using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
 using MyWallet.Shared.Behaviors;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Identity;
 using MyWallet.Shared.Persistence;
 using MyWallet.Shared.Persistence.Repositories;

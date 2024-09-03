@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Wallets.Edit;
 
 public sealed class EditWalletEndpoint : IEndpoint

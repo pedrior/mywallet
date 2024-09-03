@@ -4,3 +4,4 @@ global using FluentValidation;
 global using MediatR;
 global using MyWallet.Shared.Domain;
 global using MyWallet.Shared.Errors;
+global using MyWallet.Shared.Features;

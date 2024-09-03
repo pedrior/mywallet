@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Transactions.List;
 
 public sealed class ListTransactionEndpoint : IEndpoint

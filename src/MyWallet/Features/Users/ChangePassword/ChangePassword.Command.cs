@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Users.ChangePassword;
 
 public sealed record ChangePasswordCommand : ICommand<Success>, IHaveUser

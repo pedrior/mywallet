@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Transactions.Create;
 
 public sealed record CreateTransactionCommand : ICommand<Ulid>, IHaveUser

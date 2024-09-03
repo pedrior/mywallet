@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Categories.Delete;
 
 public sealed class DeleteCategoryEndpoint : IEndpoint

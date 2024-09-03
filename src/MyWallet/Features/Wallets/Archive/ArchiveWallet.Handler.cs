@@ -1,5 +1,4 @@
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Wallets.Archive;
 

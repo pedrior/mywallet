@@ -1,5 +1,4 @@
 using MyWallet.Domain.Categories;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Categories.Create;
 

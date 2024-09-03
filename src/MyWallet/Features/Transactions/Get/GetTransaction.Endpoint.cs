@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Transactions.Get;
 
 public sealed class GetTransactionEndpoint : IEndpoint

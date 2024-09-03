@@ -1,5 +1,3 @@
-using MyWallet.Shared.Features;
-
 namespace MyWallet.Features.Wallets.Delete;
 
 public sealed class DeleteWalletEndpoint : IEndpoint

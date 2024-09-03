@@ -1,5 +1,4 @@
 using MyWallet.Domain.Transactions;
-using MyWallet.Shared.Features;
 using MyWallet.Shared.Persistence;
 
 namespace MyWallet.Features.Transactions.Get;

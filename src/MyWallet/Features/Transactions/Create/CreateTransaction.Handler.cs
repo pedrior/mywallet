@@ -2,7 +2,6 @@ using MyWallet.Domain;
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
-using MyWallet.Shared.Features;
 
 namespace MyWallet.Features.Transactions.Create;
 
