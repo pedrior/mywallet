@@ -47,8 +47,8 @@ public static partial class Factories
         {
             if (passwordHasher is null)
             {
-                passwordHasher = A.Fake<IPasswordHasher>();
-                A.CallTo(() => passwordHasher.Hash(A<Password>._))
+                passwordHasher = Substitute.For<IPasswordHasher>();
+                passwordHasher.Hash(Arg.Any<Password>())
                     .Returns("hashed-password");
             }
 
@@ -60,11 +60,11 @@ public static partial class Factories
         {
             if (emailUniquenessChecker is null)
             {
-                emailUniquenessChecker = A.Fake<IEmailUniquenessChecker>();
-                A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(A<Email>._, A<CancellationToken>._))
+                emailUniquenessChecker = Substitute.For<IEmailUniquenessChecker>();
+                emailUniquenessChecker.IsUniqueAsync(Arg.Any<Email>(), Arg.Any<CancellationToken>())
                     .Returns(true);
             }
-
+            
             return emailUniquenessChecker;
         }
     }

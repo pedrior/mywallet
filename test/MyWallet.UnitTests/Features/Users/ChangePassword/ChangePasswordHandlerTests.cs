@@ -6,8 +6,8 @@ namespace MyWallet.UnitTests.Features.Users.ChangePassword;
 [TestSubject(typeof(ChangePasswordHandler))]
 public sealed class ChangePasswordHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
-    private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
+    private readonly IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
 
     private readonly ChangePasswordHandler sut;
 
@@ -32,12 +32,12 @@ public sealed class ChangePasswordHandlerTests
             password: Password.Create(Command.OldPassword).Value,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => userRepository.GetAsync(user.Value.Id, A<CancellationToken>._))
+        userRepository.GetAsync(user.Value.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(
-                A<Password>.That.Matches(v => v.Value == Command.OldPassword),
-                user.Value.PasswordHash))
+        passwordHasher.Verify(
+                Arg.Is<Password>(v => v.Value == Command.OldPassword),
+                user.Value.PasswordHash)
             .Returns(true);
 
         // Act
@@ -57,23 +57,24 @@ public sealed class ChangePasswordHandlerTests
             password: Password.Create(Command.OldPassword).Value,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => userRepository.GetAsync(user.Value.Id, A<CancellationToken>._))
+        userRepository.GetAsync(user.Value.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Hash(A<Password>.That.Matches(v => v.Value == Command.NewPassword)))
+        passwordHasher.Hash(Arg.Is<Password>(v => v.Value == Command.NewPassword))
             .Returns("newPasswordHash");
 
-        A.CallTo(() => passwordHasher.Verify(
-                A<Password>.That.Matches(v => v.Value == Command.OldPassword),
-                user.Value.PasswordHash))
+        passwordHasher.Verify(
+                Arg.Is<Password>(v => v.Value == Command.OldPassword),
+                user.Value.PasswordHash)
             .Returns(true);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => passwordHasher.Hash(A<Password>.That.Matches(v => v.Value == Command.NewPassword)))
-            .MustHaveHappenedOnceExactly();
+        passwordHasher
+            .Received(1)
+            .Hash(Arg.Is<Password>(v => v.Value == Command.NewPassword));
 
         user.Value.PasswordHash.Should().Be("newPasswordHash");
     }
@@ -87,19 +88,20 @@ public sealed class ChangePasswordHandlerTests
             password: Password.Create(Command.OldPassword).Value,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => userRepository.GetAsync(user.Value.Id, A<CancellationToken>._))
+        userRepository.GetAsync(user.Value.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(
-                A<Password>.That.Matches(v => v.Value == Command.OldPassword),
-                user.Value.PasswordHash))
+        passwordHasher.Verify(
+                Arg.Is<Password>(v => v.Value == Command.OldPassword),
+                user.Value.PasswordHash)
             .Returns(true);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => userRepository.UpdateAsync(user.Value, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await userRepository
+            .Received(1)
+            .UpdateAsync(user.Value, Arg.Any<CancellationToken>());
     }
 }

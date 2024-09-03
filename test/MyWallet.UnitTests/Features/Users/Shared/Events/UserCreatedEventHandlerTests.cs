@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using MyWallet.Domain.Categories;
-using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Users.Events;
 using MyWallet.Features.Users.Shared.Events;
@@ -11,9 +10,9 @@ namespace MyWallet.UnitTests.Features.Users.Shared.Events;
 public sealed class UserCreatedEventHandlerTests
 {
     private readonly IDefaultCategoriesProvider defaultCategoriesProvider = new DefaultCategoriesProvider();
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
-    private readonly ILogger<UserCreatedEvent> logger = A.Fake<ILogger<UserCreatedEvent>>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
+    private readonly ILogger<UserCreatedEvent> logger = Substitute.For<ILogger<UserCreatedEvent>>();
 
     private readonly UserCreatedEventHandler sut;
 
@@ -33,15 +32,16 @@ public sealed class UserCreatedEventHandlerTests
         var user = await Factories.User.CreateDefault();
         var userCreatedEvent = new UserCreatedEvent(user.Value.Id);
 
-        A.CallTo(() => userRepository.GetAsync(user.Value.Id, A<CancellationToken>._))
+        userRepository.GetAsync(user.Value.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
         // Act
         await sut.Handle(userCreatedEvent, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => categoryRepository.AddRangeAsync(A<IEnumerable<Category>>._, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await categoryRepository
+            .Received(1)
+            .AddRangeAsync(Arg.Any<IEnumerable<Category>>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public sealed class UserCreatedEventHandlerTests
         var userId = UserId.New();
         var userCreatedEvent = new UserCreatedEvent(userId);
 
-        A.CallTo(() => userRepository.GetAsync(userId, A<CancellationToken>._))
+        userRepository.GetAsync(userId, Arg.Any<CancellationToken>())
             .Returns(null as User);
 
         // Act

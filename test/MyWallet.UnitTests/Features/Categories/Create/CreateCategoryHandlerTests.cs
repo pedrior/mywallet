@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Categories.Create;
 [TestSubject(typeof(CreateCategoryHandler))]
 public sealed class CreateCategoryHandlerTests
 {
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
 
     private readonly CreateCategoryHandler sut;
 
@@ -42,9 +42,8 @@ public sealed class CreateCategoryHandlerTests
         var result = await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => categoryRepository.AddAsync(
-                A<Category>.That.Matches(v => v.Id == result.Value),
-                A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await categoryRepository
+            .Received(1)
+            .AddAsync(Arg.Is<Category>(v => v.Id == result.Value), Arg.Any<CancellationToken>());
     }
 }

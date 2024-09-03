@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Wallets.Get;
 
 public sealed class GetWalletHandlerTests
 {
-    private readonly IDbContext db = A.Fake<IDbContext>();
+    private readonly IDbContext db = Substitute.For<IDbContext>();
 
     private readonly GetWalletHandler sut;
 
@@ -24,10 +24,10 @@ public sealed class GetWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => db.QuerySingleOrDefaultAsync<WalletResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        db.QuerySingleOrDefaultAsync<WalletResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(new WalletResponse
             {
                 Id = wallet.Id.Value,
@@ -56,11 +56,11 @@ public sealed class GetWalletHandlerTests
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => db.QuerySingleOrDefaultAsync<WalletResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
-            .Returns(null as WalletResponse);
+        db.QuerySingleOrDefaultAsync<WalletResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Query, CancellationToken.None);

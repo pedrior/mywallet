@@ -9,9 +9,9 @@ namespace MyWallet.UnitTests.Features.Users.Login;
 [TestSubject(typeof(LoginHandler))]
 public sealed class LoginHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
-    private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
-    private readonly ISecurityTokenProvider securityTokenProvider = A.Fake<ISecurityTokenProvider>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
+    private readonly IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
+    private readonly ISecurityTokenProvider securityTokenProvider = Substitute.For<ISecurityTokenProvider>();
 
     private readonly LoginHandler sut;
 
@@ -43,18 +43,20 @@ public sealed class LoginHandlerTests
             AccessToken: Guid.NewGuid().ToString(),
             ExpiresAt: DateTimeOffset.UtcNow.AddMinutes(5));
 
-
-        A.CallTo(() => userRepository.GetByEmailAsync(
-                A<Email>.That.Matches(e => e.Value == Command.Email),
-                A<CancellationToken>._))
+        userRepository.GetByEmailAsync(
+                Arg.Is<Email>(e => e.Value == Command.Email),
+                Arg.Any<CancellationToken>())
             .Returns(user);
 
-        A.CallTo(() => passwordHasher.Verify(
-                A<Password>.That.Matches(p => p.Value == Command.Password),
-                user.PasswordHash))
+        passwordHasher.Verify(
+                Arg.Is<Password>(p => p.Value == Command.Password),
+                user.PasswordHash)
             .Returns(true);
 
-        A.CallTo(() => securityTokenProvider.GenerateToken(claims))
+        securityTokenProvider.GenerateToken(Arg.Is<IDictionary<string, object?>>(
+                // ReSharper disable UsageOfDefaultStructEquality
+                d => d.SequenceEqual(claims)))
+            // ReSharper restore UsageOfDefaultStructEquality
             .Returns(securityToken);
 
         // Act
@@ -73,9 +75,9 @@ public sealed class LoginHandlerTests
     public async Task Handle_WhenUserDoesNotExist_ShouldReturnInvalidCredentialsError()
     {
         // Arrange
-        A.CallTo(() => userRepository.GetByEmailAsync(
-                A<Email>.That.Matches(e => e.Value == Command.Email),
-                A<CancellationToken>._))
+        userRepository.GetByEmailAsync(
+                Arg.Is<Email>(e => e.Value == Command.Email),
+                Arg.Any<CancellationToken>())
             .Returns(null as User);
 
         // Act
@@ -85,8 +87,8 @@ public sealed class LoginHandlerTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(UserErrors.InvalidCredentials);
 
-        A.CallTo(securityTokenProvider)
-            .MustNotHaveHappened();
+        securityTokenProvider
+            .DidNotReceiveWithAnyArgs();
     }
 
     [Fact]
@@ -95,14 +97,14 @@ public sealed class LoginHandlerTests
         // Arrange
         var user = (await Factories.User.CreateDefault()).Value;
 
-        A.CallTo(() => userRepository.GetByEmailAsync(
-                A<Email>.That.Matches(e => e.Value == Command.Email),
-                A<CancellationToken>._))
+        userRepository.GetByEmailAsync(
+                Arg.Is<Email>(e => e.Value == Command.Email),
+                Arg.Any<CancellationToken>())
             .Returns(user);
 
-        A.CallTo(() => passwordHasher.Verify(
-                A<Password>.That.Matches(p => p.Value == Command.Password),
-                user.PasswordHash))
+        passwordHasher.Verify(
+                Arg.Is<Password>(p => p.Value == Command.Password),
+                user.PasswordHash)
             .Returns(false);
 
         // Act
@@ -112,7 +114,7 @@ public sealed class LoginHandlerTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(UserErrors.InvalidCredentials);
 
-        A.CallTo(securityTokenProvider)
-            .MustNotHaveHappened();
+        securityTokenProvider
+            .DidNotReceiveWithAnyArgs();
     }
 }

@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Wallets.List;
 
 public sealed class ListWalletsHandlerTests
 {
-    private readonly IDbContext db = A.Fake<IDbContext>();
+    private readonly IDbContext db = Substitute.For<IDbContext>();
 
     private readonly ListWalletsHandler sut;
 
@@ -28,14 +28,14 @@ public sealed class ListWalletsHandlerTests
         // Arrange
         WalletSummaryResponse[] wallets =
         [
-            new WalletSummaryResponse
+            new()
             {
                 Id = Ulid.NewUlid(),
                 Name = "Wallet 1",
                 Color = "#FF0000",
                 CreatedAt = DateTimeOffset.UtcNow
             },
-            new WalletSummaryResponse
+            new()
             {
                 Id = Ulid.NewUlid(),
                 Name = "Wallet 2",
@@ -44,16 +44,16 @@ public sealed class ListWalletsHandlerTests
             }
         ];
 
-        A.CallTo(() => db.ExecuteScalarAsync<int>(
-                A<string>._,
-                A<object?>._,
-                A<CancellationToken>._))
+        db.ExecuteScalarAsync<int>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(wallets.Length);
 
-        A.CallTo(() => db.QueryAsync<WalletSummaryResponse>(
-                A<string>._,
-                A<object?>._,
-                A<CancellationToken>._))
+        db.QueryAsync<WalletSummaryResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(wallets);
 
         // Act
@@ -73,10 +73,10 @@ public sealed class ListWalletsHandlerTests
     public async Task Handle_WhenUserDoesNotHaveWallets_ShouldReturnEmptyPageResponse()
     {
         // Arrange
-        A.CallTo(() => db.ExecuteScalarAsync<int>(
-                A<string>._,
-                A<object?>._,
-                A<CancellationToken>._))
+        db.ExecuteScalarAsync<int>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(0);
 
         // Act
@@ -86,10 +86,11 @@ public sealed class ListWalletsHandlerTests
         result.IsError.Should().BeFalse();
         result.Value.Should().Be(PageResponse<WalletSummaryResponse>.Empty(Query.Page, Query.Limit));
 
-        A.CallTo(() => db.QueryAsync<WalletSummaryResponse>(
-                A<string>._,
-                A<object?>._,
-                A<CancellationToken>._))
-            .MustNotHaveHappened();
+        await db
+            .DidNotReceive()
+            .QueryAsync<WalletSummaryResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>());
     }
 }

@@ -1,2 +1,2 @@
 global using ErrorOr;
-global using FakeItEasy;
+global using NSubstitute;

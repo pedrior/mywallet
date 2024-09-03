@@ -8,7 +8,7 @@ namespace MyWallet.UnitTests.Features.Categories.Get;
 [TestSubject(typeof(GetCategoryHandler))]
 public sealed class GetCategoryHandlerTests
 {
-    private readonly IDbContext dbContext = A.Fake<IDbContext>();
+    private readonly IDbContext dbContext = Substitute.For<IDbContext>();
 
     private readonly GetCategoryHandler sut;
 
@@ -26,10 +26,10 @@ public sealed class GetCategoryHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnCategoryResponse()
     {
         // Arrange
-        A.CallTo(() => dbContext.QuerySingleOrDefaultAsync<CategoryResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        dbContext.QuerySingleOrDefaultAsync<CategoryResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(new CategoryResponse
             {
                 Id = category.Id.Value,
@@ -39,7 +39,7 @@ public sealed class GetCategoryHandlerTests
                 CreatedAt = category.CreatedAt,
                 UpdatedAt = category.UpdatedAt
             });
-
+        
         // Act
         var result = await sut.Handle(Query, CancellationToken.None);
 
@@ -59,11 +59,11 @@ public sealed class GetCategoryHandlerTests
     public async Task Handle_WhenCategoryDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => dbContext.QuerySingleOrDefaultAsync<CategoryResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
-            .Returns(null as CategoryResponse);
+        dbContext.QuerySingleOrDefaultAsync<CategoryResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Query, CancellationToken.None);

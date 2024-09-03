@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Transactions.Delete;
 
 public sealed class DeleteTransactionHandlerTests
 {
-    private readonly ITransactionRepository transactionRepository = A.Fake<ITransactionRepository>();
+    private readonly ITransactionRepository transactionRepository = Substitute.For<ITransactionRepository>();
 
     private readonly DeleteTransactionHandler sut;
 
@@ -21,9 +21,9 @@ public sealed class DeleteTransactionHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnDeleted()
     {
         // Arrange
-        A.CallTo(() => transactionRepository.ExistsAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
+        transactionRepository.ExistsAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -38,28 +38,29 @@ public sealed class DeleteTransactionHandlerTests
     public async Task Handle_WhenCalled_ShouldDeleteFromRepository()
     {
         // Arrange
-        A.CallTo(() => transactionRepository.ExistsAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
+        transactionRepository.ExistsAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.DeleteAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
-            .MustHaveHappenedOnceExactly();
+        await transactionRepository
+            .Received(1)
+            .DeleteAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenTransactionDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        A.CallTo(() => transactionRepository.ExistsAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
+        transactionRepository.ExistsAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
@@ -74,18 +75,19 @@ public sealed class DeleteTransactionHandlerTests
     public async Task Handle_WhenTransactionDoesNotExist_ShouldNotDeleteFromRepository()
     {
         // Arrange
-        A.CallTo(() => transactionRepository.ExistsAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
+        transactionRepository.ExistsAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.DeleteAsync(
-                A<TransactionId>.That.Matches(id => id.Value == Command.TransactionId),
-                A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await transactionRepository
+            .DidNotReceive()
+            .DeleteAsync(
+                Arg.Is<TransactionId>(id => id.Value == Command.TransactionId),
+                Arg.Any<CancellationToken>());
     }
 }

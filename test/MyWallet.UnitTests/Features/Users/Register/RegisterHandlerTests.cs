@@ -6,9 +6,9 @@ namespace MyWallet.UnitTests.Features.Users.Register;
 [TestSubject(typeof(RegisterHandler))]
 public sealed class RegisterHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
-    private readonly IEmailUniquenessChecker emailUniquenessChecker = A.Fake<IEmailUniquenessChecker>();
-    private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
+    private readonly IEmailUniquenessChecker emailUniquenessChecker = Substitute.For<IEmailUniquenessChecker>();
+    private readonly IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
 
     private readonly RegisterHandler sut;
 
@@ -33,10 +33,10 @@ public sealed class RegisterHandlerTests
         var password = Password.Create(Command.Password).Value;
         const string hashedPassword = "hashed-password";
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(email, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(email, Arg.Any<CancellationToken>())
             .Returns(true);
 
-        A.CallTo(() => passwordHasher.Hash(password))
+        passwordHasher.Hash(password)
             .Returns(hashedPassword);
 
         // Act
@@ -45,11 +45,12 @@ public sealed class RegisterHandlerTests
         // Assert
         result.IsError.Should().BeFalse();
 
-        A.CallTo(() => userRepository.AddAsync(
-                A<User>.That.Matches(u => u.Email == email
-                                          && u.Name == name
-                                          && u.PasswordHash == hashedPassword),
-                A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await userRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<User>(u => u.Email == email
+                                  && u.Name == name
+                                  && u.PasswordHash == hashedPassword),
+                Arg.Any<CancellationToken>());
     }
 }

@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Users.ViewProfile;
 [TestSubject(typeof(ViewProfileHandler))]
 public sealed class ViewProfileHandlerTests
 {
-    private readonly IDbContext dbContext = A.Fake<IDbContext>();
+    private readonly IDbContext dbContext = Substitute.For<IDbContext>();
 
     private readonly ViewProfileHandler sut;
 
@@ -32,10 +32,10 @@ public sealed class ViewProfileHandlerTests
             UpdatedAt = null
         };
 
-        A.CallTo(() => dbContext.QuerySingleOrDefaultAsync<ViewProfileResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        dbContext.QuerySingleOrDefaultAsync<ViewProfileResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(userProfileResponse);
 
         // Act

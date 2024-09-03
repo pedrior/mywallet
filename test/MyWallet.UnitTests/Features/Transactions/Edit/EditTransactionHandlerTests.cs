@@ -8,9 +8,9 @@ namespace MyWallet.UnitTests.Features.Transactions.Edit;
 
 public sealed class EditTransactionHandlerTests
 {
-    private readonly ITransactionRepository transactionRepository = A.Fake<ITransactionRepository>();
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
+    private readonly ITransactionRepository transactionRepository = Substitute.For<ITransactionRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
 
     private readonly EditTransactionHandler sut;
 
@@ -34,17 +34,17 @@ public sealed class EditTransactionHandlerTests
     {
         sut = new EditTransactionHandler(transactionRepository, walletRepository, categoryRepository);
 
-        A.CallTo(() => transactionRepository.GetAsync(transaction.Id, A<CancellationToken>.Ignored))
+        transactionRepository.GetAsync(transaction.Id, Arg.Any<CancellationToken>())
             .Returns(transaction);
 
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
+        walletRepository.GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>())
             .Returns(wallet);
 
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
     }
 
@@ -68,8 +68,9 @@ public sealed class EditTransactionHandlerTests
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.UpdateAsync(transaction, A<CancellationToken>.Ignored))
-            .MustHaveHappenedOnceExactly();
+        await transactionRepository
+            .Received(1)
+            .UpdateAsync(transaction, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -92,8 +93,8 @@ public sealed class EditTransactionHandlerTests
     public async Task Handle_WhenTransactionDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => transactionRepository.GetAsync(transaction.Id, A<CancellationToken>.Ignored))
-            .Returns(null as Transaction);
+        transactionRepository.GetAsync(transaction.Id, Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -167,10 +168,11 @@ public sealed class EditTransactionHandlerTests
         // Assert
         transaction.WalletId.Should().Be(Constants.Wallet.Id);
 
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await walletRepository
+            .DidNotReceive()
+            .GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -185,20 +187,21 @@ public sealed class EditTransactionHandlerTests
         // Assert
         transaction.CategoryId.Should().Be(Constants.Category.Id);
 
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await categoryRepository
+            .DidNotReceive()
+            .GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenChangingWalletAndWalletDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Wallet);
+        walletRepository.GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -212,10 +215,10 @@ public sealed class EditTransactionHandlerTests
     public async Task Handle_WhenChangingCategoryAndCategoryDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Category);
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -229,33 +232,35 @@ public sealed class EditTransactionHandlerTests
     public async Task Handle_WhenChangingWalletAndWalletDoesNotExist_ShouldNotUpdateTransaction()
     {
         // Arrange
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Wallet);
+        walletRepository.GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.UpdateAsync(transaction, A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await transactionRepository
+            .DidNotReceive()
+            .UpdateAsync(transaction, Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenChangingCategoryAndCategoryDoesNotExist_ShouldNotUpdateTransaction()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Category);
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.UpdateAsync(transaction, A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await transactionRepository
+            .DidNotReceive()
+            .UpdateAsync(transaction, Arg.Any<CancellationToken>());
     }
 }

@@ -7,7 +7,7 @@ namespace MyWallet.UnitTests.Features.Categories.List;
 [TestSubject(typeof(ListCategoriesHandler))]
 public sealed class ListCategoriesHandlerTests
 {
-    private readonly IDbContext dbContext = A.Fake<IDbContext>();
+    private readonly IDbContext dbContext = Substitute.For<IDbContext>();
 
     private readonly ListCategoriesHandler sut;
 
@@ -29,10 +29,10 @@ public sealed class ListCategoriesHandlerTests
             Factories.Category.CreateDefault(id: CategoryId.New())
         ];
 
-        A.CallTo(() => dbContext.QueryAsync<ListCategoriesResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        dbContext.QueryAsync<ListCategoriesResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(categories.Select(c => new ListCategoriesResponse
             {
                 Id = c.Id.Value,
@@ -53,15 +53,15 @@ public sealed class ListCategoriesHandlerTests
             Color = c.Color.Value
         }));
     }
-    
+
     [Fact]
     public async Task Handle_WhenNoCategoriesExist_ShouldReturnEmptyList()
     {
         // Arrange
-        A.CallTo(() => dbContext.QueryAsync<ListCategoriesResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        dbContext.QueryAsync<ListCategoriesResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns([]);
 
         // Act

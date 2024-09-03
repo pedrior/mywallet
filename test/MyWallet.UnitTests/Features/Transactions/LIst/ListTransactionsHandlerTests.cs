@@ -9,8 +9,8 @@ namespace MyWallet.UnitTests.Features.Transactions.LIst;
 [TestSubject(typeof(ListTransactionsHandler))]
 public sealed class ListTransactionsHandlerTests
 {
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
-    private readonly IDbContext db = A.Fake<IDbContext>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
+    private readonly IDbContext db = Substitute.For<IDbContext>();
 
     private readonly ListTransactionsHandler sut;
 
@@ -28,9 +28,9 @@ public sealed class ListTransactionsHandlerTests
     {
         sut = new ListTransactionsHandler(walletRepository, db);
 
-        A.CallTo(() => walletRepository.ExistsAsync(
-                A<WalletId>.That.Matches(v => v.Value == Query.WalletId),
-                A<CancellationToken>._))
+        walletRepository.ExistsAsync(
+                Arg.Is<WalletId>(v => v.Value == Query.WalletId),
+                Arg.Any<CancellationToken>())
             .Returns(true);
     }
 
@@ -48,16 +48,16 @@ public sealed class ListTransactionsHandlerTests
             ToTransactionResponse(Factories.Transaction.CreateDefault().Value)
         };
 
-        A.CallTo(() => db.ExecuteScalarAsync<int>(
-                A<string>.Ignored,
-                A<object>.Ignored,
-                A<CancellationToken>.Ignored))
+        db.ExecuteScalarAsync<int>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(transactions.Count);
 
-        A.CallTo(() => db.QueryAsync<TransactionResponse>(
-                A<string>.Ignored,
-                A<object>.Ignored,
-                A<CancellationToken>.Ignored))
+        db.QueryAsync<TransactionResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(transactions[..3]);
 
         // Act
@@ -81,10 +81,10 @@ public sealed class ListTransactionsHandlerTests
     public async Task Handle_WhenNoTransactions_ShouldReturnEmptyPage()
     {
         // Arrange
-        A.CallTo(() => db.ExecuteScalarAsync<int>(
-                A<string>.Ignored,
-                A<object>.Ignored,
-                A<CancellationToken>.Ignored))
+        db.ExecuteScalarAsync<int>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(0);
 
         // Act
@@ -103,20 +103,21 @@ public sealed class ListTransactionsHandlerTests
             Query.To
         });
 
-        A.CallTo(() => db.QueryAsync<TransactionResponse>(
-                A<string>.Ignored,
-                A<object>.Ignored,
-                A<CancellationToken>.Ignored))
-            .MustNotHaveHappened();
+        await db
+            .DidNotReceive()
+            .QueryAsync<TransactionResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        A.CallTo(() => walletRepository.ExistsAsync(
-                A<WalletId>.That.Matches(v => v.Value == Query.WalletId),
-                A<CancellationToken>._))
+        walletRepository.ExistsAsync(
+                Arg.Is<WalletId>(v => v.Value == Query.WalletId),
+                Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act

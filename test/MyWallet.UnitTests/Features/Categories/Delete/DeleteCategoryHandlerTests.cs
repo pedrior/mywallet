@@ -7,7 +7,7 @@ namespace MyWallet.UnitTests.Features.Categories.Delete;
 [TestSubject(typeof(DeleteCategoryHandler))]
 public sealed class DeleteCategoryHandlerTests
 {
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
 
     private readonly DeleteCategoryHandler sut;
 
@@ -28,9 +28,9 @@ public sealed class DeleteCategoryHandlerTests
         // Arrange
         var category = Factories.Category.CreateDefault();
 
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(c => c.Value == Command.CategoryId),
-                A<CancellationToken>._))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(c => c.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         // Act
@@ -47,9 +47,9 @@ public sealed class DeleteCategoryHandlerTests
         // Arrange
         var category = Factories.Category.CreateDefault();
 
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(c => c.Value == Command.CategoryId),
-                A<CancellationToken>._))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(c => c.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         // Act
@@ -58,7 +58,8 @@ public sealed class DeleteCategoryHandlerTests
         // Assert
         category.Events.Should().ContainSingle(e => e is CategoryDeletedEvent);
 
-        A.CallTo(() => categoryRepository.UpdateAsync(category, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await categoryRepository
+            .Received(1)
+            .UpdateAsync(category, Arg.Any<CancellationToken>());
     }
 }

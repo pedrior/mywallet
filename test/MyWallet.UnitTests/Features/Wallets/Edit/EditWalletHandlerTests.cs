@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Wallets.Edit;
 
 public sealed class EditWalletHandlerTests
 {
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
 
     private readonly EditWalletHandler sut;
 
@@ -29,7 +29,7 @@ public sealed class EditWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
@@ -46,23 +46,23 @@ public sealed class EditWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-
-        A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await walletRepository
+            .Received(1)
+            .UpdateAsync(wallet, Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
             .Returns(null as Wallet);
 
         // Act
@@ -72,7 +72,7 @@ public sealed class EditWalletHandlerTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(WalletErrors.NotFound);
     }
-    
+
     [Fact]
     public async Task Handle_WhenEditFails_ShouldReturnError()
     {
@@ -81,7 +81,7 @@ public sealed class EditWalletHandlerTests
 
         wallet.Archive(); // This will make the Edit fail
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
@@ -99,14 +99,15 @@ public sealed class EditWalletHandlerTests
 
         wallet.Archive(); // This will make the Edit fail
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id, Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
-            .MustNotHaveHappened();
+        await walletRepository
+            .DidNotReceive()
+            .UpdateAsync(wallet, Arg.Any<CancellationToken>());
     }
 }

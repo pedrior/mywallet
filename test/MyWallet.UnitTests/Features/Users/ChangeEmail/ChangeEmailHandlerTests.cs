@@ -5,9 +5,9 @@ namespace MyWallet.UnitTests.Features.Users.ChangeEmail;
 
 public sealed class ChangeEmailHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
-    private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
-    private readonly IEmailUniquenessChecker emailUniquenessChecker = A.Fake<IEmailUniquenessChecker>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
+    private readonly IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
+    private readonly IEmailUniquenessChecker emailUniquenessChecker = Substitute.For<IEmailUniquenessChecker>();
 
     private readonly ChangeEmailHandler sut;
 
@@ -29,13 +29,13 @@ public sealed class ChangeEmailHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(Constants.User.Id, A<CancellationToken>._))
+        userRepository.GetAsync(Constants.User.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash))
+        passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash)
             .Returns(true);
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -52,13 +52,13 @@ public sealed class ChangeEmailHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(Constants.User.Id, A<CancellationToken>._))
+        userRepository.GetAsync(Constants.User.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash))
+        passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash)
             .Returns(true);
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -67,8 +67,9 @@ public sealed class ChangeEmailHandlerTests
         // Assert
         user.Value.Email.Should().Be(Constants.User.Email2);
 
-        A.CallTo(() => userRepository.UpdateAsync(user.Value, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await userRepository
+            .Received(1)
+            .UpdateAsync(user.Value, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -77,10 +78,10 @@ public sealed class ChangeEmailHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(Constants.User.Id, A<CancellationToken>._))
+        userRepository.GetAsync(Constants.User.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash))
+        passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash)
             .Returns(false);
 
         // Act
@@ -89,8 +90,9 @@ public sealed class ChangeEmailHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
 
-        A.CallTo(() => userRepository.UpdateAsync(user.Value, A<CancellationToken>._))
-            .MustNotHaveHappened();
+        await userRepository
+            .DidNotReceive()
+            .UpdateAsync(user.Value, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -99,13 +101,13 @@ public sealed class ChangeEmailHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(Constants.User.Id, A<CancellationToken>._))
+        userRepository.GetAsync(Constants.User.Id, Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
-        A.CallTo(() => passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash))
+        passwordHasher.Verify(Constants.User.Password, user.Value.PasswordHash)
             .Returns(true);
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(Constants.User.Email2, Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
@@ -114,7 +116,8 @@ public sealed class ChangeEmailHandlerTests
         // Assert
         result.IsError.Should().BeTrue();
 
-        A.CallTo(() => userRepository.UpdateAsync(user.Value, A<CancellationToken>._))
-            .MustNotHaveHappened();
+        await userRepository
+            .DidNotReceive()
+            .UpdateAsync(user.Value, Arg.Any<CancellationToken>());
     }
 }

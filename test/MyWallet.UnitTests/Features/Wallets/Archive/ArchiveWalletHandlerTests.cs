@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Wallets.Archive;
 
 public sealed class ArchiveWalletHandlerTests
 {
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
 
     private readonly ArchiveWalletHandler sut;
 
@@ -27,7 +27,7 @@ public sealed class ArchiveWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
@@ -44,7 +44,7 @@ public sealed class ArchiveWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
@@ -60,22 +60,23 @@ public sealed class ArchiveWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+       walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
-            .MustHaveHappened();
+        await walletRepository
+            .Received(1)
+            .UpdateAsync(wallet,  Arg.Any<CancellationToken>());
     }
     
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(null as Wallet);
 
         // Act
@@ -92,7 +93,7 @@ public sealed class ArchiveWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Simulate an error by archiving a wallet twice
@@ -111,7 +112,7 @@ public sealed class ArchiveWalletHandlerTests
         // Arrange
         var wallet = Factories.Wallet.CreateDefault();
 
-        A.CallTo(() => walletRepository.GetAsync(Constants.Wallet.Id, A<CancellationToken>._))
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
             .Returns(wallet);
 
         // Simulate an error by archiving a wallet twice
@@ -121,7 +122,8 @@ public sealed class ArchiveWalletHandlerTests
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => walletRepository.UpdateAsync(wallet, A<CancellationToken>._))
-            .MustNotHaveHappened();
+        await walletRepository
+            .DidNotReceive()
+            .UpdateAsync(wallet,  Arg.Any<CancellationToken>());
     }
 }

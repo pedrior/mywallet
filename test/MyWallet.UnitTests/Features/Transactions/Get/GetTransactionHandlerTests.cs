@@ -7,7 +7,7 @@ namespace MyWallet.UnitTests.Features.Transactions.Get;
 [TestSubject(typeof(GetTransactionHandler))]
 public sealed class GetTransactionHandlerTests
 {
-    private readonly IDbContext db = A.Fake<IDbContext>();
+    private readonly IDbContext db = Substitute.For<IDbContext>();
 
     private readonly GetTransactionHandler sut;
 
@@ -42,10 +42,10 @@ public sealed class GetTransactionHandlerTests
             UpdatedAt = transaction.UpdatedAt
         };
 
-        A.CallTo(() => db.QuerySingleOrDefaultAsync<GetTransactionResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
+        db.QuerySingleOrDefaultAsync<GetTransactionResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
             .Returns(response);
 
         // Act
@@ -60,11 +60,11 @@ public sealed class GetTransactionHandlerTests
     public async Task Handle_WhenTransactionDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        A.CallTo(() => db.QuerySingleOrDefaultAsync<GetTransactionResponse>(
-                A<string>._,
-                A<object>._,
-                A<CancellationToken>._))
-            .Returns(null as GetTransactionResponse);
+        db.QuerySingleOrDefaultAsync<GetTransactionResponse>(
+                Arg.Any<string>(),
+                Arg.Any<object?>(),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Query, CancellationToken.None);

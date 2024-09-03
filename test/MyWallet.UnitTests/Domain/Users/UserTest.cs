@@ -6,8 +6,8 @@ namespace MyWallet.UnitTests.Domain.Users;
 [TestSubject(typeof(User))]
 public sealed class UserTest
 {
-    private readonly IPasswordHasher passwordHasher = A.Fake<IPasswordHasher>();
-    private readonly IEmailUniquenessChecker emailUniquenessChecker = A.Fake<IEmailUniquenessChecker>();
+    private readonly IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
+    private readonly IEmailUniquenessChecker emailUniquenessChecker = Substitute.For<IEmailUniquenessChecker>();
 
     [Fact]
     public async Task CreateAsync_WhenCalled_ShouldRaiseUserCreatedEvent()
@@ -15,19 +15,19 @@ public sealed class UserTest
         // Arrange
         // Act
         var result = await Factories.User.CreateDefault();
-        
+
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Events.Should().ContainSingle(e => e is UserCreatedEvent);
     }
-    
+
     [Fact]
     public async Task CreateAsync_WhenEmailIsNotUnique_ShouldReturnEmailNotUnique()
     {
         // Arrange
         var email = Email.Create("jane@doe.com").Value;
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(email, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(email, Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
@@ -45,7 +45,7 @@ public sealed class UserTest
         var password = Password.Create("S0m3P4ssw0rd").Value;
         const string passwordHash = "hashed-password";
 
-        A.CallTo(() => passwordHasher.Hash(password))
+        passwordHasher.Hash(password)
             .Returns(passwordHash);
 
         // Act
@@ -68,7 +68,7 @@ public sealed class UserTest
             password: password,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => passwordHasher.Verify(password, user.Value.PasswordHash))
+        passwordHasher.Verify(password, user.Value.PasswordHash)
             .Returns(true);
 
         // Act
@@ -88,7 +88,7 @@ public sealed class UserTest
             password: password,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => passwordHasher.Verify(password, user.Value.PasswordHash))
+        passwordHasher.Verify(password, user.Value.PasswordHash)
             .Returns(false);
 
         // Act
@@ -106,8 +106,9 @@ public sealed class UserTest
         var oldEmail = Constants.User.Email;
         var newEmail = Constants.User.Email2;
 
-        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+        passwordHasher.Verify(password, Arg.Any<string>())
             .Returns(false);
+
 
         var user = await Factories.User.CreateDefault(
             email: oldEmail,
@@ -124,8 +125,8 @@ public sealed class UserTest
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(UserErrors.InvalidPassword);
 
-        A.CallTo(emailUniquenessChecker)
-            .MustNotHaveHappened();
+        emailUniquenessChecker
+            .ReceivedWithAnyArgs(Quantity.None());
     }
 
     [Fact]
@@ -136,7 +137,7 @@ public sealed class UserTest
         var oldEmail = Constants.User.Email;
         var newEmail = Constants.User.Email;
 
-        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+        passwordHasher.Verify(password, Arg.Any<string>())
             .Returns(true);
 
         var user = await Factories.User.CreateDefault(
@@ -154,8 +155,8 @@ public sealed class UserTest
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(UserErrors.CannotChangeToSameEmail);
 
-        A.CallTo(emailUniquenessChecker)
-            .MustNotHaveHappened();
+        emailUniquenessChecker
+            .ReceivedWithAnyArgs(Quantity.None());
     }
 
     [Fact]
@@ -166,10 +167,11 @@ public sealed class UserTest
         var oldEmail = Constants.User.Email;
         var newEmail = Constants.User.Email2;
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(newEmail, A<CancellationToken>._))
+
+        emailUniquenessChecker.IsUniqueAsync(newEmail, Arg.Any<CancellationToken>())
             .Returns(false);
 
-        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+        passwordHasher.Verify(password, Arg.Any<string>())
             .Returns(true);
 
         var user = await Factories.User.CreateDefault(
@@ -196,10 +198,10 @@ public sealed class UserTest
         var oldEmail = Constants.User.Email;
         var newEmail = Constants.User.Email2;
 
-        A.CallTo(() => emailUniquenessChecker.IsUniqueAsync(newEmail, A<CancellationToken>._))
+        emailUniquenessChecker.IsUniqueAsync(newEmail, Arg.Any<CancellationToken>())
             .Returns(true);
 
-        A.CallTo(() => passwordHasher.Verify(password, A<string>._))
+        passwordHasher.Verify(password, Arg.Any<string>())
             .Returns(true);
 
         var user = await Factories.User.CreateDefault(
@@ -247,7 +249,7 @@ public sealed class UserTest
             password: oldPassword,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => passwordHasher.Verify(oldPassword, user.Value.PasswordHash))
+        passwordHasher.Verify(oldPassword, user.Value.PasswordHash)
             .Returns(false);
 
         // Act
@@ -270,10 +272,10 @@ public sealed class UserTest
             password: oldPassword,
             passwordHasher: passwordHasher);
 
-        A.CallTo(() => passwordHasher.Verify(oldPassword, user.Value.PasswordHash))
+        passwordHasher.Verify(oldPassword, user.Value.PasswordHash)
             .Returns(true);
 
-        A.CallTo(() => passwordHasher.Hash(newPassword))
+        passwordHasher.Hash(newPassword)
             .Returns(newPasswordHash);
 
         // Act

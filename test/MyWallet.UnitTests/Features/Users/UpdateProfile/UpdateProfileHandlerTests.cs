@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Users.UpdateProfile;
 [TestSubject(typeof(UpdateProfileHandler))]
 public sealed class UpdateProfileHandlerTests
 {
-    private readonly IUserRepository userRepository = A.Fake<IUserRepository>();
+    private readonly IUserRepository userRepository = Substitute.For<IUserRepository>();
 
     private readonly UpdateProfileHandler sut;
 
@@ -27,9 +27,9 @@ public sealed class UpdateProfileHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(
-                A<UserId>.That.Matches(v => v.Value == Command.UserId),
-                A<CancellationToken>._))
+        userRepository.GetAsync(
+                Arg.Is<UserId>(v => v.Value == Command.UserId),
+                Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
         // Act
@@ -46,9 +46,9 @@ public sealed class UpdateProfileHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(
-                A<UserId>.That.Matches(v => v.Value == Command.UserId),
-                A<CancellationToken>._))
+        userRepository.GetAsync(
+                Arg.Is<UserId>(v => v.Value == Command.UserId),
+                Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
         // Act
@@ -64,16 +64,17 @@ public sealed class UpdateProfileHandlerTests
         // Arrange
         var user = await Factories.User.CreateDefault();
 
-        A.CallTo(() => userRepository.GetAsync(
-                A<UserId>.That.Matches(v => v.Value == Command.UserId),
-                A<CancellationToken>._))
+        userRepository.GetAsync(
+                Arg.Is<UserId>(v => v.Value == Command.UserId),
+                Arg.Any<CancellationToken>())
             .Returns(user.Value);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => userRepository.UpdateAsync(user.Value, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await userRepository
+            .Received(1)
+            .UpdateAsync(user.Value, Arg.Any<CancellationToken>());
     }
 }

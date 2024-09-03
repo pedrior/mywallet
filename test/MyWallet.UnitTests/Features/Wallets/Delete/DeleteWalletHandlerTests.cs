@@ -6,7 +6,7 @@ namespace MyWallet.UnitTests.Features.Wallets.Delete;
 
 public sealed class DeleteWalletHandlerTests
 {
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
 
     private readonly DeleteWalletHandler sut;
 
@@ -24,9 +24,9 @@ public sealed class DeleteWalletHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnDeleted()
     {
         // Arrange
-        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
             .Returns(true);
-        
+
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
 
@@ -39,22 +39,23 @@ public sealed class DeleteWalletHandlerTests
     public async Task Handle_WhenCalled_ShouldDeleteWallet()
     {
         // Arrange
-        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
             .Returns(true);
-        
+
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => walletRepository.DeleteAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await walletRepository
+            .Received(1)
+            .DeleteAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>());
     }
-    
+
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnWalletNotFound()
     {
         // Arrange
-        A.CallTo(() => walletRepository.ExistsAsync(new WalletId(Command.WalletId), A<CancellationToken>._))
+        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act

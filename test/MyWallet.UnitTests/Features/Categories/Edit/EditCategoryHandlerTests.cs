@@ -7,7 +7,7 @@ namespace MyWallet.UnitTests.Features.Categories.Edit;
 [TestSubject(typeof(EditCategoryHandler))]
 public sealed class EditCategoryHandlerTests
 {
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
 
     private readonly EditCategoryHandler sut;
 
@@ -30,9 +30,9 @@ public sealed class EditCategoryHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnSuccess()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
-                A<CancellationToken>._))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(v => v.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         // Act
@@ -47,9 +47,9 @@ public sealed class EditCategoryHandlerTests
     public async Task Handle_WhenCalled_ShouldEditCategory()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
-                A<CancellationToken>._))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(v => v.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         // Act
@@ -64,29 +64,28 @@ public sealed class EditCategoryHandlerTests
     public async Task Handle_WhenCalled_ShouldUpdateCategory()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
-                A<CancellationToken>._))
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(v => v.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
             .Returns(category);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => categoryRepository.UpdateAsync(
-                category,
-                A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+        await categoryRepository
+            .Received(1)
+            .UpdateAsync(category, Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenCategoryDoesNotExist_ShouldReturnNotFoundError()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(v => v.Value == Command.CategoryId),
-                A<CancellationToken>._))
-            .Returns(null as Category);
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(v => v.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);

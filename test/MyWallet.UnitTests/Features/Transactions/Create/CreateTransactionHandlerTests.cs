@@ -1,4 +1,3 @@
-using MyWallet.Domain;
 using MyWallet.Domain.Categories;
 using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Wallets;
@@ -9,17 +8,13 @@ namespace MyWallet.UnitTests.Features.Transactions.Create;
 
 public sealed class CreateTransactionHandlerTests
 {
-    private readonly ITransactionService transactionService = A.Fake<ITransactionService>();
-    private readonly ITransactionRepository transactionRepository = A.Fake<ITransactionRepository>();
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
-    private readonly ICategoryRepository categoryRepository = A.Fake<ICategoryRepository>();
+    private readonly ITransactionService transactionService = new TransactionService();
+    private readonly ITransactionRepository transactionRepository = Substitute.For<ITransactionRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
+    private readonly ICategoryRepository categoryRepository = Substitute.For<ICategoryRepository>();
 
     private readonly CreateTransactionHandler sut;
-
-    private readonly Wallet wallet = Factories.Wallet.CreateDefault();
-    private readonly Category category = Factories.Category.CreateDefault();
-    private readonly Transaction transaction = Factories.Transaction.CreateDefault().Value;
-
+    
     private static readonly CreateTransactionCommand Command = new()
     {
         WalletId = Constants.Wallet.Id.Value,
@@ -39,26 +34,16 @@ public sealed class CreateTransactionHandlerTests
             transactionRepository,
             walletRepository,
             categoryRepository);
+        
+        walletRepository.GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>())
+            .Returns(Factories.Wallet.CreateDefault());
 
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
-            .Returns(wallet);
-
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
-            .Returns(category);
-
-        A.CallTo(() => transactionService.CreateTransaction(
-                wallet,
-                category,
-                A<TransactionType>.That.Matches(type => type.Name == Command.Type),
-                A<TransactionName>.That.Matches(name => name.Value == Command.Name),
-                A<Amount>.That.Matches(amount => amount.Value == Command.Amount),
-                A<Currency>.That.Matches(currency => currency.Name == Command.Currency),
-                Command.Date))
-            .Returns(transaction);
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
+            .Returns(Factories.Category.CreateDefault());
     }
 
     [Fact]
@@ -70,7 +55,7 @@ public sealed class CreateTransactionHandlerTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(transaction.Id.Value);
+        result.Value.Should().NotBe(Ulid.Empty);
     }
 
     [Fact]
@@ -81,18 +66,28 @@ public sealed class CreateTransactionHandlerTests
         await sut.Handle(Command, CancellationToken.None);
 
         // Assert
-        A.CallTo(() => transactionRepository.AddAsync(transaction, A<CancellationToken>.Ignored))
-            .MustHaveHappenedOnceExactly();
+        await transactionRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Transaction>(t =>
+                    t.WalletId.Value == Command.WalletId &&
+                    t.CategoryId.Value == Command.CategoryId &&
+                    t.Type.Name == Command.Type &&
+                    t.Name.Value == Command.Name &&
+                    t.Amount.Value == Command.Amount &&
+                    t.Currency.Name == Command.Currency &&
+                    t.Date == Command.Date),
+                Arg.Any<CancellationToken>());
     }
-    
+
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnWalletNotFound()
     {
         // Arrange
-        A.CallTo(() => walletRepository.GetAsync(
-                A<WalletId>.That.Matches(id => id.Value == Command.WalletId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Wallet);
+        walletRepository.GetAsync(
+                Arg.Is<WalletId>(id => id.Value == Command.WalletId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -106,10 +101,10 @@ public sealed class CreateTransactionHandlerTests
     public async Task Handle_WhenCategoryDoesNotExist_ShouldReturnCategoryNotFound()
     {
         // Arrange
-        A.CallTo(() => categoryRepository.GetAsync(
-                A<CategoryId>.That.Matches(id => id.Value == Command.CategoryId),
-                A<CancellationToken>.Ignored))
-            .Returns(null as Category);
+        categoryRepository.GetAsync(
+                Arg.Is<CategoryId>(id => id.Value == Command.CategoryId),
+                Arg.Any<CancellationToken>())
+            .ReturnsNull();
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);

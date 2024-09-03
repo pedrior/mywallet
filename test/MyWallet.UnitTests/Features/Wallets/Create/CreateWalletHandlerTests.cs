@@ -5,7 +5,7 @@ namespace MyWallet.UnitTests.Features.Wallets.Create;
 
 public sealed class CreateWalletHandlerTests
 {
-    private readonly IWalletRepository walletRepository = A.Fake<IWalletRepository>();
+    private readonly IWalletRepository walletRepository = Substitute.For<IWalletRepository>();
 
     private readonly CreateWalletHandler sut;
 
@@ -32,12 +32,13 @@ public sealed class CreateWalletHandlerTests
         // Assert
         result.IsError.Should().BeFalse();
 
-        A.CallTo(() => walletRepository.AddAsync(
-                A<Wallet>.That.Matches(
+        await walletRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Wallet>(
                     w => w.Name.Value == Command.Name
                          && w.Color.Value == Command.Color),
-                A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
