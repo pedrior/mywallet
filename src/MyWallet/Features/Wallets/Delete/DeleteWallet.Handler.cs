@@ -5,16 +5,16 @@ namespace MyWallet.Features.Wallets.Delete;
 public sealed class DeleteWalletHandler(IWalletRepository walletRepository)
     : ICommandHandler<DeleteWalletCommand, Deleted>
 {
-    public async Task<ErrorOr<Deleted>> Handle(DeleteWalletCommand commnad,
+    public async Task<ErrorOr<Deleted>> Handle(DeleteWalletCommand command,
         CancellationToken cancellationToken)
     {
-        var walletId = new WalletId(commnad.WalletId);
-        if (!await walletRepository.ExistsAsync(walletId, cancellationToken))
-        {
-            return WalletErrors.NotFound;
-        }
+        var wallet = await walletRepository.GetAsync(
+            new WalletId(command.WalletId), 
+            cancellationToken);
 
-        await walletRepository.DeleteAsync(walletId, cancellationToken);
-        return Result.Deleted;
+        return await wallet
+            .ThenDo(w => w.Delete())
+            .ThenDoAsync(w => walletRepository.UpdateAsync(w, cancellationToken))
+            .Then(_ => Result.Deleted);
     }
 }

@@ -108,4 +108,15 @@ public sealed class TransactionRepository(IDbContext context, IPublisher publish
             param: new { id },
             cancellationToken);
     }
+
+    public Task DeleteAllByWallet(WalletId walletId, CancellationToken cancellationToken)
+    {
+        return Context.ExecuteAsync(
+            sql: """
+                    DELETE FROM transactions t
+                    WHERE t.wallet_id = @walletId
+                 """,
+            param: new { walletId },
+            cancellationToken);
+    }
 }

@@ -1,5 +1,8 @@
+using MyWallet.Domain.Categories;
+using MyWallet.Domain.Transactions;
 using MyWallet.Domain.Users;
 using MyWallet.Domain.Wallets;
+using MyWallet.Shared.Persistence;
 
 namespace MyWallet.IntegrationTests.Features.Wallets;
 
@@ -12,6 +15,8 @@ public sealed class DeleteWalletTests(TestApplicationFactory app) : IntegrationT
     {
         var userRepository = GetRequiredService<IUserRepository>();
         var walletRepository = GetRequiredService<IWalletRepository>();
+        var categoryRepository = GetRequiredService<ICategoryRepository>();
+        var transactionRepository = GetRequiredService<ITransactionRepository>();
 
         var user = await Factories.User.CreateDefaultWithServiceProvider(Services);
         await userRepository.AddAsync(user.Value);
@@ -20,6 +25,15 @@ public sealed class DeleteWalletTests(TestApplicationFactory app) : IntegrationT
 
         var wallet = Factories.Wallet.CreateDefault(userId: user.Value.Id);
         await walletRepository.AddAsync(wallet);
+        
+        var category = Factories.Category.CreateDefault(userId: user.Value.Id);
+        await categoryRepository.AddAsync(category);
+        
+        var transaction = Factories.Transaction.CreateDefault(
+            walletId: wallet.Id,
+            categoryId: category.Id);
+        
+        await transactionRepository.AddAsync(transaction.Value);
 
         walletId = wallet.Id.Value;
     }
@@ -43,6 +57,32 @@ public sealed class DeleteWalletTests(TestApplicationFactory app) : IntegrationT
 
         wallet.IsError.Should().BeTrue();
         wallet.FirstError.Should().Be(WalletErrors.NotFound);
+    }
+    
+    [Fact]
+    public async Task DeleteWallet_WhenRequestIsValid_ShouldDeleteWalletTransactions()
+    {
+        // Arrange
+        var request = Requests.Wallets.DeleteWallet(walletId);
+
+        var client = CreateClient(accessToken);
+
+        // Act
+        var response = await client.SendAsync(request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        var db = GetRequiredService<IDbContext>();
+        var anyWalletTransaction = await db.ExecuteScalarAsync<bool>(
+            sql: """
+                    SELECT 1
+                    FROM transactions
+                    WHERE wallet_id = @WalletId
+                 """,
+            param: new { WalletId = walletId });
+
+        anyWalletTransaction.Should().BeFalse();
     }
 
     [Fact]

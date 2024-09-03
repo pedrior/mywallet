@@ -1,4 +1,5 @@
 using MyWallet.Domain.Wallets;
+using MyWallet.Domain.Wallets.Events;
 
 namespace MyWallet.UnitTests.Domain.Wallets;
 
@@ -145,5 +146,18 @@ public sealed class WalletTests
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(WalletErrors.WalletIsArchived);
+    }
+
+    [Fact]
+    public void Delete_WhenCalled_ShouldRaiseWalletDeletedEvent()
+    {
+        // Arrange
+        var wallet = Factories.Wallet.CreateDefault();
+        
+        // Act
+        wallet.Delete();
+        
+        // Assert
+        wallet.Events.Should().ContainSingle(e => e is WalletDeletedEvent);
     }
 }

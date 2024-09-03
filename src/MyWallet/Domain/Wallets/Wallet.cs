@@ -1,4 +1,5 @@
 using MyWallet.Domain.Users;
+using MyWallet.Domain.Wallets.Events;
 
 namespace MyWallet.Domain.Wallets;
 
@@ -81,4 +82,6 @@ public sealed class Wallet : Entity<WalletId>, IAggregateRoot, IAuditable
 
         return Result.Success;
     }
+    
+    public void Delete() => AddEvent(new WalletDeletedEvent(Id));
 }

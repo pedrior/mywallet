@@ -23,8 +23,10 @@ public sealed class DeleteWalletHandlerTests
     public async Task Handle_WhenCalled_ShouldReturnDeleted()
     {
         // Arrange
-        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
-            .Returns(true);
+        var wallet = Factories.Wallet.CreateDefault();
+
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
+            .Returns(wallet);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
@@ -35,11 +37,13 @@ public sealed class DeleteWalletHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenCalled_ShouldDeleteWallet()
+    public async Task Handle_WhenCalled_ShouldUpdateWallet()
     {
         // Arrange
-        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
-            .Returns(true);
+        var wallet = Factories.Wallet.CreateDefault();
+
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
+            .Returns(wallet);
 
         // Act
         await sut.Handle(Command, CancellationToken.None);
@@ -47,15 +51,15 @@ public sealed class DeleteWalletHandlerTests
         // Assert
         await walletRepository
             .Received(1)
-            .DeleteAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>());
+            .UpdateAsync(wallet, Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Handle_WhenWalletDoesNotExist_ShouldReturnWalletNotFound()
     {
         // Arrange
-        walletRepository.ExistsAsync(new WalletId(Command.WalletId), Arg.Any<CancellationToken>())
-            .Returns(false);
+        walletRepository.GetAsync(Constants.Wallet.Id,  Arg.Any<CancellationToken>())
+            .Returns(WalletErrors.NotFound);
 
         // Act
         var result = await sut.Handle(Command, CancellationToken.None);
