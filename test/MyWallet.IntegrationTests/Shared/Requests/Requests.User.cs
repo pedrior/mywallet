@@ -33,7 +33,7 @@ internal static partial class Requests
 
         public static HttpRequestMessage UpdateProfile(string name)
         {
-            return new HttpRequestMessage(HttpMethod.Post, $"{BasePath}/users/me/profile")
+            return new HttpRequestMessage(HttpMethod.Patch, $"{BasePath}/users/me/profile")
             {
                 Content = ToJsonStringContent(new
                 {
