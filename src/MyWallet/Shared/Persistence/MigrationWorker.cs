@@ -15,9 +15,15 @@ public sealed class MigrationWorker(string connectionString)
             .LogToConsole()
             .Build();
 
-        if (upgradeEngine.IsUpgradeRequired())
+        if (!upgradeEngine.IsUpgradeRequired())
         {
-            upgradeEngine.PerformUpgrade();
+            return;
+        }
+
+        var result = upgradeEngine.PerformUpgrade();
+        if (!result.Successful)
+        {
+            throw new MigrationException("Database migration failed", result.Error);
         }
     }
 }
