@@ -11,6 +11,7 @@ public sealed class MigrationWorker(string connectionString)
         var scriptsPath = $"{AppDomain.CurrentDomain.BaseDirectory}Shared/Persistence/Scripts";
         var upgradeEngine = DeployChanges.To.PostgresqlDatabase(connectionString)
             .WithScriptsFromFileSystem(scriptsPath)
+            .WithTransaction()
             .LogToConsole()
             .Build();
 
