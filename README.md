@@ -1,65 +1,45 @@
-# MyWallet
+# MyWallet 💸
+O **MyWallet** é um sistema prático para gerenciar rendimentos e despesas. Com ele, você pode criar carteiras personalizadas, controlar 
+transações, definir orçamentos e agrupar despesas em categorias. O sistema oferece relatórios diários, semanais e mensais, que podem ser
+exportados em PDF para acompanhamento offline.
 
-O **MyWallet** é um sistema personalizável para monitorar rendimentos e despesas. Ele permite criar e personalizar carteiras, gerenciar
-transações, estabelecer orçamentos para carteiras e categorias, e criar e personalizar categorias. O sistema também permite visualizar 
-relatórios diários, semanais e mensais para um gerenciamento mais eficaz, bem como exportar relatórios em formato PDF.
+## Principais Recursos ✨
+- **Personalização** 🧩: Crie e personalize suas carteiras e categorias de acordo com suas preferências.
+- **Controle de transações** 💵: Registre e acompanhe todas as suas transações.
+- **Orçamentos sob medida** 💰: Estabeleça limites de gastos para suas carteiras e categorias.
+- **Relatórios detalhados** 📊: Acompanhe suas finanças com relatórios claros e objetivos, que podem ser exportados em formato PDF.
 
-## :sparkles: Casos de Uso (_WIP_)
+## Executando 🏃‍♂️
 
-**O usuário deve ser capaz de...**
- 
-### :person_curly_hair: Usuários
+### Requisitos 📝
 
-- ✅ efetuar registro;
-- ✅ efetuar login;
-- ✅ alterar e-mail;
-- ✅ alterar senha;
-- ✅ editar perfil;
-- ✅ visualizar perfil;
-- ⬜ excluir conta;
+- Dotnet 8
+- PostgreSQL
+- Docker
 
-### :label: Categorias
+### Via Docker
 
-- ✅ criar categoria;
-- ✅ listar categorias;
-- ✅ visualizar categoria;
-- ✅ excluir categoria;
-- ✅ editar categoria;
+1. Clone o projeto:
 
-### :purse: Carteiras
+```shell
+git clone https://github.com/pedrior/mywallet.git
+cd mywallet
+```
 
-- ✅ criar carteira;
-- ✅ listar carteiras;
-- ✅ visualizar carteira;
-- ✅ excluir carteira;
-- ✅ editar carteira;
-- ✅ arquivar carteira;
-- ✅ desarquivar carteira;
-- ⬜ compartilhar carteira;
-- ⬜ revogar compartilhamento de carteira;
+2. Execute o comando:
+```shell
+docker compose up -d --build
+```
 
-### :money_with_wings: Transações
+## Desenvolvimento	✍️
 
-- ✅ criar transação;
-- ✅ listar transações;
-- ✅ visualizar transação;
-- ✅ editar transação;
-- ✅ excluir transação;
+### Recursos da API 🪄
 
-### :moneybag: Orçamentos
+### Arquitetura e Organização de Pastas 📂
 
-- ⬜ criar orçamento;
-- ⬜ listar orçamentos;
-- ⬜ visualizar orçamento;
-- ⬜ renomear orçamento;
-- ⬜ excluir orçamento;
-- ⬜ editar orçamento;
-- ⬜ adicionar carteira ao orçamento;
-- ⬜ adicionar categoria ao orçamento;
-- ⬜ remover carteira do orçamento;
-- ⬜ remover categoria do orçamento;
+### Testes de Unidade e de Integração 🧪
 
-### :memo: Relatórios
+## Tecnologias Utilizadas 🛠️
 
-- ⬜ visualizar relatórios de rendimentos e despesas;
-- ⬜ exportar relatórios em formato PDF.
+## Licença 🪪
+Este projeto é licenciado sob os termos da [Licença MIT](https://raw.githubusercontent.com/pedrior/mywallet/master/LICENSE).
